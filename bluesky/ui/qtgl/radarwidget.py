@@ -9,7 +9,7 @@ import bluesky as bs
 from bluesky import settings
 from bluesky.ui import palette
 from bluesky.ui.radarclick import radarclick
-from bluesky.ui.qtgl import console
+from bluesky.ui.qtgl import console, maptiles
 from bluesky.ui.qtgl.customevents import ACDataEvent, RouteDataEvent
 from bluesky.tools.aero import ft, nm, kts
 from bluesky.tools import geo
@@ -136,6 +136,8 @@ class RadarWidget(QGLWidget):
         self.mousepos = (0, 0)
         self.prevmousepos = (0, 0)
 
+        self.map_tiles = maptiles.MapTiles() #NEW
+
         # Load vertex data
         self.vbuf_asphalt, self.vbuf_concrete, self.vbuf_runways, self.vbuf_rwythr, \
             self.apt_ctrlat, self.apt_ctrlon, self.apt_indices = load_aptsurface()
@@ -228,6 +230,9 @@ class RadarWidget(QGLWidget):
                 self.map_texture = self.bindTexture(fname)
                 break
 
+        # load and bind map textures #NEW
+        self.map_tiles.tile_load()
+
         # Create initial empty buffers for aircraft position, orientation, label, and color
         # usage flag indicates drawing priority:
         #
@@ -264,6 +269,9 @@ class RadarWidget(QGLWidget):
         mapvertices = np.array([(-90.0, 540.0), (-90.0, -540.0), (90.0, -540.0), (90.0, 540.0)], dtype=np.float32)
         texcoords = np.array([(1, 3), (1, 0), (0, 0), (0, 3)], dtype=np.float32)
         self.map = RenderObject(gl.GL_TRIANGLE_FAN, vertex=mapvertices, texcoords=texcoords)
+
+        # ------- Map tiles ------------------------------- #NEW
+        self.map_tiles.tile_render()
 
         # ------- Coastlines -----------------------------
         self.coastlines = RenderObject(gl.GL_LINES, vertex=self.coastvertices, color=palette.coastlines)
@@ -473,6 +481,15 @@ class RadarWidget(QGLWidget):
             gl.glActiveTexture(gl.GL_TEXTURE0 + 0)
             gl.glBindTexture(gl.GL_TEXTURE_2D, self.map_texture)
             self.map.draw()
+
+        # --- DRAW THE MAP Tiles --------------------------------------------- #NEW
+        self.map_tiles.paint_map(self)
+
+        # or this
+        # self.texture_shader.use()p
+        # for i in range(len(self.map_tiles.tile_array)):
+        #    gl.glBindTexture(gl.GL_TEXTURE_2D, self.map_tiles.map_textures[i])  # Added by Andu
+        #    self.map_tiles.tiles[i].draw()
 
         # Select the non-textured shader
         self.color_shader.use()
