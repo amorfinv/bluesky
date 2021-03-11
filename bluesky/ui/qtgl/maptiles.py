@@ -35,13 +35,21 @@ class MapTiles(QGLWidget):
 
         # --- info below should be defined outside class and imported into maptiles.py ---
         # Path information
-        self.tile_dir = 'tiling'
         self.tex_filetype = '.dds'
 
+        # opentopomap tilers
+        self.tile_dir = 'opentopomap'
+        self.url_prefix = 'https://a.tile.opentopomap.org/'
+        self.url_suffix = '.png'
+        self.tile_format = '.png'
+
         # maptiler api information
-        self.map_type = 'streets'
-        self.api_key = ''
-        self.url_prefix = f"https://api.maptiler.com/maps/{self.map_type}/"
+        # self.tile_dir = 'maptiler'
+        # self.map_type = 'streets'
+        # self.api_key = ''
+        # self.url_prefix = f'https://api.maptiler.com/maps/{self.map_type}/'
+        # self.url_suffix = f'.png?key={self.api_key}'
+        # self.tile_format = '.png'
 
         # Bounding box coordinates, lat1 (north), lon1 (west), lat2 (south), lon2 (east)
         self.lat1 = 25.688843
@@ -50,10 +58,10 @@ class MapTiles(QGLWidget):
         self.lon2 = -80.283713
 
         # all of miami
-        #self.lat1 = 25.91
-        #self.lon1 = -80.45
-        #self.lat2 = 25.62
-        #self.lon2 = -80.1
+        # self.lat1 = 25.91
+        # self.lon1 = -80.45
+        # self.lat2 = 25.62
+        # self.lon2 = -80.1
 
         # zoom level. 14/15 is recommended to limit number of requests see the link below for size estimation of city
         # see https://tools.geofabrik.de/calc/#type=geofabrik_standard&bbox=-80.448849,25.625192,-80.104825,25.90675
@@ -108,8 +116,8 @@ class MapTiles(QGLWidget):
                     pass
 
                 # download image from web
-                tmp_local_path = path.join(settings.gfx_path, self.tile_dir, img_path + '.png')
-                image_url = self.url_prefix + img_path + f'.png?key={self.api_key}'
+                tmp_local_path = path.join(settings.gfx_path, self.tile_dir, img_path + self.tile_format)
+                image_url = self.url_prefix + img_path + self.url_suffix
 
                 with open(tmp_local_path, "wb") as infile:
                     infile.write(urlopen(image_url).read())
