@@ -1,10 +1,7 @@
 from os import path, makedirs, remove
-from PyQt5.QtCore import Qt, QEvent, qCritical, QTimer, QT_VERSION
 from PyQt5.QtOpenGL import QGLWidget
-from ctypes import c_float, c_int, Structure
 import numpy as np
 import OpenGL.GL as gl
-from math import *
 from urllib.request import urlopen
 
 import bluesky as bs
@@ -14,78 +11,126 @@ from .glhelpers import BlueSkyProgram, RenderObject, Font, UniformBuffer, \
 
 # Register settings defaults
 settings.set_variable_defaults(
-    gfx_path='data/graphics',
-    text_size=13, apt_size=10,
-    wpt_size=10, ac_size=16,
-    asas_vmin=200.0, asas_vmax=500.0)
+    mpt_path='data/graphics',
+    mpt_server='opentopomap',
+    tile_standard='google',
+    mpt_url=['https://a.tile.opentopomap.org/{z}/{x}/{y}.png',
+             'https://b.tile.opentopomap.org/{z}/{x}/{y}.png',
+             'https://c.tile.opentopomap.org/{z}/{x}/{y}.png'])
 
 
 class MapTiles(QGLWidget):
+    """
+    Default map server is from OpenTopoMap. As of March 12, 2021 data is open to use. https://opentopomap.org/about
 
-    def __init__(self, shareWidget=None):
+    TO-DO List:
+        -Handle Exceptions when downloading fails and others. disable map tiles if there is an error
+        -Add method to clear tile directories.
+        -Alter drawing functions so that png files may be loaded as textures
+        -create stack command and incorporate into bluesky in smart way
+        -add license text on map tiles.
+        -get code to accept OSM server. OSM (https://operations.osmfoundation.org/policies/tiles/)
+         requires valid HTTP-User-Agent. However, german version of OSM can still be used with
+         https://a.tile.openstreetmap.de/{z}/{x}/{y}.png, https://b.tile.openstreetmap.de/{z}/{x}/{y}.png or
+         https://c.tile.openstreetmap.de/{z}/{x}/{y}.png
+         see tile usage policy (https://www.openstreetmap.de/germanstyle.html
+         -get code to accept google tiles. https://developers.google.com/maps/documentation/tile/#tile_requests
+          Google tiles require a session token before downloading data.
+        -get code to accept bing map tiles:
+         https://docs.microsoft.com/en-us/bingmaps/getting-started/bing-maps-dev-center-help/getting-a-bing-maps-key
+
+    Future ideas:
+        -update zoom level with screen zoom.
+        -parallel tile download when possible. Also figure out how to use sources with multiple servers.
+        -accept other types of map tile formats. Like TMS or WMTS
+        https://alastaira.wordpress.com/2011/07/06/converting-tms-tile-coordinates-to-googlebingosm-tile-coordinates/
+
+    BBOX examples
+
+        -Miami BBOX
+            lat1 = 25.91
+            lon1 = -80.45
+            lat2 = 25.62
+            lon2 = -80.1
+
+        -Manhattan BBOX
+            lat1 = 40.894799
+            lon1 = -74.024019
+            lat2 = 40.697206
+            lon2 = -73.898962
+
+    """
+
+    def __init__(self, lat1=25.68, lon1=-80.31, lat2=25.63, lon2=-80.28, zoom_level=11, shareWidget=None,
+                 LOAD_ALTERED=False, ALTER_TILE=False, INVERT=True, CONTRAST=True, con_factor=1.5, DELETE_RAW=False):
+        """
+        :param lat1: FLOAT, Latitude 1 of bounding box (north)
+        :param lon1: FLOAT, Latitude 1 of bounding box (west)
+        :param lat2: FLOAT, Latitude 2 of bounding box (south)
+        :param lon2: FLOAT, Latitude 2 of bounding box (east)
+        :param zoom_level: INTEGER, Zoom level for map tiles. 14 or 15 is recommended to limit number of requests
+                           see the link below for size estimation of bbox:
+            https://tools.geofabrik.de/calc/#type=geofabrik_standard&bbox=-80.448849,25.625192,-80.104825,25.90675
+        :param shareWidget:
+        :param LOAD_ALTERED: BOOLEAN, will load the altered tiles to gui
+        :param ALTER_TILE: BOOLEAN, alter the tile based on INVERT and CONTRAST
+        :param INVERT: BOOLEAN, invert the image so that it has ATM type look
+        :param CONTRAST: BOOLEAN, increase contrast if desired
+        :param con_factor: FLOAT, >1 increases contrast, <1 decreases contrast
+        :param DELETE_RAW: BOOLEAN, If image is altered, the unaltered can be deleted to limit directory size.
+                           Setting LOAD_ALTERED=True after will ensure that tiles are not downloaded if they are saved.
+                           As long as the raw data is in directory, the images will not download.
+        """
+
+        # Map settings from CLI? maybe can be also in settings file (I think putting them in config file
+        # is better for this as these settings probably won't change much)
+        self.LOAD_ALTERED = LOAD_ALTERED
+        self.ALTER_TILE = ALTER_TILE
+        self.INVERT = INVERT
+        self.CONTRAST = CONTRAST
+        self.con_factor = con_factor
+        self.DELETE_RAW = DELETE_RAW
+
+        # Bounding box coordinates
+        self.lat1 = lat1
+        self.lon1 = lon1
+        self.lat2 = lat2
+        self.lon2 = lon2
+
+        # zoom level
+        self.zoom_level = zoom_level
+
+        # Initialize some variables.
         self.map_textures = []
         self.tiles = []
-
-        super().__init__(shareWidget=shareWidget)
-
         self.tile_array = []
         self.local_paths = []
 
-        # --- info below should be defined outside class and imported into maptiles.py ---
-        # Tile information
+        # Get inheritance
+        super().__init__(shareWidget=shareWidget)
+
+        # Process setting default variables
+        self.tile_dir = path.join(settings.mpt_path, settings.mpt_server)
+
+        if settings.tile_standard == 'google':
+            img_std = '{z}/{x}/{y}'
+
+        try:
+            start_index = settings.mpt_url[0].index(img_std)
+            self.url_prefix = settings.mpt_url[0][:start_index]
+            self.url_suffix = settings.mpt_url[0][start_index + len(img_std):]
+        except ValueError:
+            print('Incorrect tile format in cfg file. Please make sure tile paths is written as {z}/{x}/{y}')
+        except UnboundLocalError:
+            print("Incorrect tile standard in cfg file. Only accepting 'google' at the moment ")
+
+        if 'png' in self.url_suffix:
+            self.tile_format = '.png'
+        else:
+            self.tile_format = '.png'
+
+        # Convert to texture. delete once you figure out how to load png into gui
         self.tex_filetype = '.dds'
-        self.LOAD_ALTERED = True  # default is False
-        self.ALTER_TILE = True  # default is False
-        self.INVERT = True  # default is False
-        self.CONTRAST = True  # default is False
-        self.DELETE_RAW = False # default is False.
-
-        if self.CONTRAST:
-            self.con_factor = 1.5
-
-        # opentopmap information https://opentopomap.org/about there are several tile servers. a, b, c
-        self.tile_dir = 'opentopomap'
-        self.url_prefix = 'https://b.tile.opentopomap.org/'
-        self.url_suffix = '.png'
-        self.tile_format = '.png'
-
-        # # openstreetmap information https://wiki.openstreetmap.org/wiki/Tiles there are several tile servers. a, b, c
-        # openstreetmap.org requires Valid HTTP User-Agent .de does not. See tile usage limits
-        # self.tile_dir = 'openstreetmap'
-        # self.url_prefix = 'https://a.tile.openstreetmap.de/'
-        # self.url_suffix = '.png'
-        # self.tile_format = '.png'
-
-        # maptiler information
-        # self.tile_dir = 'maptiler'
-        # self.map_type = 'streets'
-        # self.api_key = 'YHUhmibI2EF92aBs4fZy'
-        # self.url_prefix = f'https://api.maptiler.com/maps/{self.map_type}/'
-        # self.url_suffix = f'.png?key={self.api_key}'
-        # self.tile_format = '.png'
-
-        # Bounding box coordinates, lat1 (north), lon1 (west), lat2 (south), lon2 (east)
-        self.lat1 = 25.688843
-        self.lon1 = -80.312536
-        self.lat2 = 25.6366
-        self.lon2 = -80.283713
-
-        # manhattan
-        # self.lat1 = 40.894799
-        # self.lon1 = -74.024019
-        # self.lat2 = 40.697206
-        # self.lon2 = -73.898962
-
-        # all of miami
-        # self.lat1 = 25.91
-        # self.lon1 = -80.45
-        # self.lat2 = 25.62
-        # self.lon2 = -80.1
-
-        # zoom level. 14/15 is recommended to limit number of requests see the link below for size estimation of city
-        # see https://tools.geofabrik.de/calc/#type=geofabrik_standard&bbox=-80.448849,25.625192,-80.104825,25.90675
-        # for prelim estimation. Note that it is not completely exact.
-        self.zoom_level = 11
 
     # Drawing functions below
     def tile_load(self):
@@ -121,8 +166,8 @@ class MapTiles(QGLWidget):
 
             # Create image paths, raw is unaltered image, local_path is one that is shown on screen
             img_path = path.join(str(self.zoom_level), str(item[0]), f'{item[1]}')
-            raw_local_path = path.join(settings.gfx_path, self.tile_dir, img_path + self.tile_format)
-            alt_local_path = path.join(settings.gfx_path, self.tile_dir, f'{img_path}a{self.tile_format}')
+            raw_local_path = path.join(self.tile_dir, img_path + self.tile_format)
+            alt_local_path = path.join(self.tile_dir, f'{img_path}a{self.tile_format}')
             local_path = raw_local_path
 
             # Download tile if it has not been downloaded
@@ -131,7 +176,7 @@ class MapTiles(QGLWidget):
                 # Check if raw data was deliberately deleted. If yes then also check that alternate file path exists
                 if not self.DELETE_RAW and not path.exists(alt_local_path):
                     # create new paths, first create directories for zoom level and x
-                    img_dirs = path.join(settings.gfx_path, self.tile_dir, str(self.zoom_level), str(item[0]))
+                    img_dirs = path.join(self.tile_dir, str(self.zoom_level), str(item[0]))
 
                     # Create directory only if it doesn't exist
                     try:
@@ -156,7 +201,6 @@ class MapTiles(QGLWidget):
 
             # Convert to texture, remove once you figure out how to put .png files in gui
             local_path = self.convert_to_texture(local_path)
-            # print(local_path)
 
             self.local_paths.append(local_path)
 
@@ -196,7 +240,6 @@ class MapTiles(QGLWidget):
 
         # download image from web
         image_url = self.url_prefix + img_path + self.url_suffix
-
         with open(raw_local_path, "wb") as infile:
             infile.write(urlopen(image_url).read())
 
@@ -272,8 +315,8 @@ class MapTiles(QGLWidget):
         unit = 1 / n
         relY1 = y * unit
         relY2 = relY1 + unit
-        lat1 = self.mercatorToLat(pi * (1 - 2 * relY1))
-        lat2 = self.mercatorToLat(pi * (1 - 2 * relY2))
+        lat1 = self.mercatorToLat(np.pi * (1 - 2 * relY1))
+        lat2 = self.mercatorToLat(np.pi * (1 - 2 * relY2))
         return lat1, lat2
 
     def lonEdges(self, x, z):
@@ -286,13 +329,13 @@ class MapTiles(QGLWidget):
     def xy2latlon(self, x, y, z):
         n = self.numTiles(z)
         relY = y / n
-        lat = self.mercatorToLat(pi * (1 - 2 * relY))
+        lat = self.mercatorToLat(np.pi * (1 - 2 * relY))
         lon = -180.0 + 360.0 * x / n
         return lat, lon
 
     def latlon2relativeXY(self, lat, lon):
         x = (lon + 180) / 360
-        y = (1 - log(tan(radians(lat)) + self.sec(radians(lat))) / pi) / 2
+        y = (1 - np.log(np.tan(np.radians(lat)) + self.sec(np.radians(lat))) / np.pi) / 2
         return x, y
 
     @staticmethod
@@ -301,8 +344,8 @@ class MapTiles(QGLWidget):
 
     @staticmethod
     def mercatorToLat(mercatorY):
-        return degrees(atan(sinh(mercatorY)))
+        return np.degrees(np.arctan(np.sinh(mercatorY)))
 
     @staticmethod
     def sec(x):
-        return 1 / cos(x)
+        return 1 / np.cos(x)
