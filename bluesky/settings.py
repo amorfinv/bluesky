@@ -42,6 +42,7 @@ def init(cfgfile=''):
     badasrc = os.path.join(srcdir, 'data/performance/BADA')
     perfdir = os.path.join(srcdir, 'data/performance')
     gfxdir = os.path.join(srcdir, 'data/graphics')
+    mptdir = os.path.join(rundir, 'data/graphics/maptiles')
     navdir = os.path.join(srcdir, 'data/navdata')
     scnsrc = os.path.join(srcdir, 'scenario')
     scndir = os.path.join(rundir, 'scenario')
@@ -89,6 +90,8 @@ def init(cfgfile=''):
                     line = "perf_path = '" + perfdir.replace('\\', '/') + "'\n"
                 elif line[:8] == 'gfx_path':
                     line = "gfx_path = '" + gfxdir.replace('\\', '/') + "'\n"
+                elif line[:8] == 'mpt_path':
+                    line = "mpt_path = '" + mptdir.replace('\\', '/') + "'\n"
                 elif line[:12] == 'navdata_path':
                     line = "navdata_path = '" + navdir.replace('\\', '/') + "'\n"
 
