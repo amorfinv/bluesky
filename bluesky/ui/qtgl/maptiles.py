@@ -1,13 +1,11 @@
 from os import path, makedirs, remove
 from PyQt5.QtCore import Qt, QEvent, qCritical, QTimer, QT_VERSION
 from PyQt5.QtOpenGL import QGLWidget
-from ctypes import c_float, c_int, Strgomucture
+from ctypes import c_float, c_int, Structure
 import numpy as np
 import OpenGL.GL as gl
 from math import *
 from urllib.request import urlopen
-from PIL import Image, ImageChops, ImageEnhance
-from wand import image as imga
 
 import bluesky as bs
 from bluesky import settings
@@ -34,19 +32,34 @@ class MapTiles(QGLWidget):
         self.local_paths = []
 
         # --- info below should be defined outside class and imported into maptiles.py ---
-        # Path information
+        # Tile information
         self.tex_filetype = '.dds'
+        self.LOAD_ALTERED = True  # default is False
+        self.ALTER_TILE = True  # default is False
+        self.INVERT = True  # default is False
+        self.CONTRAST = True  # default is False
+        self.DELETE_RAW = False # default is False.
 
-        # opentopomap tilers
+        if self.CONTRAST:
+            self.con_factor = 1.5
+
+        # opentopmap information https://opentopomap.org/about there are several tile servers. a, b, c
         self.tile_dir = 'opentopomap'
-        self.url_prefix = 'https://a.tile.opentopomap.org/'
+        self.url_prefix = 'https://b.tile.opentopomap.org/'
         self.url_suffix = '.png'
         self.tile_format = '.png'
 
-        # maptiler api information
+        # # openstreetmap information https://wiki.openstreetmap.org/wiki/Tiles there are several tile servers. a, b, c
+        # openstreetmap.org requires Valid HTTP User-Agent .de does not. See tile usage limits
+        # self.tile_dir = 'openstreetmap'
+        # self.url_prefix = 'https://a.tile.openstreetmap.de/'
+        # self.url_suffix = '.png'
+        # self.tile_format = '.png'
+
+        # maptiler information
         # self.tile_dir = 'maptiler'
         # self.map_type = 'streets'
-        # self.api_key = ''
+        # self.api_key = 'YHUhmibI2EF92aBs4fZy'
         # self.url_prefix = f'https://api.maptiler.com/maps/{self.map_type}/'
         # self.url_suffix = f'.png?key={self.api_key}'
         # self.tile_format = '.png'
@@ -57,6 +70,12 @@ class MapTiles(QGLWidget):
         self.lat2 = 25.6366
         self.lon2 = -80.283713
 
+        # manhattan
+        # self.lat1 = 40.894799
+        # self.lon1 = -74.024019
+        # self.lat2 = 40.697206
+        # self.lon2 = -73.898962
+
         # all of miami
         # self.lat1 = 25.91
         # self.lon1 = -80.45
@@ -66,7 +85,7 @@ class MapTiles(QGLWidget):
         # zoom level. 14/15 is recommended to limit number of requests see the link below for size estimation of city
         # see https://tools.geofabrik.de/calc/#type=geofabrik_standard&bbox=-80.448849,25.625192,-80.104825,25.90675
         # for prelim estimation. Note that it is not completely exact.
-        self.zoom_level = 15
+        self.zoom_level = 11
 
     # Drawing functions below
     def tile_load(self):
@@ -75,10 +94,10 @@ class MapTiles(QGLWidget):
         self.create_tile_array()
 
         # download tiles
-        self.download_tiles()
+        self.process_tiles()
 
-        for img_path in self.local_paths:
-            self.map_textures.append(self.bindTexture(path.join(img_path)))
+        for image_path in self.local_paths:
+            self.map_textures.append(self.bindTexture(path.join(image_path)))
 
     def tile_render(self):
 
@@ -95,49 +114,49 @@ class MapTiles(QGLWidget):
             self.tiles[i].draw()
 
     # Non-drawing functions below
-    def download_tiles(self):
+    def process_tiles(self):
 
         # loop through tile array
         for item in self.tile_array:
+
+            # Create image paths, raw is unaltered image, local_path is one that is shown on screen
             img_path = path.join(str(self.zoom_level), str(item[0]), f'{item[1]}')
+            raw_local_path = path.join(settings.gfx_path, self.tile_dir, img_path + self.tile_format)
+            alt_local_path = path.join(settings.gfx_path, self.tile_dir, f'{img_path}a{self.tile_format}')
+            local_path = raw_local_path
 
-            local_path = path.join(settings.gfx_path, self.tile_dir, img_path + self.tex_filetype)
+            # Download tile if it has not been downloaded
+            if not path.exists(raw_local_path):
 
-            if path.exists(local_path):
-                pass
-            else:
-                # create new paths, first create directories for zoom level and x
-                img_dirs = path.join(settings.gfx_path, self.tile_dir, str(self.zoom_level), str(item[0]))
+                # Check if raw data was deliberately deleted. If yes then also check that alternate file path exists
+                if not self.DELETE_RAW and not path.exists(alt_local_path):
+                    # create new paths, first create directories for zoom level and x
+                    img_dirs = path.join(settings.gfx_path, self.tile_dir, str(self.zoom_level), str(item[0]))
 
-                # Create path only if it doesn't exist
-                try:
-                    makedirs(img_dirs)
-                except FileExistsError:
-                    pass
+                    # Create directory only if it doesn't exist
+                    try:
+                        makedirs(img_dirs)
+                    except FileExistsError:
+                        pass
 
                 # download image from web
-                tmp_local_path = path.join(settings.gfx_path, self.tile_dir, img_path + self.tile_format)
-                image_url = self.url_prefix + img_path + self.url_suffix
+                self.download_tile(raw_local_path, img_path)
 
-                with open(tmp_local_path, "wb") as infile:
-                    infile.write(urlopen(image_url).read())
+            # Check if Altered Images should be loaded.
+            if self.LOAD_ALTERED:
+                # check if you want to make a new change or if path exists. If none is true
+                if not path.exists(alt_local_path) or self.ALTER_TILE:
+                    local_path = self.alter_tile(alt_local_path, raw_local_path)
+                else:
+                    local_path = alt_local_path
 
-                # invert image
-                inverted_image = ImageChops.invert(Image.open(tmp_local_path).convert('RGB'))
+            # Delete raw images. This is done to limit storage.
+            if self.DELETE_RAW:
+                remove(raw_local_path)
 
-                # increase contrast, increasing contrast factor means more contrast
-                con_factor = 1.5
-                enhancer = ImageEnhance.Contrast(inverted_image)
-                con_image = enhancer.enhance(con_factor)
-                con_image.save(tmp_local_path)
-
-                # Convert to texture
-                with imga.Image(filename=tmp_local_path) as img:
-                    img.compression = "dxt5"
-                    img.save(filename=local_path)
-
-                # delete png images
-                remove(tmp_local_path)
+            # Convert to texture, remove once you figure out how to put .png files in gui
+            local_path = self.convert_to_texture(local_path)
+            # print(local_path)
 
             self.local_paths.append(local_path)
 
@@ -172,6 +191,44 @@ class MapTiles(QGLWidget):
 
         # flatten tile array
         self.tile_array = self.tile_array.flatten()
+
+    def download_tile(self, raw_local_path, img_path):
+
+        # download image from web
+        image_url = self.url_prefix + img_path + self.url_suffix
+
+        with open(raw_local_path, "wb") as infile:
+            infile.write(urlopen(image_url).read())
+
+    def alter_tile(self, alt_local_path, raw_local_path):
+
+        # use pillow library for image operations
+        from PIL import Image, ImageChops, ImageEnhance
+
+        # convert image to rgb
+        altered_image = Image.open(raw_local_path).convert('RGB')
+
+        # invert image
+        if self.INVERT:
+            altered_image = ImageChops.invert(altered_image)
+
+        # increase contrast, increasing contrast factor means more contrast
+        if self.CONTRAST:
+            enhancer = ImageEnhance.Contrast(altered_image)
+            altered_image = enhancer.enhance(self.con_factor)
+
+        altered_image.save(alt_local_path)
+        return alt_local_path
+
+    def convert_to_texture(self, local_path):
+        # remove once you figure out how to put .png files in gui
+        from wand import image as image_wand
+
+        with image_wand.Image(filename=local_path) as img:
+            local_path = local_path[:-4] + self.tex_filetype
+            img.compression = "dxt5"
+            img.save(filename=local_path)
+        return local_path
 
     # ----------------------------------------------------------------------
     # Translates between lat/long and the slippy-map tile numbering scheme
