@@ -11,19 +11,20 @@ from .glhelpers import BlueSkyProgram, RenderObject, Font, UniformBuffer, \
 
 # Register settings defaults
 settings.set_variable_defaults(
-    mpt_path='data/graphics',
-    mpt_server='opentopomap',
-    tile_standard='google',
+    mpt_path='data/graphics', mpt_server='opentopomap', tile_standard='google',
     mpt_url=['https://a.tile.opentopomap.org/{z}/{x}/{y}.png',
              'https://b.tile.opentopomap.org/{z}/{x}/{y}.png',
-             'https://c.tile.opentopomap.org/{z}/{x}/{y}.png'])
-
+             'https://c.tile.opentopomap.org/{z}/{x}/{y}.png'],
+    LOAD_ALTERED=False, ALTER_TILE=False, INVERT=True, CONTRAST=True,
+    con_factor=1.5, DELETE_RAW=False,
+    lat1=25.68, lon1=-80.31, lat2=25.63, lon2=-80.28, zoom_level=11)
 
 class MapTiles(QGLWidget):
     """
     Default map server is from OpenTopoMap. As of March 12, 2021 data is open to use. https://opentopomap.org/about
 
     TO-DO List:
+        -Fix image operation settings.
         -Handle Exceptions when downloading fails and others. disable map tiles if there is an error
         -Add method to clear tile directories.
         -Alter drawing functions so that png files may be loaded as textures
@@ -61,13 +62,13 @@ class MapTiles(QGLWidget):
 
     """
 
-    def __init__(self, lat1=25.68, lon1=-80.31, lat2=25.63, lon2=-80.28, zoom_level=11, shareWidget=None,
-                 LOAD_ALTERED=False, ALTER_TILE=False, INVERT=True, CONTRAST=True, con_factor=1.5, DELETE_RAW=False):
+    def __init__(self, lat1=settings.lat1, lon1=settings.lon1, lat2=settings.lat2, lon2=settings.lon2,
+                 zoom_level=settings.zoom_level, shareWidget=None):
         """
         :param lat1: FLOAT, Latitude 1 of bounding box (north)
-        :param lon1: FLOAT, Latitude 1 of bounding box (west)
+        :param lon1: FLOAT, Longitude 1 of bounding box (west)
         :param lat2: FLOAT, Latitude 2 of bounding box (south)
-        :param lon2: FLOAT, Latitude 2 of bounding box (east)
+        :param lon2: FLOAT, Longitude 2 of bounding box (east)
         :param zoom_level: INTEGER, Zoom level for map tiles. 14 or 15 is recommended to limit number of requests
                            see the link below for size estimation of bbox:
             https://tools.geofabrik.de/calc/#type=geofabrik_standard&bbox=-80.448849,25.625192,-80.104825,25.90675
@@ -81,16 +82,6 @@ class MapTiles(QGLWidget):
                            Setting LOAD_ALTERED=True after will ensure that tiles are not downloaded if they are saved.
                            As long as the raw data is in directory, the images will not download.
         """
-
-        # Map settings from CLI? maybe can be also in settings file (I think putting them in config file
-        # is better for this as these settings probably won't change much)
-        self.LOAD_ALTERED = LOAD_ALTERED
-        self.ALTER_TILE = ALTER_TILE
-        self.INVERT = INVERT
-        self.CONTRAST = CONTRAST
-        self.con_factor = con_factor
-        self.DELETE_RAW = DELETE_RAW
-
         # Bounding box coordinates
         self.lat1 = lat1
         self.lon1 = lon1
@@ -128,6 +119,14 @@ class MapTiles(QGLWidget):
             self.tile_format = '.png'
         else:
             self.tile_format = '.png'
+
+        # Image operations
+        self.LOAD_ALTERED = settings.LOAD_ALTERED
+        self.ALTER_TILE = settings.ALTER_TILE
+        self.INVERT = settings.INVERT
+        self.CONTRAST = settings.CONTRAST
+        self.con_factor = settings.con_factor
+        self.DELETE_RAW = settings.DELETE_RAW
 
         # Convert to texture. delete once you figure out how to load png into gui
         self.tex_filetype = '.dds'
@@ -174,6 +173,7 @@ class MapTiles(QGLWidget):
             if not path.exists(raw_local_path):
 
                 # Check if raw data was deliberately deleted. If yes then also check that alternate file path exists
+                # this if statement needs to be fixed! some combos don't work
                 if not self.DELETE_RAW and not path.exists(alt_local_path):
                     # create new paths, first create directories for zoom level and x
                     img_dirs = path.join(self.tile_dir, str(self.zoom_level), str(item[0]))
