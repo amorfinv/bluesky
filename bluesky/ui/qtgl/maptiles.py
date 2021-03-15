@@ -3,6 +3,8 @@ from PyQt5.QtOpenGL import QGLWidget
 import numpy as np
 import OpenGL.GL as gl
 from urllib.request import urlopen
+from urllib.error import URLError
+import requests
 
 import bluesky as bs
 from bluesky import settings
@@ -16,8 +18,9 @@ settings.set_variable_defaults(
              'https://b.tile.opentopomap.org/{z}/{x}/{y}.png',
              'https://c.tile.opentopomap.org/{z}/{x}/{y}.png'],
     LOAD_ALTERED=False, ALTER_TILE=False, INVERT=True, CONTRAST=True,
-    con_factor=1.5, DELETE_RAW=False,
+    con_factor=1.5, enable_tiles=False,
     lat1=25.68, lon1=-80.31, lat2=25.63, lon2=-80.28, zoom_level=11)
+
 
 class MapTiles(QGLWidget):
     """
@@ -46,20 +49,45 @@ class MapTiles(QGLWidget):
         -accept other types of map tile formats. Like TMS or WMTS
         https://alastaira.wordpress.com/2011/07/06/converting-tms-tile-coordinates-to-googlebingosm-tile-coordinates/
 
-    BBOX examples
+    BBOX examples:
 
-        -Miami BBOX
+        -Miami BBOX:
             lat1 = 25.91
             lon1 = -80.45
             lat2 = 25.62
             lon2 = -80.1
 
-        -Manhattan BBOX
+        -Manhattan BBOX:
             lat1 = 40.894799
             lon1 = -74.024019
             lat2 = 40.697206
             lon2 = -73.898962
 
+    tile_standards:
+        -'osm' standard: url contains tile path "{z}/{x}/{y}.png"
+         Example of sources that use osm standard:
+            -OpenTopoMap: https://opentopomap.org/
+                -This is the default map tiler for BlueSky. As of March 15, 2021 the tiles are open for download and use
+                 as long as credit is given to OpenTopoMap. Please refer to https://opentopomap.org/about.
+                 OpenTopoMap tries to update tiles every 4 weeks.
+            -OpenStreetMap: https://www.openstreetmap.org/
+                -At the moment OpenStreetMap can only be accessed with a Valid User-Agent. Please contact OSM
+                 to get a valid HTTP User-Agent and alter the download_tile() method so that a valid User-Agent
+                can be passed. Refer to tile usage policy: https://operations.osmfoundation.org/policies/tiles/
+            -OpenStreetMap Germany: https://www.openstreetmap.de/
+                -Unlike the regular OpenStreetMap, OSM germany does not require a valid HTTP User-Agent. Please refer
+                 to the tile usage policy: https://www.openstreetmap.de/germanstyle.html.
+            -maptiler: https://www.maptiler.com/
+                -Maptiler is a commercial product. Please refer to https://www.maptiler.com/cloud/terms/ for terms of
+                 service.
+        -"bing" standard: url contains mapArea and zoomlevel as "?mapArea={map_area}&zoomlevel={zoom_level}"
+            -Bing Maps is a commercial product. Note that Bing Maps uses a similar tile setup as osm. The difference is
+             just in how the request is made. There are several ways to make a request, see:
+             https://docs.microsoft.com/en-us/bingmaps/rest-services/imagery/get-a-static-map#pushpin-limits. The url
+             that BlueSky works with is as follows:
+             "https://dev.virtualearth.net/REST/v1/Imagery/Map/Road?mapArea={mapArea}&zoomlevel={zoomlevel}&fmt=png&key={key}"
+             This is done so that tiles are pulled in a similar way. Please refer to the Bing Maps API Terms of Use.
+             https://www.microsoft.com/en-us/maps/product.
     """
 
     def __init__(self, lat1=settings.lat1, lon1=settings.lon1, lat2=settings.lat2, lon2=settings.lon2,
@@ -91,34 +119,47 @@ class MapTiles(QGLWidget):
         # zoom level
         self.zoom_level = zoom_level
 
-        # Initialize some variables.
+        # Initialize some variables
         self.map_textures = []
         self.tiles = []
         self.tile_array = []
+        self.render_corners = []
         self.local_paths = []
+        self.enable_tiles = settings.enable_tiles
+        self.download_fail = False
 
         # Get inheritance
         super().__init__(shareWidget=shareWidget)
 
         # Process setting default variables
+
+        # create tile directory
         self.tile_dir = path.join(settings.mpt_path, settings.mpt_server)
 
-        if settings.tile_standard == 'google':
+        # check for errors in config file url and set url_prefix and url_suffix for downloading of tiles
+        if settings.tile_standard == 'osm':
             img_std = '{z}/{x}/{y}'
+        elif settings.tile_standard == 'bing':
+            img_std = '?mapArea={maparea}&zoomlevel={zoomlevel}'
 
         try:
             start_index = settings.mpt_url[0].index(img_std)
             self.url_prefix = settings.mpt_url[0][:start_index]
             self.url_suffix = settings.mpt_url[0][start_index + len(img_std):]
+            if 'png' in self.url_suffix:
+                self.tile_format = '.png'
+            else:
+                self.tile_format = '.png'  # useless code at the moment. will matter with different formats
         except ValueError:
-            print('Incorrect tile format in cfg file. Please make sure tile paths is written as {z}/{x}/{y}')
+            # this just checks if the tile image standard for downloading is set to {z}/{x}/{y}
+            print(f'Incorrect tile format in cfg file. Please make sure url contains {img_std}')
+            print('Failed to load map tiles!!')
+            self.enable_tiles = False
         except UnboundLocalError:
-            print("Incorrect tile standard in cfg file. Only accepting 'google' at the moment ")
-
-        if 'png' in self.url_suffix:
-            self.tile_format = '.png'
-        else:
-            self.tile_format = '.png'
+            # this just checks if google standard was set as the default standard. Later this will have to be edited
+            print("Incorrect tile standard in cfg file. Tile standard must be 'osm' or 'bing'.")
+            print('Failed to load map tiles!!')
+            self.enable_tiles = False
 
         # Image operations
         self.LOAD_ALTERED = settings.LOAD_ALTERED
@@ -126,27 +167,26 @@ class MapTiles(QGLWidget):
         self.INVERT = settings.INVERT
         self.CONTRAST = settings.CONTRAST
         self.con_factor = settings.con_factor
-        self.DELETE_RAW = settings.DELETE_RAW
 
-        # Convert to texture. delete once you figure out how to load png into gui
+        # ------Convert to texture. delete once you figure out how to load png into gui------
         self.tex_filetype = '.dds'
+        # -------------- delete this once you figure out png---
+
 
     # Drawing functions below
     def tile_load(self):
-
-        # create tile array
+        # create a tile array
         self.create_tile_array()
 
-        # download tiles
+        # process tiles, download tiles if necessary
         self.process_tiles()
 
         for image_path in self.local_paths:
             self.map_textures.append(self.bindTexture(path.join(image_path)))
 
     def tile_render(self):
-
-        for tile in self.tile_array:
-            texvertices = np.array(self.tile_corners(tile[0], tile[1], self.zoom_level), dtype=np.float32)
+        for corner in self.render_corners:
+            texvertices = np.array(corner, dtype=np.float32)
             textexcoords = np.array([(1, 1), (1, 0), (0, 0), (0, 1)], dtype=np.float32)
             self.tiles.append(RenderObject(gl.GL_TRIANGLE_FAN, vertex=texvertices, texcoords=textexcoords))
 
@@ -160,23 +200,24 @@ class MapTiles(QGLWidget):
     # Non-drawing functions below
     def process_tiles(self):
 
-        # loop through tile array
+        # loop through tile array to download image and perform image operations
         for item in self.tile_array:
 
-            # Create image paths, raw is unaltered image, local_path is one that is shown on screen
-            img_path = path.join(str(self.zoom_level), str(item[0]), f'{item[1]}')
-            raw_local_path = path.join(self.tile_dir, img_path + self.tile_format)
-            alt_local_path = path.join(self.tile_dir, f'{img_path}a{self.tile_format}')
-            local_path = raw_local_path
+            # Only run loop while downloading did not fail. if download tiles fails self.enable_tiles is set to false
+            if self.enable_tiles:
 
-            # Download tile if it has not been downloaded
-            if not path.exists(raw_local_path):
+                # Create image paths, raw is unaltered image, local_path is one that is shown on screen
+                x = item[0]
+                y = item[1]
+                img_path = path.join(str(self.zoom_level), str(x), str(y))
+                raw_local_path = path.join(self.tile_dir, img_path + self.tile_format)
+                alt_local_path = path.join(self.tile_dir, f'{img_path}a{self.tile_format}')
+                local_path = raw_local_path
 
-                # Check if raw data was deliberately deleted. If yes then also check that alternate file path exists
-                # this if statement needs to be fixed! some combos don't work
-                if not self.DELETE_RAW and not path.exists(alt_local_path):
+                # Download tile if it has not been downloaded
+                if not path.exists(raw_local_path):
                     # create new paths, first create directories for zoom level and x
-                    img_dirs = path.join(self.tile_dir, str(self.zoom_level), str(item[0]))
+                    img_dirs = path.join(self.tile_dir, str(self.zoom_level), str(x))
 
                     # Create directory only if it doesn't exist
                     try:
@@ -184,32 +225,52 @@ class MapTiles(QGLWidget):
                     except FileExistsError:
                         pass
 
-                # download image from web
-                self.download_tile(raw_local_path, img_path)
+                    # download image from web
+                    if settings.tile_standard == 'osm':
+                        # osm tile_format downloads have the same image path as local folder
+                        url_img_path = img_path
+                    elif settings.tile_standard == 'bing':
+                        # alter image path for bing maps url download
+                        lat2, lon1, lat1, lon2 = self.tileEdges(x, y, self.zoom_level)
+                        map_area = f'{lat2},{lon1},{lat1},{lon2}'
+                        url_img_path = f'?mapArea={map_area}&zoomlevel={str(self.zoom_level)}'
 
-            # Check if Altered Images should be loaded.
-            if self.LOAD_ALTERED:
-                # check if you want to make a new change or if path exists. If none is true
-                if not path.exists(alt_local_path) or self.ALTER_TILE:
-                    local_path = self.alter_tile(alt_local_path, raw_local_path)
-                else:
-                    local_path = alt_local_path
+                    self.download_tile(raw_local_path, url_img_path)
 
-            # Delete raw images. This is done to limit storage.
-            if self.DELETE_RAW:
-                remove(raw_local_path)
+                # Skip image operations if downloading failed. Maybe should place this in a separate function
+                # since this is checked at start of for loop. Only reason this is set is because there will be an
+                # exception if downloading fails. Maybe using a try statement instead of..but idk yet
+                if self.enable_tiles:
+                    # Check if Altered Images should be loaded.
+                    if self.LOAD_ALTERED:
+                        # check if you want to make a new change or if path exists.
+                        if not path.exists(alt_local_path) or self.ALTER_TILE:
+                            local_path = self.alter_tile(alt_local_path, raw_local_path)
+                        else:
+                            local_path = alt_local_path
 
-            # Convert to texture, remove once you figure out how to put .png files in gui
-            local_path = self.convert_to_texture(local_path)
+                    # Convert to texture, remove once you figure out how to put .png files in gui
+                    local_path = self.convert_to_texture(local_path)
 
-            self.local_paths.append(local_path)
+                # create arrays of local paths for later use
+                self.local_paths.append(local_path)
+
+                # create array of tile corners for later use
+                if settings.tile_standard == 'osm':
+                    img_corner = self.tile_corners(x, y, self.zoom_level)
+                elif settings.tile_standard == 'bing':
+                    # use image metadata to get corner info for rendering. perhaps save this data so it goes faster on
+                    # reruns
+                    img_corner = self.bing_bbox(x, y)
+
+                self.render_corners.append(img_corner)
 
     def create_tile_array(self):
-        # get tile number of corners
+        # get tile number of corners of bounding box
         tile_nw, tile_ne, tile_sw, tile_se = self.bbox_corner_tiles(self.lat1, self.lon1,
                                                                     self.lat2, self.lon2, self.zoom_level)
 
-        # size of 2D array for tiles
+        # Find size of 2D array for tiles
         n_columns = tile_ne[0] - tile_nw[0] + 1
         n_rows = tile_sw[1] - tile_nw[1] + 1
         self.tile_array = np.zeros((n_rows, n_columns), [('x_loc', int), ('y_loc', int)])
@@ -217,11 +278,10 @@ class MapTiles(QGLWidget):
         # fill NW corner of tile array
         self.tile_array[0, 0] = tile_nw
 
+        # loop through rows. x is constant in one row
         for row in range(n_rows):
-            # loop through rows
+            # for each row loop through a column. y is constant in the same column.
             for col in range(n_columns):
-                # for each row loop through a column
-
                 if col == 0:
                     # change first column of the row per the first column of row above
                     if row != 0:
@@ -236,12 +296,37 @@ class MapTiles(QGLWidget):
         # flatten tile array
         self.tile_array = self.tile_array.flatten()
 
-    def download_tile(self, raw_local_path, img_path):
+    def download_tile(self, raw_local_path, url_img_path):
 
         # download image from web
-        image_url = self.url_prefix + img_path + self.url_suffix
+        image_url = self.url_prefix + url_img_path + self.url_suffix
+
         with open(raw_local_path, "wb") as infile:
-            infile.write(urlopen(image_url).read())
+            try:
+                url_request = urlopen(image_url)
+                infile.write(url_request.read())
+            except URLError:
+                print(f'Failed to download tiles. Ensure that url is valid: {image_url}')
+                remove(raw_local_path)
+
+                # set some variables to cancel map tile loop
+                self.enable_tiles = False
+
+    def bing_bbox(self, x, y):
+
+        # get area of tile and create the bing url for a metadata request
+        lat2, lon1, lat1, lon2 = self.tileEdges(x, y, self.zoom_level)
+        map_area = f'{lat2},{lon1},{lat1},{lon2}'
+
+        url_img_path = f'?mapArea={map_area}&zoomlevel={str(self.zoom_level)}'
+
+        image_url = self.url_prefix + url_img_path + self.url_suffix + '&mmd=1'
+
+        # create request
+        bbox_image = requests.get(image_url).json()['resourceSets'][0]['resources'][0]['bbox']
+        img_corner = ((bbox_image[0], bbox_image[3]), (bbox_image[0], bbox_image[1]),
+                      (bbox_image[2], bbox_image[1]), (bbox_image[2], bbox_image[3]))
+        return img_corner
 
     def alter_tile(self, alt_local_path, raw_local_path):
 
