@@ -63,6 +63,12 @@ class MapTiles(QGLWidget):
             lat2 = 40.697206
             lon2 = -73.898962
 
+        -Amsterdam BBOX:
+            lat1 = 52.47
+            lon1 = 4.69
+            lat2 = 52.24
+            lon2 = 5.0
+
     tile_standards:
         -'osm' standard: url contains tile path "{z}/{x}/{y}.png"
          Example of sources that use osm standard:
@@ -80,6 +86,10 @@ class MapTiles(QGLWidget):
             -maptiler: https://www.maptiler.com/
                 -Maptiler is a commercial product. Please refer to https://www.maptiler.com/cloud/terms/ for terms of
                  service.
+            -local_host:
+                -Create your own tiles and serve them locally. Learn how to generate tiles at https://openmaptiles.org/.
+                 Use tileserver-GL https://tileserver.readthedocs.io/en/latest/index.html to render and serve the tiles.
+                 Url example is: http://localhost:8080/styles/basic-preview/{z}/{x}/{y}.png
         -"bing" standard: url contains mapArea and zoomlevel as "?mapArea={map_area}&zoomlevel={zoom_level}"
             -Bing Maps is a commercial product. Note that Bing Maps uses a similar tile setup as osm. The difference is
              just in how the request is made. There are several ways to make a request, see:
@@ -172,7 +182,6 @@ class MapTiles(QGLWidget):
         self.tex_filetype = '.dds'
         # -------------- delete this once you figure out png---
 
-
     # Drawing functions below
     def tile_load(self):
         # create a tile array
@@ -250,7 +259,11 @@ class MapTiles(QGLWidget):
                             local_path = alt_local_path
 
                     # Convert to texture, remove once you figure out how to put .png files in gui
-                    local_path = self.convert_to_texture(local_path)
+                    if not path.exists(local_path[:-4] + self.tex_filetype):
+                        local_path = self.convert_to_texture(local_path)
+                    else:
+                        local_path = local_path[:-4] + self.tex_filetype
+
 
                 # create arrays of local paths for later use
                 self.local_paths.append(local_path)
@@ -295,6 +308,7 @@ class MapTiles(QGLWidget):
 
         # flatten tile array
         self.tile_array = self.tile_array.flatten()
+        print(f'Requesting {len(self.tile_array)} tiles at zoom level {self.zoom_level}')
 
     def download_tile(self, raw_local_path, url_img_path):
 
