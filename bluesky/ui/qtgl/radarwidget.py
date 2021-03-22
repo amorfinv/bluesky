@@ -238,7 +238,7 @@ class RadarWidget(QGLWidget):
                 break
 
         # load and bind map textures #NEW
-        if self.map_tiles.enable_tiles:
+        if self.map_tiles.enable_tiles and not self.map_tiles.dynamic_tiles:
             self.map_tiles.tile_load()
 
         # Create initial empty buffers for aircraft position, orientation, label, and color
@@ -279,7 +279,7 @@ class RadarWidget(QGLWidget):
         self.map = RenderObject(gl.GL_TRIANGLE_FAN, vertex=mapvertices, texcoords=texcoords)
 
         # ------- Map tiles ------------------------------- #NEW
-        if self.map_tiles.enable_tiles:
+        if self.map_tiles.enable_tiles and not self.map_tiles.dynamic_tiles:
             self.map_tiles.tile_render()
 
         # ------- Coastlines -----------------------------

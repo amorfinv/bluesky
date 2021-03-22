@@ -5,6 +5,7 @@ import OpenGL.GL as gl
 from urllib.request import urlopen
 from urllib.error import URLError
 import requests
+import concurrent.futures
 
 import bluesky as bs
 from bluesky import settings
@@ -225,7 +226,7 @@ class MapTiles(QGLWidget):
             self.zoom_level = 13
         else:
             self.zoom_level = 14
-        #print(f'zoom level {self.zoom_level}')
+        # print(f'zoom level {self.zoom_level}')
         # create a tile array
         self.create_tile_array()
 
@@ -258,73 +259,49 @@ class MapTiles(QGLWidget):
     # Non-drawing functions below
     def process_tiles(self):
 
-        # loop through tile array to download image and perform image operations
+        # Download tiles in multiple threads
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            executor.map(self.download_tile, self.tile_array)
+
+        # Image operations
         for item in self.tile_array:
+            x = item[0]  # tile x
+            y = item[1]  # tile y
+            img_path = path.join(str(self.zoom_level), str(x), str(y))
+            alt_local_path = path.join(self.tile_dir, f'{img_path}a{self.tile_format}')
+            raw_local_path = path.join(self.tile_dir, img_path + self.tile_format)
+            local_path = raw_local_path
 
-            # Only run loop while downloading did not fail. if download tiles fails self.enable_tiles is set to false
+            # Skip image operations if downloading failed. Maybe should place this in a separate function
+            # since this is checked at start of for loop. Only reason this is set is because there will be an
+            # exception if downloading fails. Maybe using a try statement instead of..but idk yet
             if self.enable_tiles:
-
-                # Create image paths, raw is unaltered image, local_path is one that is shown on screen
-                x = item[0]
-                y = item[1]
-                img_path = path.join(str(self.zoom_level), str(x), str(y))
-                raw_local_path = path.join(self.tile_dir, img_path + self.tile_format)
-                alt_local_path = path.join(self.tile_dir, f'{img_path}a{self.tile_format}')
-                local_path = raw_local_path
-
-                # Download tile if it has not been downloaded
-                if not path.exists(raw_local_path):
-                    # create new paths, first create directories for zoom level and x
-                    img_dirs = path.join(self.tile_dir, str(self.zoom_level), str(x))
-
-                    # Create directory only if it doesn't exist
-                    try:
-                        makedirs(img_dirs)
-                    except FileExistsError:
-                        pass
-
-                    # download image from web
-                    if settings.tile_standard == 'osm':
-                        # osm tile_format downloads have the same image path as local folder
-                        url_img_path = img_path
-                    elif settings.tile_standard == 'bing':
-                        # alter image path for bing maps url download
-                        lat2, lon1, lat1, lon2 = self.tileEdges(x, y, self.zoom_level)
-                        map_area = f'{lat2},{lon1},{lat1},{lon2}'
-                        url_img_path = f'?mapArea={map_area}&zoomlevel={str(self.zoom_level)}'
-
-                    self.download_tile(raw_local_path, url_img_path)
-
-                # Skip image operations if downloading failed. Maybe should place this in a separate function
-                # since this is checked at start of for loop. Only reason this is set is because there will be an
-                # exception if downloading fails. Maybe using a try statement instead of..but idk yet
-                if self.enable_tiles:
-                    # Check if Altered Images should be loaded.
-                    if self.LOAD_ALTERED:
-                        # check if you want to make a new change or if path exists.
-                        if not path.exists(alt_local_path) or self.ALTER_TILE:
-                            local_path = self.alter_tile(alt_local_path, raw_local_path)
-                        else:
-                            local_path = alt_local_path
-
-                    # Convert to texture, remove once you figure out how to put .png files in gui
-                    if not path.exists(local_path[:-4] + self.tex_filetype):
-                        local_path = self.convert_to_texture(local_path)
+                # Check if Altered Images should be loaded.
+                if self.LOAD_ALTERED:
+                    # check if you want to make a new change or if path exists.
+                    if not path.exists(alt_local_path) or self.ALTER_TILE:
+                        local_path = self.alter_tile(alt_local_path, raw_local_path)
                     else:
-                        local_path = local_path[:-4] + self.tex_filetype
+                        local_path = alt_local_path
 
-                # create arrays of local paths for later use
-                self.local_paths.append(local_path)
+                # Convert to texture, remove once you figure out how to put .png files in gui
+                if not path.exists(local_path[:-4] + self.tex_filetype):
+                    local_path = self.convert_to_texture(local_path)
+                else:
+                    local_path = local_path[:-4] + self.tex_filetype
 
-                # create array of tile corners for later use
-                if settings.tile_standard == 'osm':
-                    img_corner = self.tile_corners(x, y, self.zoom_level)
-                elif settings.tile_standard == 'bing':
-                    # use image metadata to get corner info for rendering. perhaps save this data so it goes faster on
-                    # reruns
-                    img_corner = self.bing_bbox(x, y)
+            # create arrays of local paths for later use
+            self.local_paths.append(local_path)
 
-                self.render_corners.append(img_corner)
+            # create array of tile corners for later use
+            if settings.tile_standard == 'osm':
+                img_corner = self.tile_corners(x, y, self.zoom_level)
+            elif settings.tile_standard == 'bing':
+                # use image metadata to get corner info for rendering. perhaps save this data so it goes faster on
+                # reruns
+                img_corner = self.bing_bbox(x, y)
+
+            self.render_corners.append(img_corner)
 
     def create_tile_array(self):
         # get tile number of corners of bounding box
@@ -358,21 +335,50 @@ class MapTiles(QGLWidget):
         self.tile_array = self.tile_array.flatten()
         # print(f'Requesting {len(self.tile_array)} tiles at zoom level {self.zoom_level}')
 
-    def download_tile(self, raw_local_path, url_img_path):
+    def download_tile(self, tile):
+        # Only run loop while downloading did not fail. if download tiles fails self.enable_tiles is set to false
+        if self.enable_tiles:
 
-        # download image from web
-        image_url = self.url_prefix + url_img_path + self.url_suffix
+            # Create image paths, raw is unaltered image, local_path is one that is shown on screen
+            x = tile[0]  # tile x
+            y = tile[1]  # tile y
+            img_path = path.join(str(self.zoom_level), str(x), str(y))
+            raw_local_path = path.join(self.tile_dir, img_path + self.tile_format)
 
-        with open(raw_local_path, "wb") as infile:
-            try:
-                url_request = urlopen(image_url)
-                infile.write(url_request.read())
-            except URLError:
-                print(f'Failed to download tiles. Ensure that url is valid: {image_url}')
-                remove(raw_local_path)
+            # Download tile if it has not been downloaded
+            if not path.exists(raw_local_path):
+                # create new paths, first create directories for zoom level and x
+                img_dirs = path.join(self.tile_dir, str(self.zoom_level), str(x))
 
-                # set some variables to cancel map tile loop
-                self.enable_tiles = False
+                # Create directory only if it doesn't exist
+                try:
+                    makedirs(img_dirs)
+                except FileExistsError:
+                    pass
+
+                # download image from web
+                if settings.tile_standard == 'osm':
+                    # osm tile_format downloads have the same image path as local folder
+                    url_img_path = img_path
+                elif settings.tile_standard == 'bing':
+                    # alter image path for bing maps url download
+                    lat2, lon1, lat1, lon2 = self.tileEdges(x, y, self.zoom_level)
+                    map_area = f'{lat2},{lon1},{lat1},{lon2}'
+                    url_img_path = f'?mapArea={map_area}&zoomlevel={str(self.zoom_level)}'
+
+                image_url = self.url_prefix + url_img_path + self.url_suffix
+
+                # request
+                with open(raw_local_path, "wb") as infile:
+                    try:
+                        url_request = urlopen(image_url)
+                        infile.write(url_request.read())
+                    except URLError:
+                        print(f'Failed to download tiles. Ensure that url is valid: {image_url}')
+                        remove(raw_local_path)
+
+                        # set some variables to cancel map tile loop
+                        self.enable_tiles = False
 
     def bing_bbox(self, x, y):
 
