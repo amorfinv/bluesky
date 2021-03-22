@@ -18,8 +18,8 @@ settings.set_variable_defaults(
              'https://b.tile.opentopomap.org/{z}/{x}/{y}.png',
              'https://c.tile.opentopomap.org/{z}/{x}/{y}.png'],
     LOAD_ALTERED=False, ALTER_TILE=False, INVERT=True, CONTRAST=True,
-    con_factor=1.5, enable_tiles=False,
-    lat1=25.68, lon1=-80.31, lat2=25.63, lon2=-80.28, zoom_level=11)
+    con_factor=1.5, enable_tiles=False, dynamic_tiles=False,
+    lat1=25.68, lon1=-80.31, lat2=25.63, lon2=-80.28, zoom_level=8)
 
 
 class MapTiles(QGLWidget):
@@ -137,6 +137,8 @@ class MapTiles(QGLWidget):
         self.local_paths = []
         self.enable_tiles = settings.enable_tiles
         self.download_fail = False
+        # Check if map is dynamic. Tiles change with zoom level
+        self.dynamic_tiles = settings.dynamic_tiles
 
         # Get inheritance
         super().__init__(shareWidget=shareWidget)
@@ -184,6 +186,7 @@ class MapTiles(QGLWidget):
 
     # Drawing functions below
     def tile_load(self):
+
         # create a tile array
         self.create_tile_array()
 
@@ -191,7 +194,47 @@ class MapTiles(QGLWidget):
         self.process_tiles()
 
         for image_path in self.local_paths:
-            self.map_textures.append(self.bindTexture(path.join(image_path)))
+            image = path.join(image_path)
+            self.map_textures.append(self.bindTexture(image))
+
+    def tile_reload(self, screen_zoom=0.4, zoom_array=np.array([1.2, 2.5, 6.0, 10.0, 15.0, 30.0]),
+                    bbox=None):
+        # set zoom level
+        if bbox is None:
+            bbox = [52.47, 4.69, 52.24, 5.0]
+
+        # clear everything
+        self.clear_tiles()
+
+        self.lat1 = bbox[0]
+        self.lon1 = bbox[1]
+        self.lat2 = bbox[2]
+        self.lon2 = bbox[3]
+
+        if screen_zoom < zoom_array[0]:
+            self.zoom_level = 8
+        elif screen_zoom < zoom_array[1]:
+            self.zoom_level = 9
+        elif screen_zoom < zoom_array[2]:
+            self.zoom_level = 10
+        elif screen_zoom < zoom_array[3]:
+            self.zoom_level = 11
+        elif screen_zoom < zoom_array[4]:
+            self.zoom_level = 12
+        elif screen_zoom < zoom_array[5]:
+            self.zoom_level = 13
+        else:
+            self.zoom_level = 14
+        #print(f'zoom level {self.zoom_level}')
+        # create a tile array
+        self.create_tile_array()
+
+        # process tiles, download tiles if necessary
+        self.process_tiles()
+
+        for image_path in self.local_paths:
+            image = path.join(image_path)
+            self.map_textures.append(self.bindTexture(image))
 
     def tile_render(self):
         for corner in self.render_corners:
@@ -205,6 +248,12 @@ class MapTiles(QGLWidget):
         for i in range(len(self.tile_array)):
             gl.glBindTexture(gl.GL_TEXTURE_2D, self.map_textures[i])
             self.tiles[i].draw()
+
+    def clear_tiles(self):
+        self.local_paths = []
+        self.tiles = []
+        self.map_textures = []
+        self.render_corners = []
 
     # Non-drawing functions below
     def process_tiles(self):
@@ -264,7 +313,6 @@ class MapTiles(QGLWidget):
                     else:
                         local_path = local_path[:-4] + self.tex_filetype
 
-
                 # create arrays of local paths for later use
                 self.local_paths.append(local_path)
 
@@ -308,7 +356,7 @@ class MapTiles(QGLWidget):
 
         # flatten tile array
         self.tile_array = self.tile_array.flatten()
-        print(f'Requesting {len(self.tile_array)} tiles at zoom level {self.zoom_level}')
+        # print(f'Requesting {len(self.tile_array)} tiles at zoom level {self.zoom_level}')
 
     def download_tile(self, raw_local_path, url_img_path):
 
