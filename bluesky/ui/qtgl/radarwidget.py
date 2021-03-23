@@ -143,7 +143,7 @@ class RadarWidget(QGLWidget):
         self.prevmousepos = (0, 0)
 
         # NEW CODE
-        self.map_tiles = maptiles.MapTiles()
+        self.map_tiles = maptiles.MapTiles(self)
 
         # Load vertex data
         self.vbuf_asphalt, self.vbuf_concrete, self.vbuf_runways, self.vbuf_rwythr, \
@@ -537,7 +537,7 @@ class RadarWidget(QGLWidget):
                 self.panlat_old = self.panlat
                 self.panlon_old = self.panlon
 
-            self.map_tiles.paint_map(self)
+            self.map_tiles.paint_map()
 
         # Select the non-textured shader
         self.color_shader.use()

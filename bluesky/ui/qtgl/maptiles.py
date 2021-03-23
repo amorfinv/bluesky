@@ -7,6 +7,8 @@ from urllib.error import URLError
 import requests
 import concurrent.futures
 
+from wand import image as image_wand
+
 import bluesky as bs
 from bluesky import settings
 from .glhelpers import BlueSkyProgram, RenderObject, Font, UniformBuffer, \
@@ -23,7 +25,7 @@ settings.set_variable_defaults(
     lat1=25.68, lon1=-80.31, lat2=25.63, lon2=-80.28, zoom_level=8)
 
 
-class MapTiles(QGLWidget):
+class MapTiles:
     """
     Default map server is from OpenTopoMap. As of March 12, 2021 data is open to use. https://opentopomap.org/about
 
@@ -101,8 +103,8 @@ class MapTiles(QGLWidget):
              https://www.microsoft.com/en-us/maps/product.
     """
 
-    def __init__(self, lat1=settings.lat1, lon1=settings.lon1, lat2=settings.lat2, lon2=settings.lon2,
-                 zoom_level=settings.zoom_level, shareWidget=None):
+    def __init__(self, radar_widget, lat1=settings.lat1, lon1=settings.lon1, lat2=settings.lat2, lon2=settings.lon2,
+                 zoom_level=settings.zoom_level):
         """
         :param lat1: FLOAT, Latitude 1 of bounding box (north)
         :param lon1: FLOAT, Longitude 1 of bounding box (west)
@@ -121,6 +123,10 @@ class MapTiles(QGLWidget):
                            Setting LOAD_ALTERED=True after will ensure that tiles are not downloaded if they are saved.
                            As long as the raw data is in directory, the images will not download.
         """
+
+        # radar widget
+        self.radar_widget = radar_widget
+
         # Bounding box coordinates
         self.lat1 = lat1
         self.lon1 = lon1
@@ -142,7 +148,7 @@ class MapTiles(QGLWidget):
         self.dynamic_tiles = settings.dynamic_tiles
 
         # Get inheritance
-        super().__init__(shareWidget=shareWidget)
+        # super().__init__(shareWidget=shareWidget)
 
         # Process setting default variables
 
@@ -186,18 +192,6 @@ class MapTiles(QGLWidget):
         # -------------- delete this once you figure out png---
 
     # Drawing functions below
-    def tile_load(self):
-
-        # create a tile array
-        self.create_tile_array()
-
-        # process tiles, download tiles if necessary
-        self.process_tiles()
-
-        for image_path in self.local_paths:
-            image = path.join(image_path)
-            self.map_textures.append(self.bindTexture(image))
-
     def tile_reload(self, screen_zoom=0.4, zoom_array=np.array([1.2, 2.5, 6.0, 10.0, 15.0, 30.0]),
                     bbox=None):
         # set zoom level
@@ -227,24 +221,31 @@ class MapTiles(QGLWidget):
         else:
             self.zoom_level = 14
         # print(f'zoom level {self.zoom_level}')
+
+        # Load tiles
+        self.tile_load()
+
+    def tile_load(self):
         # create a tile array
         self.create_tile_array()
 
         # process tiles, download tiles if necessary
         self.process_tiles()
 
+        # bind textures
         for image_path in self.local_paths:
             image = path.join(image_path)
-            self.map_textures.append(self.bindTexture(image))
+            self.map_textures.append(self.radar_widget.bindTexture(image))
 
     def tile_render(self):
+
         for corner in self.render_corners:
             texvertices = np.array(corner, dtype=np.float32)
             textexcoords = np.array([(1, 1), (1, 0), (0, 0), (0, 1)], dtype=np.float32)
             self.tiles.append(RenderObject(gl.GL_TRIANGLE_FAN, vertex=texvertices, texcoords=textexcoords))
 
-    def paint_map(self, main_widget):
-        main_widget.texture_shader.use()
+    def paint_map(self):
+        self.radar_widget.texture_shader.use()
 
         for i in range(len(self.tile_array)):
             gl.glBindTexture(gl.GL_TEXTURE_2D, self.map_textures[i])
@@ -258,42 +259,37 @@ class MapTiles(QGLWidget):
 
     # Non-drawing functions below
     def process_tiles(self):
-
-        # Download tiles in multiple threads
+        # Download tiles in multiple threads. If download fails self.enable_tiles = False
         with concurrent.futures.ThreadPoolExecutor() as executor:
             executor.map(self.download_tile, self.tile_array)
 
         # Image operations
+        if self.enable_tiles and self.LOAD_ALTERED:
+            # Perform image operations in multiple threads
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                executor.map(self.alter_tile, self.tile_array)
+
+        # Convert to texture. delete once useless
+        if self.enable_tiles:
+            # convert to texture in multiple threads
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                executor.map(self.convert_to_texture, self.tile_array)
+
+        # Create local path names
         for item in self.tile_array:
             x = item[0]  # tile x
             y = item[1]  # tile y
+
             img_path = path.join(str(self.zoom_level), str(x), str(y))
             alt_local_path = path.join(self.tile_dir, f'{img_path}a{self.tile_format}')
             raw_local_path = path.join(self.tile_dir, img_path + self.tile_format)
-            local_path = raw_local_path
 
-            # Skip image operations if downloading failed. Maybe should place this in a separate function
-            # since this is checked at start of for loop. Only reason this is set is because there will be an
-            # exception if downloading fails. Maybe using a try statement instead of..but idk yet
-            if self.enable_tiles:
-                # Check if Altered Images should be loaded.
-                if self.LOAD_ALTERED:
-                    # check if you want to make a new change or if path exists.
-                    if not path.exists(alt_local_path) or self.ALTER_TILE:
-                        local_path = self.alter_tile(alt_local_path, raw_local_path)
-                    else:
-                        local_path = alt_local_path
+            if self.LOAD_ALTERED:
+                local_path = alt_local_path
+            else:
+                local_path = raw_local_path
 
-                # Convert to texture, remove once you figure out how to put .png files in gui
-                if not path.exists(local_path[:-4] + self.tex_filetype):
-                    local_path = self.convert_to_texture(local_path)
-                else:
-                    local_path = local_path[:-4] + self.tex_filetype
-
-            # create arrays of local paths for later use
-            self.local_paths.append(local_path)
-
-            # create array of tile corners for later use
+            # create array of tile corners
             if settings.tile_standard == 'osm':
                 img_corner = self.tile_corners(x, y, self.zoom_level)
             elif settings.tile_standard == 'bing':
@@ -302,6 +298,12 @@ class MapTiles(QGLWidget):
                 img_corner = self.bing_bbox(x, y)
 
             self.render_corners.append(img_corner)
+
+            # Convert to texture name..delete once .png fies---
+            local_path = local_path[:-4] + self.tex_filetype
+
+            # create arrays of local paths for later use
+            self.local_paths.append(local_path)
 
     def create_tile_array(self):
         # get tile number of corners of bounding box
@@ -380,6 +382,55 @@ class MapTiles(QGLWidget):
                         # set some variables to cancel map tile loop
                         self.enable_tiles = False
 
+    def alter_tile(self, tile):
+
+        x = tile[0]  # tile x
+        y = tile[1]  # tile y
+
+        img_path = path.join(str(self.zoom_level), str(x), str(y))
+        alt_local_path = path.join(self.tile_dir, f'{img_path}a{self.tile_format}')
+        raw_local_path = path.join(self.tile_dir, img_path + self.tile_format)
+
+        # check if you want to make a new change or if path exists.
+        if not path.exists(alt_local_path) or self.ALTER_TILE:
+            # local_path = self.alter_tile(alt_local_path, raw_local_path)
+            # use pillow library for image operations
+            from PIL import Image, ImageChops, ImageEnhance
+
+            # convert image to rgb
+            altered_image = Image.open(raw_local_path).convert('RGB')
+
+            # invert image
+            if self.INVERT:
+                altered_image = ImageChops.invert(altered_image)
+
+            # increase contrast, increasing contrast factor means more contrast
+            if self.CONTRAST:
+                enhancer = ImageEnhance.Contrast(altered_image)
+                altered_image = enhancer.enhance(self.con_factor)
+
+            altered_image.save(alt_local_path)
+
+    def convert_to_texture(self, tile):
+
+        x = tile[0]  # tile x
+        y = tile[1]  # tile y
+        img_path = path.join(str(self.zoom_level), str(x), str(y))
+        raw_local_path = path.join(self.tile_dir, img_path + self.tile_format)
+        alt_local_path = path.join(self.tile_dir, f'{img_path}a{self.tile_format}')
+
+        if self.LOAD_ALTERED:
+            local_path = alt_local_path
+        else:
+            local_path = raw_local_path
+
+        # Convert to texture, remove once you figure out how to put .png files in gui
+        if not path.exists(local_path[:-4] + self.tex_filetype):
+            with image_wand.Image(filename=local_path) as img:
+                local_path = local_path[:-4] + self.tex_filetype
+                img.compression = "dxt5"
+                img.save(filename=local_path)
+
     def bing_bbox(self, x, y):
 
         # get area of tile and create the bing url for a metadata request
@@ -395,36 +446,6 @@ class MapTiles(QGLWidget):
         img_corner = ((bbox_image[0], bbox_image[3]), (bbox_image[0], bbox_image[1]),
                       (bbox_image[2], bbox_image[1]), (bbox_image[2], bbox_image[3]))
         return img_corner
-
-    def alter_tile(self, alt_local_path, raw_local_path):
-
-        # use pillow library for image operations
-        from PIL import Image, ImageChops, ImageEnhance
-
-        # convert image to rgb
-        altered_image = Image.open(raw_local_path).convert('RGB')
-
-        # invert image
-        if self.INVERT:
-            altered_image = ImageChops.invert(altered_image)
-
-        # increase contrast, increasing contrast factor means more contrast
-        if self.CONTRAST:
-            enhancer = ImageEnhance.Contrast(altered_image)
-            altered_image = enhancer.enhance(self.con_factor)
-
-        altered_image.save(alt_local_path)
-        return alt_local_path
-
-    def convert_to_texture(self, local_path):
-        # remove once you figure out how to put .png files in gui
-        from wand import image as image_wand
-
-        with image_wand.Image(filename=local_path) as img:
-            local_path = local_path[:-4] + self.tex_filetype
-            img.compression = "dxt5"
-            img.save(filename=local_path)
-        return local_path
 
     # ----------------------------------------------------------------------
     # Translates between lat/long and the slippy-map tile numbering scheme
