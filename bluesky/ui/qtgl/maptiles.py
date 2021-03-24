@@ -6,7 +6,6 @@ from urllib.request import urlopen
 from urllib.error import URLError
 import requests
 import concurrent.futures
-
 from wand import image as image_wand
 
 import bluesky as bs
@@ -34,17 +33,8 @@ class MapTiles:
         -Handle Exceptions when downloading fails and others. disable map tiles if there is an error
         -Add method to clear tile directories.
         -Alter drawing functions so that png files may be loaded as textures
-        -create stack command and incorporate into bluesky in smart way
+        -create stack command and incorporate into bluesky in smarter way
         -add license text on map tiles.
-        -get code to accept OSM server. OSM (https://operations.osmfoundation.org/policies/tiles/)
-         requires valid HTTP-User-Agent. However, german version of OSM can still be used with
-         https://a.tile.openstreetmap.de/{z}/{x}/{y}.png, https://b.tile.openstreetmap.de/{z}/{x}/{y}.png or
-         https://c.tile.openstreetmap.de/{z}/{x}/{y}.png
-         see tile usage policy (https://www.openstreetmap.de/germanstyle.html
-         -get code to accept google tiles. https://developers.google.com/maps/documentation/tile/#tile_requests
-          Google tiles require a session token before downloading data.
-        -get code to accept bing map tiles:
-         https://docs.microsoft.com/en-us/bingmaps/getting-started/bing-maps-dev-center-help/getting-a-bing-maps-key
 
     Future ideas:
         -update zoom level with screen zoom.
@@ -146,9 +136,6 @@ class MapTiles:
         self.download_fail = False
         # Check if map is dynamic. Tiles change with zoom level
         self.dynamic_tiles = settings.dynamic_tiles
-
-        # Get inheritance
-        # super().__init__(shareWidget=shareWidget)
 
         # Process setting default variables
 
@@ -252,6 +239,13 @@ class MapTiles:
             self.tiles[i].draw()
 
     def clear_tiles(self):
+
+        # unbind and delete textures
+        for tile in self.tiles:
+            tile.unbind_all()
+        gl.glDeleteTextures(len(self.map_textures), self.map_textures)
+
+        # clear variables for new bounding box
         self.local_paths = []
         self.tiles = []
         self.map_textures = []
@@ -275,7 +269,7 @@ class MapTiles:
             with concurrent.futures.ThreadPoolExecutor() as executor:
                 executor.map(self.convert_to_texture, self.tile_array)
 
-        # Create local path names
+        # Create local path names and get corner info
         for item in self.tile_array:
             x = item[0]  # tile x
             y = item[1]  # tile y
@@ -299,7 +293,7 @@ class MapTiles:
 
             self.render_corners.append(img_corner)
 
-            # Convert to texture name..delete once .png fies---
+            # # Convert to texture name..delete once .png fies---
             local_path = local_path[:-4] + self.tex_filetype
 
             # create arrays of local paths for later use
@@ -382,6 +376,8 @@ class MapTiles:
                         # set some variables to cancel map tile loop
                         self.enable_tiles = False
 
+            # convert to rgba
+
     def alter_tile(self, tile):
 
         x = tile[0]  # tile x
@@ -393,7 +389,7 @@ class MapTiles:
 
         # check if you want to make a new change or if path exists.
         if not path.exists(alt_local_path) or self.ALTER_TILE:
-            # local_path = self.alter_tile(alt_local_path, raw_local_path)
+
             # use pillow library for image operations
             from PIL import Image, ImageChops, ImageEnhance
 
@@ -409,6 +405,7 @@ class MapTiles:
                 enhancer = ImageEnhance.Contrast(altered_image)
                 altered_image = enhancer.enhance(self.con_factor)
 
+            #altered_image.putalpha(255)
             altered_image.save(alt_local_path)
 
     def convert_to_texture(self, tile):
