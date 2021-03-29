@@ -115,9 +115,6 @@ class RadarWidget(QGLWidget):
         self.panlat = 0.0
         self.panlon = 0.0
         self.zoom = 1.0
-        self.previous_zoom = 1.0
-        self.panlat_old = 0
-        self.panlon_old = 0
         self.ar = 1.0
         self.flat_earth = 1.0
         self.wraplon = int(-999)
@@ -144,6 +141,8 @@ class RadarWidget(QGLWidget):
 
         # NEW CODE
         self.map_tiles = maptiles.MapTiles(self)
+        self.previous_zoom = 1.0
+        self.load_try = 0
 
         # Load vertex data
         self.vbuf_asphalt, self.vbuf_concrete, self.vbuf_runways, self.vbuf_rwythr, \
@@ -519,25 +518,23 @@ class RadarWidget(QGLWidget):
 
         # --- DRAW THE MAP Tiles --------------------------------------------- #NEW
         if self.map_tiles.enable_tiles:
-            if self.map_tiles.dynamic_tiles and self.zoom > 0.3:
-                zoom_array = np.array([1.2, 4.0, 8.0, 15.0, 30.0, 70])
-                # First if statement, only go inside if zoom is changed on the screen
+            # Go into loop if dynamic tiles and zoom level is greater than 0.3. and hasn't loaded yet.
+            # TODO change load try. Maybe as a stack command that turns on map
+            if self.map_tiles.dynamic_tiles and self.zoom > 0.3 and self.load_try > 6:
+
+                # only go inside if zoom is changed on the screen. TODO: change with
+                # left right button pan
                 if self.zoom != self.previous_zoom or self.panzoomchanged:
-                    # calculate screen bbox
-                    lat1, lon1 = self.pixelCoordsToLatLon(0, 0)
-                    lat2, lon2 = self.pixelCoordsToLatLon(self.width, self.height)
-                    bbox = np.array([lat1, lon1, lat2, lon2])
 
                     # Load new tiles
-                    self.map_tiles.tile_reload(self.zoom, zoom_array, bbox)
+                    self.map_tiles.tile_reload()
                     self.map_tiles.tile_render()
 
                 # Assign new previous zoom after loop
                 self.previous_zoom = self.zoom
-                self.panlat_old = self.panlat
-                self.panlon_old = self.panlon
 
             self.map_tiles.paint_map()
+            self.load_try += 1
 
         # Select the non-textured shader
         self.color_shader.use()

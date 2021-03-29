@@ -1,5 +1,7 @@
 from os import path, makedirs, remove
 from PyQt5.QtOpenGL import QGLWidget
+from PyQt5.QtGui import QImageReader, QImage, QPixmap
+from PyQt5.QtCore import QByteArray, QBuffer, QIODevice
 import numpy as np
 import OpenGL.GL as gl
 from urllib.request import urlopen
@@ -30,15 +32,12 @@ class MapTiles:
 
     TO-DO List:
         -Fix image operation settings.
-        -Handle Exceptions when downloading fails and others. disable map tiles if there is an error
-        -Add method to clear tile directories.
         -Alter drawing functions so that png files may be loaded as textures
         -create stack command and incorporate into bluesky in smarter way
         -add license text on map tiles.
 
     Future ideas:
-        -update zoom level with screen zoom.
-        -parallel tile download when possible. Also figure out how to use sources with multiple servers.
+        -figure out how to use sources with multiple servers.
         -accept other types of map tile formats. Like TMS or WMTS
         https://alastaira.wordpress.com/2011/07/06/converting-tms-tile-coordinates-to-googlebingosm-tile-coordinates/
 
@@ -93,8 +92,7 @@ class MapTiles:
              https://www.microsoft.com/en-us/maps/product.
     """
 
-    def __init__(self, radar_widget, lat1=settings.lat1, lon1=settings.lon1, lat2=settings.lat2, lon2=settings.lon2,
-                 zoom_level=settings.zoom_level):
+    def __init__(self, radar_widget):
         """
         :param lat1: FLOAT, Latitude 1 of bounding box (north)
         :param lon1: FLOAT, Longitude 1 of bounding box (west)
@@ -109,22 +107,19 @@ class MapTiles:
         :param INVERT: BOOLEAN, invert the image so that it has ATM type look
         :param CONTRAST: BOOLEAN, increase contrast if desired
         :param con_factor: FLOAT, >1 increases contrast, <1 decreases contrast
-        :param DELETE_RAW: BOOLEAN, If image is altered, the unaltered can be deleted to limit directory size.
-                           Setting LOAD_ALTERED=True after will ensure that tiles are not downloaded if they are saved.
-                           As long as the raw data is in directory, the images will not download.
         """
 
         # radar widget
         self.radar_widget = radar_widget
 
-        # Bounding box coordinates
-        self.lat1 = lat1
-        self.lon1 = lon1
-        self.lat2 = lat2
-        self.lon2 = lon2
+        # Bounding box coordinates if dynamic tiles is off.
+        self.lat1 = settings.lat1
+        self.lon1 = settings.lon1
+        self.lat2 = settings.lat2
+        self.lon2 = settings.lon2
 
-        # zoom level
-        self.zoom_level = zoom_level
+        # zoom level if dynamic tiles is off.
+        self.zoom_level = settings.zoom_level
 
         # Initialize some variables
         self.map_textures = []
@@ -134,8 +129,10 @@ class MapTiles:
         self.local_paths = []
         self.enable_tiles = settings.enable_tiles
         self.download_fail = False
+
         # Check if map is dynamic. Tiles change with zoom level
         self.dynamic_tiles = settings.dynamic_tiles
+        self.zoom_array = np.array([1.2, 4.0, 8.0, 15.0, 30.0, 70, 130, 250, 450, 850, 2000])
 
         # Process setting default variables
 
@@ -179,35 +176,44 @@ class MapTiles:
         # -------------- delete this once you figure out png---
 
     # Drawing functions below
-    def tile_reload(self, screen_zoom=0.4, zoom_array=np.array([1.2, 2.5, 6.0, 10.0, 15.0, 30.0]),
-                    bbox=None):
-        # set zoom level
-        if bbox is None:
-            bbox = [52.47, 4.69, 52.24, 5.0]
+    def tile_reload(self):
+        # screen zoom
+        screen_zoom = self.radar_widget.zoom
 
         # clear everything
         self.clear_tiles()
 
-        self.lat1 = bbox[0]
-        self.lon1 = bbox[1]
-        self.lat2 = bbox[2]
-        self.lon2 = bbox[3]
+        # Get screen bbox coordinates
+        self.lat1, self.lon1 = self.radar_widget.pixelCoordsToLatLon(0, 0)
+        self.lat2, self.lon2 = self.radar_widget.pixelCoordsToLatLon(self.radar_widget.width, self.radar_widget.height)
 
-        if screen_zoom < zoom_array[0]:
+        # Get zoom level based on screen level. TO DO: make this relative to screen size
+        if screen_zoom < self.zoom_array[0]:
             self.zoom_level = 8
-        elif screen_zoom < zoom_array[1]:
+        elif screen_zoom < self.zoom_array[1]:
             self.zoom_level = 9
-        elif screen_zoom < zoom_array[2]:
+        elif screen_zoom < self.zoom_array[2]:
             self.zoom_level = 10
-        elif screen_zoom < zoom_array[3]:
+        elif screen_zoom < self.zoom_array[3]:
             self.zoom_level = 11
-        elif screen_zoom < zoom_array[4]:
+        elif screen_zoom < self.zoom_array[4]:
             self.zoom_level = 12
-        elif screen_zoom < zoom_array[5]:
+        elif screen_zoom < self.zoom_array[5]:
             self.zoom_level = 13
-        else:
+        elif screen_zoom < self.zoom_array[6]:
             self.zoom_level = 14
+        elif screen_zoom < self.zoom_array[7]:
+            self.zoom_level = 15
+        elif screen_zoom < self.zoom_array[8]:
+            self.zoom_level = 16
+        elif screen_zoom < self.zoom_array[9]:
+            self.zoom_level = 17
+        elif screen_zoom < self.zoom_array[10]:
+            self.zoom_level = 18
+        else:
+            self.zoom_level = 19
         # print(f'zoom level {self.zoom_level}')
+        # print(f'screen zoom {screen_zoom}')
 
         # Load tiles
         self.tile_load()
@@ -241,8 +247,9 @@ class MapTiles:
     def clear_tiles(self):
 
         # unbind and delete textures
-        for tile in self.tiles:
-            tile.unbind_all()
+        for i in range(len(self.tiles)):
+            self.tiles[i].unbind_all()
+            self.radar_widget.deleteTexture(self.map_textures[i])
         gl.glDeleteTextures(len(self.map_textures), self.map_textures)
 
         # clear variables for new bounding box
@@ -376,8 +383,6 @@ class MapTiles:
                         # set some variables to cancel map tile loop
                         self.enable_tiles = False
 
-            # convert to rgba
-
     def alter_tile(self, tile):
 
         x = tile[0]  # tile x
@@ -405,7 +410,6 @@ class MapTiles:
                 enhancer = ImageEnhance.Contrast(altered_image)
                 altered_image = enhancer.enhance(self.con_factor)
 
-            #altered_image.putalpha(255)
             altered_image.save(alt_local_path)
 
     def convert_to_texture(self, tile):
@@ -422,7 +426,9 @@ class MapTiles:
             local_path = raw_local_path
 
         # Convert to texture, remove once you figure out how to put .png files in gui
-        if not path.exists(local_path[:-4] + self.tex_filetype):
+        dds_local_path = local_path[:-4] + self.tex_filetype
+
+        if not path.exists(dds_local_path):
             with image_wand.Image(filename=local_path) as img:
                 local_path = local_path[:-4] + self.tex_filetype
                 img.compression = "dxt5"
@@ -443,6 +449,7 @@ class MapTiles:
         img_corner = ((bbox_image[0], bbox_image[3]), (bbox_image[0], bbox_image[1]),
                       (bbox_image[2], bbox_image[1]), (bbox_image[2], bbox_image[3]))
         return img_corner
+
 
     # ----------------------------------------------------------------------
     # Translates between lat/long and the slippy-map tile numbering scheme
