@@ -378,13 +378,14 @@ class MapTiles:
                 # download image from web
                 if settings.tile_standard == 'osm':
                     # osm tile_format downloads have the same image path as local folder
-                    url_img_path = img_path
+                    url_img_path = f'{str(self.zoom_level)}/{str(x)}/{str(y)}'
                 elif settings.tile_standard == 'bing':
                     # alter image path for bing maps url download
                     lat2, lon1, lat1, lon2 = self.tileEdges(x, y, self.zoom_level)
                     map_area = f'{lat2},{lon1},{lat1},{lon2}'
                     url_img_path = f'?mapArea={map_area}&zoomlevel={str(self.zoom_level)}'
 
+                # Get image_url for download
                 image_url = self.url_prefix + url_img_path + self.url_suffix
 
                 # request
