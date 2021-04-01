@@ -518,11 +518,10 @@ class RadarWidget(QGLWidget):
 
         # --- DRAW THE MAP Tiles --------------------------------------------- #NEW
         if self.map_tiles.enable_tiles:
-            # Go into loop if dynamic tiles and zoom level is greater than 0.3. and hasn't loaded yet.
-            # TODO change load try. Maybe as a stack command that turns on map
+            # Go into loop if dynamic tiles and zoom level is greater than 0.3. and hasn't loaded yet. TODO change load try
             if self.map_tiles.dynamic_tiles and self.zoom > 0.3 and self.load_try > 6:
 
-                # only go inside if zoom is changed on the screen. TODO: change with
+                # First if statement, only go inside if zoom is changed on the screen. TODO: change with
                 # left right button pan
                 if self.zoom != self.previous_zoom or self.panzoomchanged:
 

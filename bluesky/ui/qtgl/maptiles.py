@@ -1,42 +1,38 @@
 from os import path, makedirs, remove
-from PyQt5.QtOpenGL import QGLWidget
-from PyQt5.QtGui import QImageReader, QImage, QPixmap
-from PyQt5.QtCore import QByteArray, QBuffer, QIODevice
 import numpy as np
 import OpenGL.GL as gl
 from urllib.request import urlopen
 from urllib.error import URLError
 import requests
 import concurrent.futures
-from wand import image as image_wand
+from PIL import Image, ImageChops, ImageEnhance
 
-import bluesky as bs
 from bluesky import settings
-from .glhelpers import BlueSkyProgram, RenderObject, Font, UniformBuffer, \
-    update_buffer, create_empty_buffer
+from .glhelpers import RenderObject
 
 # Register settings defaults
 settings.set_variable_defaults(
     mpt_path='data/graphics', mpt_server='opentopomap', tile_standard='google',
+    enable_tiles=False, dynamic_tiles=False, tex_format='dds',
     mpt_url=['https://a.tile.opentopomap.org/{z}/{x}/{y}.png',
              'https://b.tile.opentopomap.org/{z}/{x}/{y}.png',
              'https://c.tile.opentopomap.org/{z}/{x}/{y}.png'],
-    LOAD_ALTERED=False, ALTER_TILE=False, INVERT=True, CONTRAST=True,
-    con_factor=1.5, enable_tiles=False, dynamic_tiles=False,
+    LOAD_ALTERED=False, ALTER_TILE=False, INVERT=True, CONTRAST=True, con_factor=1.5,
     lat1=25.68, lon1=-80.31, lat2=25.63, lon2=-80.28, zoom_level=8)
 
 
 class MapTiles:
     """
+    In order to use maptiles, pillow library is required.
     Default map server is from OpenTopoMap. As of March 12, 2021 data is open to use. https://opentopomap.org/about
 
     TO-DO List:
-        -Fix image operation settings.
-        -Alter drawing functions so that png files may be loaded as textures
+        -Relative screen zoom options.
         -create stack command and incorporate into bluesky in smarter way
         -add license text on map tiles.
 
     Future ideas:
+        -use texture array or atlas for tile loading to limit draw calls.
         -figure out how to use sources with multiple servers.
         -accept other types of map tile formats. Like TMS or WMTS
         https://alastaira.wordpress.com/2011/07/06/converting-tms-tile-coordinates-to-googlebingosm-tile-coordinates/
@@ -171,8 +167,8 @@ class MapTiles:
         self.CONTRAST = settings.CONTRAST
         self.con_factor = settings.con_factor
 
-        # ------Convert to texture. delete once you figure out how to load png into gui------
-        self.tex_filetype = '.dds'
+        # Choose desired texture format.
+        self.tex_format = settings.tex_format
         # -------------- delete this once you figure out png---
 
     # Drawing functions below
@@ -225,10 +221,27 @@ class MapTiles:
         # process tiles, download tiles if necessary
         self.process_tiles()
 
-        # bind textures
-        for image_path in self.local_paths:
-            image = path.join(image_path)
-            self.map_textures.append(self.radar_widget.bindTexture(image))
+        if self.tex_format == '.dds':
+
+            for image_path in self.local_paths:
+                image = path.join(image_path)
+                self.map_textures.append(self.radar_widget.bindTexture(image))
+
+        elif self.tex_format == '.png':
+
+            for image_path in self.local_paths:
+                # Bind texture
+                texture = gl.glGenTextures(1)
+                self.map_textures.append(texture)
+                gl.glBindTexture(gl.GL_TEXTURE_2D, texture)
+                image = Image.open(image_path)
+                img_data = image.tobytes()
+                gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_RGB, image.width, image.height, 0, gl.GL_RGB,
+                                gl.GL_UNSIGNED_BYTE, img_data)
+                # Texture parameters
+                gl.glGenerateMipmap(gl.GL_TEXTURE_2D)
+                gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR)
+                gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST_MIPMAP_LINEAR)
 
     def tile_render(self):
 
@@ -249,7 +262,10 @@ class MapTiles:
         # unbind and delete textures
         for i in range(len(self.tiles)):
             self.tiles[i].unbind_all()
-            self.radar_widget.deleteTexture(self.map_textures[i])
+
+            if self.tex_format == '.dds':
+                self.radar_widget.deleteTexture(self.map_textures[i])
+
         gl.glDeleteTextures(len(self.map_textures), self.map_textures)
 
         # clear variables for new bounding box
@@ -270,11 +286,11 @@ class MapTiles:
             with concurrent.futures.ThreadPoolExecutor() as executor:
                 executor.map(self.alter_tile, self.tile_array)
 
-        # Convert to texture. delete once useless
-        if self.enable_tiles:
+        # Convert to .dds texture.
+        if self.enable_tiles and self.tex_format == '.dds':
             # convert to texture in multiple threads
             with concurrent.futures.ThreadPoolExecutor() as executor:
-                executor.map(self.convert_to_texture, self.tile_array)
+                executor.map(self.convert_to_dds, self.tile_array)
 
         # Create local path names and get corner info
         for item in self.tile_array:
@@ -300,8 +316,8 @@ class MapTiles:
 
             self.render_corners.append(img_corner)
 
-            # # Convert to texture name..delete once .png fies---
-            local_path = local_path[:-4] + self.tex_filetype
+            # # Convert to texture name..delete once .png fies only---
+            local_path = local_path[:-4] + self.tex_format
 
             # create arrays of local paths for later use
             self.local_paths.append(local_path)
@@ -383,6 +399,10 @@ class MapTiles:
                         # set some variables to cancel map tile loop
                         self.enable_tiles = False
 
+                # Convert to RGBA
+                img = Image.open(raw_local_path).convert('RGB')
+                img.save(raw_local_path)
+
     def alter_tile(self, tile):
 
         x = tile[0]  # tile x
@@ -395,11 +415,8 @@ class MapTiles:
         # check if you want to make a new change or if path exists.
         if not path.exists(alt_local_path) or self.ALTER_TILE:
 
-            # use pillow library for image operations
-            from PIL import Image, ImageChops, ImageEnhance
-
-            # convert image to rgb
-            altered_image = Image.open(raw_local_path).convert('RGB')
+            # Open image
+            altered_image = Image.open(raw_local_path)
 
             # invert image
             if self.INVERT:
@@ -412,7 +429,10 @@ class MapTiles:
 
             altered_image.save(alt_local_path)
 
-    def convert_to_texture(self, tile):
+    def convert_to_dds(self, tile):
+
+        # Use wand library for dds conversion
+        from wand import image as image_wand
 
         x = tile[0]  # tile x
         y = tile[1]  # tile y
@@ -426,11 +446,11 @@ class MapTiles:
             local_path = raw_local_path
 
         # Convert to texture, remove once you figure out how to put .png files in gui
-        dds_local_path = local_path[:-4] + self.tex_filetype
+        dds_local_path = local_path[:-4] + self.tex_format
 
         if not path.exists(dds_local_path):
             with image_wand.Image(filename=local_path) as img:
-                local_path = local_path[:-4] + self.tex_filetype
+                local_path = local_path[:-4] + self.tex_format
                 img.compression = "dxt5"
                 img.save(filename=local_path)
 
@@ -449,7 +469,6 @@ class MapTiles:
         img_corner = ((bbox_image[0], bbox_image[3]), (bbox_image[0], bbox_image[1]),
                       (bbox_image[2], bbox_image[1]), (bbox_image[2], bbox_image[3]))
         return img_corner
-
 
     # ----------------------------------------------------------------------
     # Translates between lat/long and the slippy-map tile numbering scheme
