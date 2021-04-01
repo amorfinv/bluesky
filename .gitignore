@@ -1,5 +1,6 @@
 output
 scenario/ic.scn
+data/graphics/maptiles/*
 data/cache
 data/grib
 data/performance/BADA/*
