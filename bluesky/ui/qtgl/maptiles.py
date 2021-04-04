@@ -13,7 +13,7 @@ from .glhelpers import RenderObject
 # Register settings defaults
 settings.set_variable_defaults(
     mpt_path='data/graphics', mpt_server='opentopomap', tile_standard='google',
-    enable_tiles=False, dynamic_tiles=False, tex_format='dds',
+    enable_tiles=False, dynamic_tiles=False, array_load=True,
     mpt_url=['https://a.tile.opentopomap.org/{z}/{x}/{y}.png',
              'https://b.tile.opentopomap.org/{z}/{x}/{y}.png',
              'https://c.tile.opentopomap.org/{z}/{x}/{y}.png'],
@@ -23,7 +23,6 @@ settings.set_variable_defaults(
 
 class MapTiles:
     """
-    In order to use maptiles, pillow library is required.
     Default map server is from OpenTopoMap. As of March 12, 2021 data is open to use. https://opentopomap.org/about
 
     TO-DO List:
@@ -32,7 +31,6 @@ class MapTiles:
         -add license text on map tiles.
 
     Future ideas:
-        -use texture array or atlas for tile loading to limit draw calls.
         -figure out how to use sources with multiple servers.
         -accept other types of map tile formats. Like TMS or WMTS
         https://alastaira.wordpress.com/2011/07/06/converting-tms-tile-coordinates-to-googlebingosm-tile-coordinates/
@@ -105,16 +103,20 @@ class MapTiles:
         :param con_factor: FLOAT, >1 increases contrast, <1 decreases contrast
         """
 
-        # radar widget
+        # radar widget Used to bring in shaders and screen size
         self.radar_widget = radar_widget
 
-        # Bounding box coordinates if dynamic tiles is off.
+        # texture array loading setting. Note that 'bing' standard cannot use texture arrays
+        if settings.tile_standard == 'bing':
+            self.array_load = False
+        else:
+            self.array_load = settings.array_load
+
+        # Bounding box coordinates and zoom level used if dynamic tiles is off.
         self.lat1 = settings.lat1
         self.lon1 = settings.lon1
         self.lat2 = settings.lat2
         self.lon2 = settings.lon2
-
-        # zoom level if dynamic tiles is off.
         self.zoom_level = settings.zoom_level
 
         # Initialize some variables
@@ -125,14 +127,17 @@ class MapTiles:
         self.local_paths = []
         self.enable_tiles = settings.enable_tiles
         self.download_fail = False
+        self.n_columns = 0
+        self.n_rows = 0
+        self.tex_width = 0
+        self.tex_height = 0
+        self.bbox_corners = None
 
-        # Check if map is dynamic. Tiles change with zoom level
+        # Check if map is dynamic. Tiles change with zoom level. TODO: make this relative
         self.dynamic_tiles = settings.dynamic_tiles
         self.zoom_array = np.array([1.2, 4.0, 8.0, 15.0, 30.0, 70, 130, 250, 450, 850, 2000])
 
-        # Process setting default variables
-
-        # create tile directory
+        # create tile directory path
         self.tile_dir = path.join(settings.mpt_path, settings.mpt_server)
 
         # check for errors in config file url and set url_prefix and url_suffix for downloading of tiles
@@ -167,16 +172,15 @@ class MapTiles:
         self.CONTRAST = settings.CONTRAST
         self.con_factor = settings.con_factor
 
-        # Choose desired texture format.
-        self.tex_format = settings.tex_format
-        # -------------- delete this once you figure out png---
-
-    # Drawing functions below
+    # Drawing functions start here
     def tile_reload(self):
+        # Tile reloading from screen bbox. Note that tiles are really only good for a zoom level greater than 8.
+        # Anything smaller appears very deformed due to difference in projections of bluesky and maptiles
+
         # screen zoom
         screen_zoom = self.radar_widget.zoom
 
-        # clear everything
+        # clear everything to start fresh
         self.clear_tiles()
 
         # Get screen bbox coordinates
@@ -208,8 +212,6 @@ class MapTiles:
             self.zoom_level = 18
         else:
             self.zoom_level = 19
-        # print(f'zoom level {self.zoom_level}')
-        # print(f'screen zoom {screen_zoom}')
 
         # Load tiles
         self.tile_load()
@@ -221,16 +223,47 @@ class MapTiles:
         # process tiles, download tiles if necessary
         self.process_tiles()
 
-        if self.tex_format == '.dds':
+        # Bind tiles as textures. TODO: figure out faster way to send img_data information
+        if self.array_load:
+            # Texture arrays binding code
+
+            # Number of pixels in tile. Open one image and check
+            tile_size = Image.open(self.local_paths[0]).height
+
+            # number of tiles in texture
+            self.tex_width = tile_size * self.n_columns
+            self.tex_height = tile_size * self.n_rows
+
+            texture = gl.glGenTextures(1)
+            self.map_textures.append(texture)
+            gl.glBindTexture(gl.GL_TEXTURE_2D_ARRAY, self.map_textures[0])
+            gl.glTexStorage3D(gl.GL_TEXTURE_2D_ARRAY, 1, gl.GL_RGB8, self.tex_width, self.tex_height, 1)
+
+            # send image data to texture array.
+            n_row = 0
+            n_column = 0
+            for image_path in self.local_paths:
+
+                image = Image.open(image_path)
+                img_data = image.tobytes()
+                gl.glTexSubImage3D(gl.GL_TEXTURE_2D_ARRAY, 0, n_column*tile_size, n_row*tile_size, 0,
+                                   tile_size, tile_size, 1, gl.GL_RGB, gl.GL_UNSIGNED_BYTE, img_data)
+
+                if n_column + 1 == self.n_columns:
+                    n_row += 1
+                    n_column = 0
+                else:
+                    n_column += 1
+
+            # Set texture parameters
+            gl.glGenerateMipmap(gl.GL_TEXTURE_2D_ARRAY)
+            gl.glTexParameterf(gl.GL_TEXTURE_2D_ARRAY, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR)
+            gl.glTexParameterf(gl.GL_TEXTURE_2D_ARRAY, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR)
+
+        else:
+            # each image receives it's own texture. This is not very ideal but is needed for the bing option
 
             for image_path in self.local_paths:
-                image = path.join(image_path)
-                self.map_textures.append(self.radar_widget.bindTexture(image))
-
-        elif self.tex_format == '.png':
-
-            for image_path in self.local_paths:
-                # Bind texture
                 texture = gl.glGenTextures(1)
                 self.map_textures.append(texture)
                 gl.glBindTexture(gl.GL_TEXTURE_2D, texture)
@@ -238,33 +271,47 @@ class MapTiles:
                 img_data = image.tobytes()
                 gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_RGB, image.width, image.height, 0, gl.GL_RGB,
                                 gl.GL_UNSIGNED_BYTE, img_data)
+
                 # Texture parameters
                 gl.glGenerateMipmap(gl.GL_TEXTURE_2D)
-                gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR)
-                gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST_MIPMAP_LINEAR)
+                gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR)
+                gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST_MIPMAP_LINEAR)
 
     def tile_render(self):
 
-        for corner in self.render_corners:
-            texvertices = np.array(corner, dtype=np.float32)
+        if self.array_load:
+            # Vertex array object for the 2D texture array
+            texvertices = np.array(self.bbox_corners, dtype=np.float32)
             textexcoords = np.array([(1, 1), (1, 0), (0, 0), (0, 1)], dtype=np.float32)
             self.tiles.append(RenderObject(gl.GL_TRIANGLE_FAN, vertex=texvertices, texcoords=textexcoords))
+        else:
+            # Vertex array object for each individual texture
+            for corner in self.render_corners:
+                texvertices = np.array(corner, dtype=np.float32)
+                textexcoords = np.array([(1, 1), (1, 0), (0, 0), (0, 1)], dtype=np.float32)
+                self.tiles.append(RenderObject(gl.GL_TRIANGLE_FAN, vertex=texvertices, texcoords=textexcoords))
 
     def paint_map(self):
-        self.radar_widget.texture_shader.use()
 
-        for i in range(len(self.tile_array)):
-            gl.glBindTexture(gl.GL_TEXTURE_2D, self.map_textures[i])
-            self.tiles[i].draw()
+        if self.array_load:
+            # Use maptile shader for texture array and have one draw call
+            self.radar_widget.maptile_shader.use()
+
+            gl.glBindTexture(gl.GL_TEXTURE_2D_ARRAY, self.map_textures[0])
+            self.tiles[0].draw()
+
+        else:
+            # Use radar widget shader for each individual texture and have one draw call per texture
+            self.radar_widget.texture_shader.use()
+            for i in range(len(self.tile_array)):
+                gl.glBindTexture(gl.GL_TEXTURE_2D, self.map_textures[i])
+                self.tiles[i].draw()
 
     def clear_tiles(self):
 
         # unbind and delete textures
         for i in range(len(self.tiles)):
             self.tiles[i].unbind_all()
-
-            if self.tex_format == '.dds':
-                self.radar_widget.deleteTexture(self.map_textures[i])
 
         gl.glDeleteTextures(len(self.map_textures), self.map_textures)
 
@@ -274,7 +321,7 @@ class MapTiles:
         self.map_textures = []
         self.render_corners = []
 
-    # Non-drawing functions below
+    # Non-drawing functions from here on
     def process_tiles(self):
         # Download tiles in multiple threads. If download fails self.enable_tiles = False
         with concurrent.futures.ThreadPoolExecutor() as executor:
@@ -285,12 +332,6 @@ class MapTiles:
             # Perform image operations in multiple threads
             with concurrent.futures.ThreadPoolExecutor() as executor:
                 executor.map(self.alter_tile, self.tile_array)
-
-        # Convert to .dds texture.
-        if self.enable_tiles and self.tex_format == '.dds':
-            # convert to texture in multiple threads
-            with concurrent.futures.ThreadPoolExecutor() as executor:
-                executor.map(self.convert_to_dds, self.tile_array)
 
         # Create local path names and get corner info
         for item in self.tile_array:
@@ -306,7 +347,7 @@ class MapTiles:
             else:
                 local_path = raw_local_path
 
-            # create array of tile corners
+            # create array of tile corners only needed if not using texture arrays
             if settings.tile_standard == 'osm':
                 img_corner = self.tile_corners(x, y, self.zoom_level)
             elif settings.tile_standard == 'bing':
@@ -316,9 +357,6 @@ class MapTiles:
 
             self.render_corners.append(img_corner)
 
-            # # Convert to texture name..delete once .png fies only---
-            local_path = local_path[:-4] + self.tex_format
-
             # create arrays of local paths for later use
             self.local_paths.append(local_path)
 
@@ -327,18 +365,21 @@ class MapTiles:
         tile_nw, tile_ne, tile_sw, tile_se = self.bbox_corner_tiles(self.lat1, self.lon1,
                                                                     self.lat2, self.lon2, self.zoom_level)
 
+        # Get bbox corner lat/lon for rendering
+        self.bbox_corners = self.bbox_latlon(tile_nw, tile_ne, tile_sw, tile_se, self.zoom_level)
+
         # Find size of 2D array for tiles
-        n_columns = tile_ne[0] - tile_nw[0] + 1
-        n_rows = tile_sw[1] - tile_nw[1] + 1
-        self.tile_array = np.zeros((n_rows, n_columns), [('x_loc', int), ('y_loc', int)])
+        self.n_columns = tile_ne[0] - tile_nw[0] + 1
+        self.n_rows = tile_sw[1] - tile_nw[1] + 1
+        self.tile_array = np.zeros((self.n_rows, self.n_columns), [('x_loc', int), ('y_loc', int)])
 
         # fill NW corner of tile array
         self.tile_array[0, 0] = tile_nw
 
         # loop through rows. x is constant in one row
-        for row in range(n_rows):
+        for row in range(self.n_rows):
             # for each row loop through a column. y is constant in the same column.
-            for col in range(n_columns):
+            for col in range(self.n_columns):
                 if col == 0:
                     # change first column of the row per the first column of row above
                     if row != 0:
@@ -352,7 +393,6 @@ class MapTiles:
 
         # flatten tile array
         self.tile_array = self.tile_array.flatten()
-        # print(f'Requesting {len(self.tile_array)} tiles at zoom level {self.zoom_level}')
 
     def download_tile(self, tile):
         # Only run loop while downloading did not fail. if download tiles fails self.enable_tiles is set to false
@@ -385,7 +425,6 @@ class MapTiles:
                     map_area = f'{lat2},{lon1},{lat1},{lon2}'
                     url_img_path = f'?mapArea={map_area}&zoomlevel={str(self.zoom_level)}'
 
-                # Get image_url for download
                 image_url = self.url_prefix + url_img_path + self.url_suffix
 
                 # request
@@ -430,31 +469,6 @@ class MapTiles:
 
             altered_image.save(alt_local_path)
 
-    def convert_to_dds(self, tile):
-
-        # Use wand library for dds conversion
-        from wand import image as image_wand
-
-        x = tile[0]  # tile x
-        y = tile[1]  # tile y
-        img_path = path.join(str(self.zoom_level), str(x), str(y))
-        raw_local_path = path.join(self.tile_dir, img_path + self.tile_format)
-        alt_local_path = path.join(self.tile_dir, f'{img_path}a{self.tile_format}')
-
-        if self.LOAD_ALTERED:
-            local_path = alt_local_path
-        else:
-            local_path = raw_local_path
-
-        # Convert to texture, remove once you figure out how to put .png files in gui
-        dds_local_path = local_path[:-4] + self.tex_format
-
-        if not path.exists(dds_local_path):
-            with image_wand.Image(filename=local_path) as img:
-                local_path = local_path[:-4] + self.tex_format
-                img.compression = "dxt5"
-                img.save(filename=local_path)
-
     def bing_bbox(self, x, y):
 
         # get area of tile and create the bing url for a metadata request
@@ -480,6 +494,17 @@ class MapTiles:
     # Written by Oliver White, 2007
     # This file is public-domain
     # ----------------------------------------------------------------------
+
+    def bbox_latlon(self, tile_nw, tile_ne, tile_sw, tile_se, z):
+        # NW Tuple
+        _, _, nw, _ = self.tile_corners(tile_nw[0], tile_nw[1], z)
+        # SE Tuple
+        se, _, _, _ = self.tile_corners(tile_se[0], tile_se[1], z)
+        # NE Tuple
+        _, _, _, ne = self.tile_corners(tile_ne[0], tile_ne[1], z)
+        # SW Tuple
+        _, sw, _, _ = self.tile_corners(tile_sw[0], tile_sw[1], z)
+        return se, sw, nw, ne
 
     def bbox_corner_tiles(self, lat1, lon1, lat2, lon2, z):
         tile_nw = self.tileXY(lat1, lon1, z)

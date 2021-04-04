@@ -464,6 +464,11 @@ class RadarWidget(QGLWidget):
                                                  path.join(shpath, 'radarwidget-texture.frag'))
             self.texture_shader.bind_uniform_buffer('global_data', self.globaldata)
 
+            # Compile shaders and link texture shader program for maptiles
+            self.maptile_shader = BlueSkyProgram(path.join(shpath, 'radarwidget-maptile.vert'),
+                                                 path.join(shpath, 'radarwidget-maptile.frag'))
+            self.maptile_shader.bind_uniform_buffer('global_data', self.globaldata)
+
             # Compile shaders and link text shader program
             self.text_shader = BlueSkyProgram(path.join(shpath, 'radarwidget-text.vert'),
                                               path.join(shpath, 'radarwidget-text.frag'))
@@ -517,12 +522,10 @@ class RadarWidget(QGLWidget):
             self.map.draw()
 
         # --- DRAW THE MAP Tiles --------------------------------------------- #NEW
-        if self.map_tiles.enable_tiles:
+        if self.map_tiles.enable_tiles and self.load_try > 6:
             # Go into loop if dynamic tiles and zoom level is greater than 0.3. and hasn't loaded yet. TODO change load try
-            if self.map_tiles.dynamic_tiles and self.zoom > 0.3 and self.load_try > 6:
-
-                # First if statement, only go inside if zoom is changed on the screen. TODO: change with
-                # left right button pan
+            if self.map_tiles.dynamic_tiles and self.zoom > 0.3:
+                # First if statement, only go inside if zoom is changed on the screen. TODO: change with left right button pan
                 if self.zoom != self.previous_zoom or self.panzoomchanged:
 
                     # Load new tiles
@@ -533,7 +536,8 @@ class RadarWidget(QGLWidget):
                 self.previous_zoom = self.zoom
 
             self.map_tiles.paint_map()
-            self.load_try += 1
+
+        self.load_try += 1
 
         # Select the non-textured shader
         self.color_shader.use()
