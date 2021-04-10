@@ -25,10 +25,11 @@ class MapTiles:
     """
     Default map server is from OpenTopoMap. As of March 12, 2021 data is open to use. https://opentopomap.org/about
 
-    TO-DO List:
+    TODO List:
         -Relative screen zoom options.
         -create stack command and incorporate into bluesky in smarter way
         -add license text on map tiles.
+        -Texture upload in multiple threads. Wait until new thread
 
     Future ideas:
         -figure out how to use sources with multiple servers.
@@ -123,14 +124,18 @@ class MapTiles:
         self.map_textures = []
         self.tiles = []
         self.tile_array = []
+        self.tile_dict = dict()
+        self.tile_offset = []
         self.render_corners = []
         self.local_paths = []
+        self.local_paths_offset = []
         self.enable_tiles = settings.enable_tiles
         self.download_fail = False
-        self.n_columns = 0
-        self.n_rows = 0
+        self.tex_columns = 0
+        self.tex_rows = 0
         self.tex_width = 0
         self.tex_height = 0
+        self.tile_size = 0
         self.bbox_corners = None
 
         # Check if map is dynamic. Tiles change with zoom level. TODO: make this relative
@@ -228,11 +233,11 @@ class MapTiles:
             # Texture arrays binding code
 
             # Number of pixels in tile. Open one image and check
-            tile_size = Image.open(self.local_paths[0]).height
+            self.tile_size = Image.open(self.local_paths[0]).height
 
             # number of tiles in texture
-            self.tex_width = tile_size * self.n_columns
-            self.tex_height = tile_size * self.n_rows
+            self.tex_width = self.tile_size * self.tex_columns
+            self.tex_height = self.tile_size * self.tex_rows
 
             texture = gl.glGenTextures(1)
             self.map_textures.append(texture)
@@ -240,20 +245,15 @@ class MapTiles:
             gl.glTexStorage3D(gl.GL_TEXTURE_2D_ARRAY, 1, gl.GL_RGB8, self.tex_width, self.tex_height, 1)
 
             # send image data to texture array.
-            n_row = 0
-            n_column = 0
-            for image_path in self.local_paths:
+            for item in self.local_paths_offset:
+                image_path = item[0]
+                offset_y = item[1][0] * self.tile_size
+                offset_x = item[1][1] * self.tile_size
 
                 image = Image.open(image_path)
                 img_data = image.tobytes()
-                gl.glTexSubImage3D(gl.GL_TEXTURE_2D_ARRAY, 0, n_column*tile_size, n_row*tile_size, 0,
-                                   tile_size, tile_size, 1, gl.GL_RGB, gl.GL_UNSIGNED_BYTE, img_data)
-
-                if n_column + 1 == self.n_columns:
-                    n_row += 1
-                    n_column = 0
-                else:
-                    n_column += 1
+                gl.glTexSubImage3D(gl.GL_TEXTURE_2D_ARRAY, 0, offset_x, offset_y, 0, self.tile_size, self.tile_size, 1,
+                                   gl.GL_RGB, gl.GL_UNSIGNED_BYTE, img_data)
 
             # Set texture parameters
             gl.glGenerateMipmap(gl.GL_TEXTURE_2D_ARRAY)
@@ -320,6 +320,8 @@ class MapTiles:
         self.tiles = []
         self.map_textures = []
         self.render_corners = []
+        self.local_paths_offset = []
+        self.tile_offset = []
 
     # Non-drawing functions from here on
     def process_tiles(self):
@@ -360,6 +362,9 @@ class MapTiles:
             # create arrays of local paths for later use
             self.local_paths.append(local_path)
 
+        # Create local path dictionary with image offsets
+        self.local_paths_offset = list(zip(self.local_paths, self.tile_offset))
+
     def create_tile_array(self):
         # get tile number of corners of bounding box
         tile_nw, tile_ne, tile_sw, tile_se = self.bbox_corner_tiles(self.lat1, self.lon1,
@@ -369,27 +374,31 @@ class MapTiles:
         self.bbox_corners = self.bbox_latlon(tile_nw, tile_ne, tile_sw, tile_se, self.zoom_level)
 
         # Find size of 2D array for tiles
-        self.n_columns = tile_ne[0] - tile_nw[0] + 1
-        self.n_rows = tile_sw[1] - tile_nw[1] + 1
-        self.tile_array = np.zeros((self.n_rows, self.n_columns), [('x_loc', int), ('y_loc', int)])
+        self.tex_columns = tile_ne[0] - tile_nw[0] + 1
+        self.tex_rows = tile_sw[1] - tile_nw[1] + 1
+        self.tile_array = np.zeros((self.tex_rows, self.tex_columns), [('x_loc', int), ('y_loc', int)])
 
         # fill NW corner of tile array
         self.tile_array[0, 0] = tile_nw
 
         # loop through rows. x is constant in one row
-        for row in range(self.n_rows):
+        for row in range(self.tex_rows):
             # for each row loop through a column. y is constant in the same column.
-            for col in range(self.n_columns):
+            for col in range(self.tex_columns):
                 if col == 0:
                     # change first column of the row per the first column of row above
                     if row != 0:
                         # don't change first entry (0,0) because that is already in 2d array
                         self.tile_array[row, col] = (self.tile_array[row - 1, col][0],
                                                      self.tile_array[row - 1, col][1] + 1)
+
                 else:
                     # change column of the row based on previous column of that same row
                     self.tile_array[row, col] = (self.tile_array[row, col - 1][0] + 1,
                                                  self.tile_array[row, col - 1][1])
+
+                # create tile offsets of texture array to create list of tuples with the local_path
+                self.tile_offset.append((row, col))
 
         # flatten tile array
         self.tile_array = self.tile_array.flatten()
