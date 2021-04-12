@@ -26,12 +26,12 @@ class MapTiles:
     Default map server is from OpenTopoMap. As of March 12, 2021 data is open to use. https://opentopomap.org/about
 
     TODO List:
-        -Relative screen zoom options.
         -create stack command and incorporate into bluesky in smarter way
         -add license text on map tiles.
         -Texture upload in multiple threads. Wait until new qt implementation
         -Disappearing screen bug when panning maptiles
         -vertex shader different projection
+        -relative zoom also based on image size
 
     Future ideas:
         -figure out how to use sources with multiple servers.
@@ -140,9 +140,8 @@ class MapTiles:
         self.tile_size = 0
         self.bbox_corners = None
 
-        # Check if map is dynamic. Tiles change with zoom level. TODO: make this relative
+        # Check if map is dynamic
         self.dynamic_tiles = settings.dynamic_tiles
-        self.zoom_array = np.array([1.2, 4.0, 8.0, 15.0, 30.0, 70, 130, 250, 450, 850, 2000])
 
         # create tile directory path
         self.tile_dir = path.join(settings.mpt_path, settings.mpt_server)
@@ -194,31 +193,37 @@ class MapTiles:
         self.lat1, self.lon1 = self.radar_widget.pixelCoordsToLatLon(0, 0)
         self.lat2, self.lon2 = self.radar_widget.pixelCoordsToLatLon(self.radar_widget.width, self.radar_widget.height)
 
+        # simple screen width factor. 478 is number of pixels in which the zoom factors were developed.
+        screen_factor = (self.radar_widget.width) / 909
+        zoom_array = np.array([1.4, 2.3, 4.6, 9.1, 18.5, 37.0, 73.0, 150.0, 410.0, 820.0, 1640.0, 2320.0]) / screen_factor
+
         # Get zoom level based on screen level. TO DO: make this relative to screen size
-        if screen_zoom < self.zoom_array[0]:
+        if screen_zoom < zoom_array[0]: 
             self.zoom_level = 8
-        elif screen_zoom < self.zoom_array[1]:
+        elif screen_zoom < zoom_array[1]:
             self.zoom_level = 9
-        elif screen_zoom < self.zoom_array[2]:
+        elif screen_zoom < zoom_array[2]:
             self.zoom_level = 10
-        elif screen_zoom < self.zoom_array[3]:
+        elif screen_zoom < zoom_array[3]:
             self.zoom_level = 11
-        elif screen_zoom < self.zoom_array[4]:
+        elif screen_zoom < zoom_array[4]:
             self.zoom_level = 12
-        elif screen_zoom < self.zoom_array[5]:
+        elif screen_zoom < zoom_array[5]:
             self.zoom_level = 13
-        elif screen_zoom < self.zoom_array[6]:
+        elif screen_zoom < zoom_array[6]:
             self.zoom_level = 14
-        elif screen_zoom < self.zoom_array[7]:
+        elif screen_zoom < zoom_array[7]:
             self.zoom_level = 15
-        elif screen_zoom < self.zoom_array[8]:
+        elif screen_zoom < zoom_array[8]:
             self.zoom_level = 16
-        elif screen_zoom < self.zoom_array[9]:
+        elif screen_zoom < zoom_array[9]:
             self.zoom_level = 17
-        elif screen_zoom < self.zoom_array[10]:
+        elif screen_zoom < zoom_array[10]:
             self.zoom_level = 18
-        else:
+        elif screen_zoom < zoom_array[11]:
             self.zoom_level = 19
+        else:
+            self.zoom_level = 20
 
         # Load tiles
         self.tile_load()
