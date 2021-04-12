@@ -193,11 +193,11 @@ class MapTiles:
         self.lat1, self.lon1 = self.radar_widget.pixelCoordsToLatLon(0, 0)
         self.lat2, self.lon2 = self.radar_widget.pixelCoordsToLatLon(self.radar_widget.width, self.radar_widget.height)
 
-        # simple screen width factor. 478 is number of pixels in which the zoom factors were developed.
+        # simple screen width factor. 478 is number of pixels in which the zoom factors were developed. It was also developed for a tile that is 512x512 px
         screen_factor = (self.radar_widget.width) / 909
         zoom_array = np.array([1.4, 2.3, 4.6, 9.1, 18.5, 37.0, 73.0, 150.0, 410.0, 820.0, 1640.0, 2320.0]) / screen_factor
 
-        # Get zoom level based on screen level. TO DO: make this relative to screen size
+        # Get zoom level based on screen level.
         if screen_zoom < zoom_array[0]: 
             self.zoom_level = 8
         elif screen_zoom < zoom_array[1]:
