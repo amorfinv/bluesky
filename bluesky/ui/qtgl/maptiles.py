@@ -29,7 +29,9 @@ class MapTiles:
         -Relative screen zoom options.
         -create stack command and incorporate into bluesky in smarter way
         -add license text on map tiles.
-        -Texture upload in multiple threads. Wait until new thread
+        -Texture upload in multiple threads. Wait until new qt implementation
+        -Disappearing screen bug when panning maptiles
+        -vertex shader different projection
 
     Future ideas:
         -figure out how to use sources with multiple servers.
