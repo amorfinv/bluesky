@@ -64,6 +64,9 @@ class GuiClient(Client):
         elif name == b'PANZOOM':
             sender_data.panzoom(**data)
             data_changed.append('PANZOOM')
+        elif name == b'MAPTILES':
+            sender_data.maptiles(**data)
+            data_changed.append('MAPTILES')
         elif name == b'SIMSTATE':
             sender_data.siminit(**data)
             data_changed = list(UPDATE_ALL)
@@ -306,6 +309,20 @@ class nodeData:
                 self.filteralt = args[1:]
             else:
                 self.filteralt = False
+
+    def maptiles(self, lat1=None, lon1=None, lat2=None, lon2=None, 
+                 zoom_level=None, map_tile_switch=False):
+
+        # get bbox and zoom info from screen i/o
+        self.map_tile_lat1 = lat1
+        self.map_tile_lon1 = lon1
+        self.map_tile_lat2 = lat2
+        self.map_tile_lon2 = lon2
+
+        self.map_tile_zoom = zoom_level
+
+        # See if there is a maptile switch
+        self.map_tile_switch = map_tile_switch
 
     def echo(self, text='', flags=0):
         if text:

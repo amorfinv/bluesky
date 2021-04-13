@@ -7,11 +7,15 @@ import requests
 import concurrent.futures
 from PIL import Image, ImageChops, ImageEnhance
 
-from bluesky import settings
+import bluesky as bs
+from bluesky.stack import command
+from bluesky.core import Entity
+
 from .glhelpers import RenderObject
 
+
 # Register settings defaults
-settings.set_variable_defaults(
+bs.settings.set_variable_defaults(
     mpt_path='data/graphics', mpt_server='opentopomap', tile_standard='google',
     enable_tiles=False, dynamic_tiles=False, array_load=True,
     mpt_url=['https://a.tile.opentopomap.org/{z}/{x}/{y}.png',
@@ -21,7 +25,7 @@ settings.set_variable_defaults(
     lat1=25.68, lon1=-80.31, lat2=25.63, lon2=-80.28, zoom_level=8)
 
 
-class MapTiles:
+class MapTiles(Entity):
     """
     Default map server is from OpenTopoMap. As of March 12, 2021 data is open to use. https://opentopomap.org/about
 
@@ -106,21 +110,23 @@ class MapTiles:
         :param con_factor: FLOAT, >1 increases contrast, <1 decreases contrast
         """
 
+        super().__init__()
+
         # radar widget Used to bring in shaders and screen size
         self.radar_widget = radar_widget
 
         # texture array loading setting. Note that 'bing' standard cannot use texture arrays
-        if settings.tile_standard == 'bing':
+        if bs.settings.tile_standard == 'bing':
             self.array_load = False
         else:
-            self.array_load = settings.array_load
+            self.array_load = bs.settings.array_load
 
         # Bounding box coordinates and zoom level used if dynamic tiles is off.
-        self.lat1 = settings.lat1
-        self.lon1 = settings.lon1
-        self.lat2 = settings.lat2
-        self.lon2 = settings.lon2
-        self.zoom_level = settings.zoom_level
+        self.lat1 = bs.settings.lat1
+        self.lon1 = bs.settings.lon1
+        self.lat2 = bs.settings.lat2
+        self.lon2 = bs.settings.lon2
+        self.zoom_level = bs.settings.zoom_level
 
         # Initialize some variables
         self.map_textures = []
@@ -131,7 +137,7 @@ class MapTiles:
         self.render_corners = []
         self.local_paths = []
         self.local_paths_offset = []
-        self.enable_tiles = settings.enable_tiles
+        self.enable_tiles = bs.settings.enable_tiles
         self.download_fail = False
         self.tex_columns = 0
         self.tex_rows = 0
@@ -141,21 +147,21 @@ class MapTiles:
         self.bbox_corners = None
 
         # Check if map is dynamic
-        self.dynamic_tiles = settings.dynamic_tiles
+        self.dynamic_tiles = bs.settings.dynamic_tiles
 
         # create tile directory path
-        self.tile_dir = path.join(settings.mpt_path, settings.mpt_server)
+        self.tile_dir = path.join(bs.settings.mpt_path, bs.settings.mpt_server)
 
         # check for errors in config file url and set url_prefix and url_suffix for downloading of tiles
-        if settings.tile_standard == 'osm':
+        if bs.settings.tile_standard == 'osm':
             img_std = '{z}/{x}/{y}'
-        elif settings.tile_standard == 'bing':
+        elif bs.settings.tile_standard == 'bing':
             img_std = '?mapArea={maparea}&zoomlevel={zoomlevel}'
 
         try:
-            start_index = settings.mpt_url[0].index(img_std)
-            self.url_prefix = settings.mpt_url[0][:start_index]
-            self.url_suffix = settings.mpt_url[0][start_index + len(img_std):]
+            start_index = bs.settings.mpt_url[0].index(img_std)
+            self.url_prefix = bs.settings.mpt_url[0][:start_index]
+            self.url_suffix = bs.settings.mpt_url[0][start_index + len(img_std):]
             if 'png' in self.url_suffix:
                 self.tile_format = '.png'
             else:
@@ -172,11 +178,11 @@ class MapTiles:
             self.enable_tiles = False
 
         # Image operations
-        self.LOAD_ALTERED = settings.LOAD_ALTERED
-        self.ALTER_TILE = settings.ALTER_TILE
-        self.INVERT = settings.INVERT
-        self.CONTRAST = settings.CONTRAST
-        self.con_factor = settings.con_factor
+        self.LOAD_ALTERED = bs.settings.LOAD_ALTERED
+        self.ALTER_TILE = bs.settings.ALTER_TILE
+        self.INVERT = bs.settings.INVERT
+        self.CONTRAST = bs.settings.CONTRAST
+        self.con_factor = bs.settings.con_factor
 
     # Drawing functions start here
     def tile_reload(self):
@@ -357,9 +363,9 @@ class MapTiles:
                 local_path = raw_local_path
 
             # create array of tile corners only needed if not using texture arrays
-            if settings.tile_standard == 'osm':
+            if bs.settings.tile_standard == 'osm':
                 img_corner = self.tile_corners(x, y, self.zoom_level)
-            elif settings.tile_standard == 'bing':
+            elif bs.settings.tile_standard == 'bing':
                 # use image metadata to get corner info for rendering. perhaps save this data so it goes faster on
                 # reruns
                 img_corner = self.bing_bbox(x, y)
@@ -432,10 +438,10 @@ class MapTiles:
                     pass
 
                 # download image from web
-                if settings.tile_standard == 'osm':
+                if bs.settings.tile_standard == 'osm':
                     # osm tile_format downloads have the same image path as local folder
                     url_img_path = f'{str(self.zoom_level)}/{str(x)}/{str(y)}'
-                elif settings.tile_standard == 'bing':
+                elif bs.settings.tile_standard == 'bing':
                     # alter image path for bing maps url download
                     lat2, lon1, lat1, lon2 = self.tileEdges(x, y, self.zoom_level)
                     map_area = f'{lat2},{lon1},{lat1},{lon2}'
@@ -500,6 +506,12 @@ class MapTiles:
         img_corner = ((bbox_image[0], bbox_image[3]), (bbox_image[0], bbox_image[1]),
                       (bbox_image[2], bbox_image[1]), (bbox_image[2], bbox_image[3]))
         return img_corner
+
+    @command(name='MAPTILES', aliases=('MAPS','TILES'))
+    def add_tiles(self, name : 'txt' = ''):
+        print('IN HERE')
+        ''' ADD MAPTILES TO SCENE '''
+        self.enable_tiles = True
 
     # ----------------------------------------------------------------------
     # Translates between lat/long and the slippy-map tile numbering scheme

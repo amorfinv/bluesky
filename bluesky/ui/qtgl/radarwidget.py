@@ -206,6 +206,49 @@ class RadarWidget(QGLWidget):
         if 'PANZOOM' in changed_elems:
             self.panzoom(pan=nodedata.pan, zoom=nodedata.zoom, absolute=True)
 
+        # Process maptile commands from screen
+        if 'MAPTILES' in changed_elems:
+
+            if nodedata.map_tile_switch:
+
+                # Switch map tiles on or off
+                self.map_tiles.enable_tiles = not self.map_tiles.enable_tiles
+
+                # Set dynamic tiles to true when turning on
+                if self.map_tiles.enable_tiles:
+                    self.map_tiles.dynamic_tiles = True
+
+                    # Clear tiles
+                    self.map_tiles.clear_tiles()
+
+                    # Do a dynamic reload
+                    self.map_tiles.tile_reload()
+
+                    # Render new tiles
+                    self.map_tiles.tile_render()
+
+            else:
+                # Clear current tiles
+                self.map_tiles.clear_tiles()
+                self.map_tiles.dynamic_tiles = False
+
+                # Set new bounding box and zoom from cmd stack
+                self.map_tiles.lat1 = nodedata.map_tile_lat1
+                self.map_tiles.lon1 = nodedata.map_tile_lon1
+                self.map_tiles.lat2 = nodedata.map_tile_lat2
+                self.map_tiles.lon2 = nodedata.map_tile_lon2
+                self.map_tiles.zoom_level = nodedata.map_tile_zoom
+
+                # Enable tiles
+                self.map_tiles.enable_tiles = True
+
+                # Load new tiles
+                self.map_tiles.tile_load()
+
+                # Render new tiles
+                self.map_tiles.tile_render()
+
+
     def create_objects(self):
         if not self.isValid():
             self.invalid_count += 1

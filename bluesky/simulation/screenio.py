@@ -194,6 +194,16 @@ class ScreenIO:
         """
         bs.net.send_event(b'SHAPE', dict(name=objname, shape=objtype, coordinates=data))
 
+    def maptile_cmd(self, lat1=None, lon1=None, lat2=None, lon2=None, zoom_level=None):
+        """Send maptile info to radar screen
+        """
+        # set maptile switch to true if no values were sent from command line
+        map_tile_switch = True if not lat1 else False
+
+        # Send bbox and zoom
+        bs.net.send_event(b'MAPTILES', dict(lat1=lat1, lon1=lon1, lat2=lat2, lon2=lon2, 
+                                            zoom_level=zoom_level, map_tile_switch=map_tile_switch))
+
     def event(self, eventname, eventdata, sender_rte):
         if eventname == b'PANZOOM':
             self.client_pan[sender_rte[-1]]  = eventdata['pan']
