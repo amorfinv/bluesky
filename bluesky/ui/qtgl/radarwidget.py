@@ -212,27 +212,32 @@ class RadarWidget(QGLWidget):
             if nodedata.map_tile_switch:
 
                 # Switch map tiles on or off
-                self.map_tiles.enable_tiles = not self.map_tiles.enable_tiles
 
-                # Set dynamic tiles to true when turning on
-                if self.map_tiles.enable_tiles:
+                # Set dynamic tiles to true when turning on and clear tiles if turning off
+                if not self.map_tiles.enable_tiles and self.zoom > 0.3:
+
+                    # Enable tiles
+                    self.map_tiles.enable_tiles = True
+
+                    # Turn dynamic maptiles on
                     self.map_tiles.dynamic_tiles = True
 
-                    # Clear tiles
+                    # Do a dynamic reload and render
+                    self.update_maptiles()
+
+                else:
+                    # Disable tiles
+                    self.map_tiles.enable_tiles = False
+                    
+                    # Clear tiles if turning off
                     self.map_tiles.clear_tiles()
-
-                    # Do a dynamic reload
-                    self.map_tiles.tile_reload()
-
-                    # Render new tiles
-                    self.map_tiles.tile_render()
 
             else:
                 # Clear current tiles
                 self.map_tiles.clear_tiles()
                 self.map_tiles.dynamic_tiles = False
 
-                # Set new bounding box and zoom from cmd stack
+                # Set new bounding box and zoom from stack cmd
                 self.map_tiles.lat1 = nodedata.map_tile_lat1
                 self.map_tiles.lon1 = nodedata.map_tile_lon1
                 self.map_tiles.lat2 = nodedata.map_tile_lat2
@@ -565,15 +570,14 @@ class RadarWidget(QGLWidget):
             self.map.draw()
 
         # --- DRAW THE MAP Tiles --------------------------------------------- #NEW
-        if self.map_tiles.enable_tiles and self.load_try > 6:
-            # Go into loop if dynamic tiles and zoom level is greater than 0.3. and hasn't loaded yet. TODO change load try
+        if self.map_tiles.enable_tiles and self.load_try > 6: 
+            # Go into loop if dynamic tiles. TODO change load_try to fancier implementation
             if self.map_tiles.dynamic_tiles and self.zoom > 0.3:
                 # First if statement, only go inside if zoom is changed on the screen. TODO: change with left right button pan
                 if self.zoom != self.previous_zoom or self.panzoomchanged:
 
-                    # Load new tiles
-                    self.map_tiles.tile_reload()
-                    self.map_tiles.tile_render()
+                    # Update new tiles
+                    self.update_maptiles()
 
                 # Assign new previous zoom after loop
                 self.previous_zoom = self.zoom
@@ -787,6 +791,11 @@ class RadarWidget(QGLWidget):
         else:
             self.route.set_vertex_count(0)
             self.routelbl.n_instances = 0
+
+    def update_maptiles(self):
+        # Performs dynamic reloading of maptiles from startup or from stack command
+        self.map_tiles.tile_reload()
+        self.map_tiles.tile_render()
 
     def update_aircraft_data(self, data):
         if not self.initialized:
@@ -1064,6 +1073,7 @@ class RadarWidget(QGLWidget):
 
             # For touchpad scroll (2D) is used for panning
             else:
+                print(event)
                 try:
                     dlat = 0.01 * event.pixelDelta().y() / (self.zoom * self.ar)
                     dlon = -0.01 * event.pixelDelta().x() / (self.zoom * self.flat_earth)
