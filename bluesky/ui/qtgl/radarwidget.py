@@ -1073,7 +1073,6 @@ class RadarWidget(QGLWidget):
 
             # For touchpad scroll (2D) is used for panning
             else:
-                print(event)
                 try:
                     dlat = 0.01 * event.pixelDelta().y() / (self.zoom * self.ar)
                     dlon = -0.01 * event.pixelDelta().x() / (self.zoom * self.flat_earth)
