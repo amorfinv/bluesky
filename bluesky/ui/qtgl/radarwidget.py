@@ -579,10 +579,18 @@ class RadarWidget(QGLWidget):
                     # Update new tiles
                     self.update_maptiles()
 
+                    if self.map_tiles.show_license:
+                        self.map_tiles.license_load()
+
                 # Assign new previous zoom after loop
                 self.previous_zoom = self.zoom
 
+            # Show tiles
             self.map_tiles.paint_map()
+
+            # Show map tile license if necessary
+            if self.map_tiles.show_license and self.map_tiles.dynamic_tiles:
+                self.map_tiles.paint_license()
 
         self.load_try += 1
 

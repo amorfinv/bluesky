@@ -8,7 +8,6 @@ import concurrent.futures
 from PIL import Image, ImageChops, ImageEnhance
 
 import bluesky as bs
-from bluesky.stack import command
 from bluesky.core import Entity
 
 from .glhelpers import RenderObject
@@ -17,12 +16,13 @@ from .glhelpers import RenderObject
 # Register settings defaults
 bs.settings.set_variable_defaults(
     mpt_path='data/graphics', mpt_server='opentopomap', tile_standard='google',
-    enable_tiles=False, dynamic_tiles=False, array_load=True,
+    show_license=True, enable_tiles=False, dynamic_tiles=False, array_load=True,
     mpt_url=['https://a.tile.opentopomap.org/{z}/{x}/{y}.png',
              'https://b.tile.opentopomap.org/{z}/{x}/{y}.png',
              'https://c.tile.opentopomap.org/{z}/{x}/{y}.png'],
     LOAD_ALTERED=False, ALTER_TILE=False, INVERT=True, CONTRAST=True, con_factor=1.5,
-    lat1=25.68, lon1=-80.31, lat2=25.63, lon2=-80.28, zoom_level=8)
+    lat1=25.68, lon1=-80.31, lat2=25.63, lon2=-80.28, zoom_level=8,
+    map_tile_license_txt='map data: © OpenStreetMap contributors, SRTM | map style: © OpenTopoMap (CC-BY-SA)')
 
 
 class MapTiles(Entity):
@@ -30,15 +30,16 @@ class MapTiles(Entity):
     Default map server is from OpenTopoMap. As of March 12, 2021 data is open to use. https://opentopomap.org/about
 
     TODO List:
-        -create stack command and incorporate into bluesky in smarter way
-        -add license text on map tiles.
         -Texture upload in multiple threads. Wait until new qt implementation
         -Disappearing screen bug when panning maptiles
         -vertex shader different projection
         -relative zoom also based on image size
 
     Future ideas:
+        -Create license based on text
+        -make stack command better
         -figure out how to use sources with multiple servers.
+        -fix issue with license
         -accept other types of map tile formats. Like TMS or WMTS
         https://alastaira.wordpress.com/2011/07/06/converting-tms-tile-coordinates-to-googlebingosm-tile-coordinates/
 
@@ -150,7 +151,7 @@ class MapTiles(Entity):
         self.dynamic_tiles = bs.settings.dynamic_tiles
 
         # create tile directory path
-        self.tile_dir = path.join(bs.settings.mpt_path, bs.settings.mpt_server)
+        self.tile_dir = path.join(bs.settings.mpt_path,'tiles', bs.settings.mpt_server)
 
         # check for errors in config file url and set url_prefix and url_suffix for downloading of tiles
         if bs.settings.tile_standard == 'osm':
@@ -183,6 +184,13 @@ class MapTiles(Entity):
         self.INVERT = bs.settings.INVERT
         self.CONTRAST = bs.settings.CONTRAST
         self.con_factor = bs.settings.con_factor
+
+        # License text settings
+        self.show_license = bs.settings.show_license
+        self.map_tile_license_txt = bs.settings.map_tile_license_txt
+        self.map_tile_license_path = path.join(self.tile_dir, 'map_tile_license.png')
+        self.license_texture = []
+        self.license = []
 
     # Drawing functions start here
     def tile_reload(self):
@@ -335,6 +343,48 @@ class MapTiles(Entity):
         self.render_corners = []
         self.local_paths_offset = []
         self.tile_offset = []
+
+    def license_load(self):
+
+        # clear license things for reload
+        self.license_texture = []
+        self.license = []
+
+        # check if image exists and create if not
+        if not path.exists(self.map_tile_license_path):
+            self.generate_license_txt()
+        
+        # Open image
+        image = Image.open(self.map_tile_license_path).convert('RGB')
+        img_data = image.tobytes()
+        
+        # Create and bind texture 
+        texture = gl.glGenTextures(1)
+        self.license_texture.append(texture)
+        gl.glBindTexture(gl.GL_TEXTURE_2D, texture)
+        gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_RGB, image.width, image.height, 0, gl.GL_RGB,
+                        gl.GL_UNSIGNED_BYTE, img_data)
+
+        # Texture parameters
+        gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
+        gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST)
+
+        # get corner info of license
+        bottom, right = self.radar_widget.pixelCoordsToLatLon(self.radar_widget.width, self.radar_widget.height)
+        top, left = self.radar_widget.pixelCoordsToLatLon(self.radar_widget.width - image.width, self.radar_widget.height - image.height)
+
+        # Get corner latlon of license text
+        corner = (bottom, right), (bottom, left), (top, left), (top, right)
+
+        # Create vertex array object for license text
+        texvertices = np.array(corner, dtype=np.float32)
+        textexcoords = np.array([(1, 1), (1, 0), (0, 0), (0, 1)], dtype=np.float32)
+        self.license.append(RenderObject(gl.GL_TRIANGLE_FAN, vertex=texvertices, texcoords=textexcoords))
+
+    def paint_license(self):
+        self.radar_widget.texture_shader.use()
+        gl.glBindTexture(gl.GL_TEXTURE_2D, self.license_texture[0])
+        self.license[0].draw()
 
     # Non-drawing functions from here on
     def process_tiles(self):
@@ -507,11 +557,39 @@ class MapTiles(Entity):
                       (bbox_image[2], bbox_image[1]), (bbox_image[2], bbox_image[3]))
         return img_corner
 
-    @command(name='MAPTILES', aliases=('MAPS','TILES'))
-    def add_tiles(self, name : 'txt' = ''):
-        print('IN HERE')
-        ''' ADD MAPTILES TO SCENE '''
-        self.enable_tiles = True
+    def generate_license_txt(self):
+        # generate license text. Need to fix this in future
+        
+        # Import things
+        from PIL import ImageFont, ImageDraw 
+
+        # set font for image
+        font_size = 10
+
+        font_path = path.join(bs.settings.mpt_path,'font','OpenSans-Regular.ttf')
+
+        font = ImageFont.truetype(font_path, font_size)
+
+        # get image size based on txt size
+        txt_w, txt_h = font.getsize(self.map_tile_license_txt)
+
+        # set new image height
+        img_width = txt_w
+        img_height = txt_h
+
+        # create image to edit
+        image = Image.new('RGB', (img_width,img_height), (255,255,255))
+
+        # Initialize drawing context
+        draw = ImageDraw.Draw(image)
+
+        # Add text to image
+        draw.rectangle((0, 0, img_width, img_height), fill='white')
+        draw.text((0, 0), self.map_tile_license_txt, fill=(0, 0, 0), font=font)
+
+        # save image
+        image.save(self.map_tile_license_path)
+
 
     # ----------------------------------------------------------------------
     # Translates between lat/long and the slippy-map tile numbering scheme
