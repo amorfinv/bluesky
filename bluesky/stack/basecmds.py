@@ -5,7 +5,7 @@ import os
 import bluesky as bs
 from bluesky import settings
 from bluesky.core import select_implementation, plugin, simtime, varexplorer as ve
-from bluesky.tools import geo, areafilter, plotter, maptiles_cmd
+from bluesky.tools import geo, areafilter, plotter
 from bluesky.tools.calculator import calculator
 from bluesky.stack.cmdparser import append_commands
 
@@ -356,12 +356,6 @@ def initbasecmds():
             "lat,lon",
             bs.tools.geo.magdeccmd,
             "Show magnetic variation/declination at position",
-        ],
-        "MAPTILES": [
-            "MAPTILES lat,lon,lat,lon,zoom",
-            "latlon,latlon,int",
-            maptiles_cmd.maptiles,
-            "Turn on/off tiles or show bounding box tiles",
         ],
         "MCRE": [
             "MCRE n, [type/*, alt/*, spd/*, dest/*]",
