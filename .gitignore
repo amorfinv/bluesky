@@ -2,7 +2,7 @@ output
 scenario/ic.scn
 data/cache
 data/grib
-data/graphics/maptiles/tiles/*
+data/graphics/maptiles/*
 data/performance/BADA/*
 !/data/performance/BADA/README.md
 
