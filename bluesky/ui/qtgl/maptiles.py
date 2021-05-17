@@ -13,9 +13,8 @@ from .glhelpers import RenderObject
 
 # Register settings defaults
 bs.settings.set_variable_defaults(
-    mpt_path='data/graphics', mpt_server='opentopomap', tile_standard='osm',
-    enable_tiles=True,
-    mpt_url=['https://a.tile.opentopomap.org/{z}/{x}/{y}.png'])
+    mpt_path='data/graphics', mpt_server='opentopomap', enable_tiles=True,
+    mpt_url='https://a.tile.opentopomap.org/{z}/{x}/{y}.png')
 
 class MapTiles(Entity):
     """
@@ -80,9 +79,9 @@ class MapTiles(Entity):
         img_std = '{z}/{x}/{y}'
 
         try:
-            start_index = bs.settings.mpt_url[0].index(img_std)
-            self.url_prefix = bs.settings.mpt_url[0][:start_index]
-            self.url_suffix = bs.settings.mpt_url[0][start_index + len(img_std):]
+            start_index = bs.settings.mpt_url.index(img_std)
+            self.url_prefix = bs.settings.mpt_url[:start_index]
+            self.url_suffix = bs.settings.mpt_url[start_index + len(img_std):]
             if 'png' in self.url_suffix:
                 self.tile_format = '.png'
             else:
