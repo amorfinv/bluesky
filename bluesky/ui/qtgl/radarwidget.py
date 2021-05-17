@@ -206,54 +206,6 @@ class RadarWidget(QGLWidget):
         if 'PANZOOM' in changed_elems:
             self.panzoom(pan=nodedata.pan, zoom=nodedata.zoom, absolute=True)
 
-        # Process maptile commands from screen
-        if 'MAPTILES' in changed_elems:
-
-            if nodedata.map_tile_switch:
-
-                # Switch map tiles on or off
-
-                # Set dynamic tiles to true when turning on and clear tiles if turning off
-                if not self.map_tiles.enable_tiles and self.zoom > 0.3:
-
-                    # Enable tiles
-                    self.map_tiles.enable_tiles = True
-
-                    # Turn dynamic maptiles on
-                    self.map_tiles.dynamic_tiles = True
-
-                    # Do a dynamic reload and render
-                    self.update_maptiles()
-
-                else:
-                    # Disable tiles
-                    self.map_tiles.enable_tiles = False
-                    
-                    # Clear tiles if turning off
-                    self.map_tiles.clear_tiles()
-
-            else:
-                # Clear current tiles
-                self.map_tiles.clear_tiles()
-                self.map_tiles.dynamic_tiles = False
-
-                # Set new bounding box and zoom from stack cmd
-                self.map_tiles.lat1 = nodedata.map_tile_lat1
-                self.map_tiles.lon1 = nodedata.map_tile_lon1
-                self.map_tiles.lat2 = nodedata.map_tile_lat2
-                self.map_tiles.lon2 = nodedata.map_tile_lon2
-                self.map_tiles.zoom_level = nodedata.map_tile_zoom
-
-                # Enable tiles
-                self.map_tiles.enable_tiles = True
-
-                # Load new tiles
-                self.map_tiles.tile_load()
-
-                # Render new tiles
-                self.map_tiles.tile_render()
-
-
     def create_objects(self):
         if not self.isValid():
             self.invalid_count += 1
@@ -283,10 +235,6 @@ class RadarWidget(QGLWidget):
                 print('Loading texture ' + fname)
                 self.map_texture = self.bindTexture(fname)
                 break
-
-        # load and bind map textures #NEW
-        if self.map_tiles.enable_tiles and not self.map_tiles.dynamic_tiles:
-            self.map_tiles.tile_load()
 
         # Create initial empty buffers for aircraft position, orientation, label, and color
         # usage flag indicates drawing priority:
@@ -324,10 +272,6 @@ class RadarWidget(QGLWidget):
         mapvertices = np.array([(-90.0, 540.0), (-90.0, -540.0), (90.0, -540.0), (90.0, 540.0)], dtype=np.float32)
         texcoords = np.array([(1, 3), (1, 0), (0, 0), (0, 3)], dtype=np.float32)
         self.map = RenderObject(gl.GL_TRIANGLE_FAN, vertex=mapvertices, texcoords=texcoords)
-
-        # ------- Map tiles ------------------------------- #NEW
-        if self.map_tiles.enable_tiles and not self.map_tiles.dynamic_tiles:
-            self.map_tiles.tile_render()
 
         # ------- Coastlines -----------------------------
         self.coastlines = RenderObject(gl.GL_LINES, vertex=self.coastvertices, color=palette.coastlines)
@@ -572,26 +516,21 @@ class RadarWidget(QGLWidget):
         # --- DRAW THE MAP Tiles --------------------------------------------- #NEW
         if self.map_tiles.enable_tiles and self.load_try > 6: 
             # Go into loop if dynamic tiles. TODO change load_try to fancier implementation
-            if self.map_tiles.dynamic_tiles and self.zoom > 0.3:
+            if self.zoom > 0.3:
                 # First if statement, only go inside if zoom is changed on the screen. TODO: change with left right button pan
                 if self.zoom != self.previous_zoom or self.panzoomchanged:
 
                     # Update new tiles
-                    self.update_maptiles()
-
-                    if self.map_tiles.show_license:
-                        self.map_tiles.license_load()
+                    self.map_tiles.tile_reload()
+                    self.map_tiles.tile_render()
 
                 # Assign new previous zoom after loop
                 self.previous_zoom = self.zoom
 
-            # Show tiles
+            # Paint tiles on screen
             self.map_tiles.paint_map()
 
-            # Show map tile license if necessary
-            if self.map_tiles.show_license and self.map_tiles.dynamic_tiles:
-                self.map_tiles.paint_license()
-
+        # update load try
         self.load_try += 1
 
         # Select the non-textured shader
@@ -799,11 +738,6 @@ class RadarWidget(QGLWidget):
         else:
             self.route.set_vertex_count(0)
             self.routelbl.n_instances = 0
-
-    def update_maptiles(self):
-        # Performs dynamic reloading of maptiles from startup or from stack command
-        self.map_tiles.tile_reload()
-        self.map_tiles.tile_render()
 
     def update_aircraft_data(self, data):
         if not self.initialized:

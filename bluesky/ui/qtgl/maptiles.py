@@ -3,28 +3,21 @@ import numpy as np
 import OpenGL.GL as gl
 from urllib.request import urlopen
 from urllib.error import URLError
-import requests
 import concurrent.futures
-from PIL import Image, ImageChops, ImageEnhance
+from PIL import Image
 
 import bluesky as bs
 from bluesky.core import Entity
 
 from .glhelpers import RenderObject
 
-
 # Register settings defaults
 bs.settings.set_variable_defaults(
-    mpt_path='data/graphics', mpt_server='opentopomap', tile_standard='google',
-    show_license=True, enable_tiles=False, dynamic_tiles=False, array_load=True,
+    mpt_path='data/graphics', mpt_server='opentopomap', tile_standard='osm',
+    enable_tiles=True,
     mpt_url=['https://a.tile.opentopomap.org/{z}/{x}/{y}.png',
              'https://b.tile.opentopomap.org/{z}/{x}/{y}.png',
-             'https://c.tile.opentopomap.org/{z}/{x}/{y}.png'],
-    LOAD_ALTERED=False, ALTER_TILE=False, INVERT=True, CONTRAST=True, con_factor=1.5,
-    lat1=25.68, lon1=-80.31, lat2=25.63, lon2=-80.28, zoom_level=8,
-    map_tile_license_txt='map data: © OpenStreetMap contributors, SRTM | map style: © OpenTopoMap (CC-BY-SA)')
-
-
+             'https://c.tile.opentopomap.org/{z}/{x}/{y}.png'])
 class MapTiles(Entity):
     """
     Default map server is from OpenTopoMap. As of March 12, 2021 data is open to use. https://opentopomap.org/about
@@ -42,26 +35,6 @@ class MapTiles(Entity):
         -fix issue with license
         -accept other types of map tile formats. Like TMS or WMTS
         https://alastaira.wordpress.com/2011/07/06/converting-tms-tile-coordinates-to-googlebingosm-tile-coordinates/
-
-    BBOX examples:
-
-        -Miami BBOX:
-            lat1 = 25.91
-            lon1 = -80.45
-            lat2 = 25.62
-            lon2 = -80.1
-
-        -Manhattan BBOX:
-            lat1 = 40.894799
-            lon1 = -74.024019
-            lat2 = 40.697206
-            lon2 = -73.898962
-
-        -Amsterdam BBOX:
-            lat1 = 52.47
-            lon1 = 4.69
-            lat2 = 52.24
-            lon2 = 5.0
 
     tile_standards:
         -'osm' standard: url contains tile path "{z}/{x}/{y}.png"
@@ -84,14 +57,6 @@ class MapTiles(Entity):
                 -Create your own tiles and serve them locally. Learn how to generate tiles at https://openmaptiles.org/.
                  Use tileserver-GL https://tileserver.readthedocs.io/en/latest/index.html to render and serve the tiles.
                  Url example is: http://localhost:8080/styles/basic-preview/{z}/{x}/{y}.png
-        -"bing" standard: url contains mapArea and zoomlevel as "?mapArea={map_area}&zoomlevel={zoom_level}"
-            -Bing Maps is a commercial product. Note that Bing Maps uses a similar tile setup as osm. The difference is
-             just in how the request is made. There are several ways to make a request, see:
-             https://docs.microsoft.com/en-us/bingmaps/rest-services/imagery/get-a-static-map#pushpin-limits. The url
-             that BlueSky works with is as follows:
-             "https://dev.virtualearth.net/REST/v1/Imagery/Map/Road?mapArea={mapArea}&zoomlevel={zoomlevel}&fmt=png&key={key}"
-             This is done so that tiles are pulled in a similar way. Please refer to the Bing Maps API Terms of Use.
-             https://www.microsoft.com/en-us/maps/product.
     """
 
     def __init__(self, radar_widget):
@@ -103,61 +68,21 @@ class MapTiles(Entity):
         :param zoom_level: INTEGER, Zoom level for map tiles. 14 or 15 is recommended to limit number of requests
                            see the link below for size estimation of bbox:
             https://tools.geofabrik.de/calc/#type=geofabrik_standard&bbox=-80.448849,25.625192,-80.104825,25.90675
-        :param shareWidget:
-        :param LOAD_ALTERED: BOOLEAN, will load the altered tiles to gui
-        :param ALTER_TILE: BOOLEAN, alter the tile based on INVERT and CONTRAST
-        :param INVERT: BOOLEAN, invert the image so that it has ATM type look
-        :param CONTRAST: BOOLEAN, increase contrast if desired
-        :param con_factor: FLOAT, >1 increases contrast, <1 decreases contrast
         """
 
         super().__init__()
 
-        # radar widget Used to bring in shaders and screen size
+        # radar widget used to bring in shaders and screen size
         self.radar_widget = radar_widget
 
-        # texture array loading setting. Note that 'bing' standard cannot use texture arrays
-        if bs.settings.tile_standard == 'bing':
-            self.array_load = False
-        else:
-            self.array_load = bs.settings.array_load
-
-        # Bounding box coordinates and zoom level used if dynamic tiles is off.
-        self.lat1 = bs.settings.lat1
-        self.lon1 = bs.settings.lon1
-        self.lat2 = bs.settings.lat2
-        self.lon2 = bs.settings.lon2
-        self.zoom_level = bs.settings.zoom_level
-
-        # Initialize some variables
-        self.map_textures = []
-        self.tiles = []
-        self.tile_array = []
-        self.tile_dict = dict()
-        self.tile_offset = []
-        self.render_corners = []
-        self.local_paths = []
-        self.local_paths_offset = []
+        # Process settings.cfg
         self.enable_tiles = bs.settings.enable_tiles
-        self.download_fail = False
-        self.tex_columns = 0
-        self.tex_rows = 0
-        self.tex_width = 0
-        self.tex_height = 0
-        self.tile_size = 0
-        self.bbox_corners = None
-
-        # Check if map is dynamic
-        self.dynamic_tiles = bs.settings.dynamic_tiles
 
         # create tile directory path
         self.tile_dir = path.join(bs.settings.mpt_path,'tiles', bs.settings.mpt_server)
 
         # check for errors in config file url and set url_prefix and url_suffix for downloading of tiles
-        if bs.settings.tile_standard == 'osm':
-            img_std = '{z}/{x}/{y}'
-        elif bs.settings.tile_standard == 'bing':
-            img_std = '?mapArea={maparea}&zoomlevel={zoomlevel}'
+        img_std = '{z}/{x}/{y}'
 
         try:
             start_index = bs.settings.mpt_url[0].index(img_std)
@@ -166,38 +91,43 @@ class MapTiles(Entity):
             if 'png' in self.url_suffix:
                 self.tile_format = '.png'
             else:
-                self.tile_format = '.png'  # useless code at the moment. will matter with different formats
+                print('Only accepting png formats at the moment')
+                print('Failed to load map tiles!!')
+                self.enable_tiles = False
         except ValueError:
             # this just checks if the tile image standard for downloading is set to {z}/{x}/{y}
             print(f'Incorrect tile format in cfg file. Please make sure url contains {img_std}')
             print('Failed to load map tiles!!')
             self.enable_tiles = False
-        except UnboundLocalError:
-            # this just checks if google standard was set as the default standard. Later this will have to be edited
-            print("Incorrect tile standard in cfg file. Tile standard must be 'osm' or 'bing'.")
-            print('Failed to load map tiles!!')
-            self.enable_tiles = False
+        
 
-        # Image operations
-        self.LOAD_ALTERED = bs.settings.LOAD_ALTERED
-        self.ALTER_TILE = bs.settings.ALTER_TILE
-        self.INVERT = bs.settings.INVERT
-        self.CONTRAST = bs.settings.CONTRAST
-        self.con_factor = bs.settings.con_factor
+        # Bounding box coordinates and zoom level initialization
+        self.lat1 = None
+        self.lon1 = None
+        self.lat2 = None
+        self.lon2 = None
+        self.zoom_level = None
 
-        # License text settings
-        self.show_license = bs.settings.show_license
-        self.map_tile_license_txt = bs.settings.map_tile_license_txt
-        self.map_tile_license_path = path.join(self.tile_dir, 'map_tile_license.png')
-        self.license_texture = []
-        self.license = []
+        # Initialize other variables
+        self.map_textures = []
+        self.tiles = []
+        self.tile_array = []
+        self.tile_offset = []
+        self.local_paths = []
+        self.local_paths_offset = []
+        self.tex_columns = 0
+        self.tex_rows = 0
+        self.tex_width = 0
+        self.tex_height = 0
+        self.tile_size = 0
+        self.bbox_corners = None
 
     # Drawing functions start here
     def tile_reload(self):
         # Tile reloading from screen bbox. Note that tiles are really only good for a zoom level greater than 8.
-        # Anything smaller appears very deformed due to difference in projections of bluesky and maptiles
+        # Anything smaller appears very deformed due to difference in projections of bluesky and maptiles.
 
-        # screen zoom
+        # get screen zoom
         screen_zoom = self.radar_widget.zoom
 
         # clear everything to start fresh
@@ -249,87 +179,53 @@ class MapTiles(Entity):
         # process tiles, download tiles if necessary
         self.process_tiles()
 
-        # Bind tiles as textures. TODO: figure out faster way to send img_data information
-        if self.array_load:
-            # Texture arrays binding code
+        # Bind tiles as textures. TODO: figure out faster way to send img_data information (parallel)
+        
+        # Number of pixels in tile. Open one image and check
+        self.tile_size = Image.open(self.local_paths[0]).height
 
-            # Number of pixels in tile. Open one image and check
-            self.tile_size = Image.open(self.local_paths[0]).height
+        # number of tiles in texture
+        self.tex_width = self.tile_size * self.tex_columns
+        self.tex_height = self.tile_size * self.tex_rows
 
-            # number of tiles in texture
-            self.tex_width = self.tile_size * self.tex_columns
-            self.tex_height = self.tile_size * self.tex_rows
+        # create texture
+        texture = gl.glGenTextures(1)
+        self.map_textures.append(texture)
+        gl.glBindTexture(gl.GL_TEXTURE_2D_ARRAY, self.map_textures[0])
+        gl.glTexStorage3D(gl.GL_TEXTURE_2D_ARRAY, 1, gl.GL_RGB8, self.tex_width, self.tex_height, 1)
 
-            texture = gl.glGenTextures(1)
-            self.map_textures.append(texture)
-            gl.glBindTexture(gl.GL_TEXTURE_2D_ARRAY, self.map_textures[0])
-            gl.glTexStorage3D(gl.GL_TEXTURE_2D_ARRAY, 1, gl.GL_RGB8, self.tex_width, self.tex_height, 1)
+        # send image data to texture array.
+        for item in self.local_paths_offset:
+            image_path = item[0]
+            offset_y = item[1][0] * self.tile_size
+            offset_x = item[1][1] * self.tile_size
 
-            # send image data to texture array.
-            for item in self.local_paths_offset:
-                image_path = item[0]
-                offset_y = item[1][0] * self.tile_size
-                offset_x = item[1][1] * self.tile_size
+            image = Image.open(image_path)
+            img_data = image.tobytes()
+            gl.glTexSubImage3D(gl.GL_TEXTURE_2D_ARRAY, 0, offset_x, offset_y, 0, self.tile_size, self.tile_size, 1,
+                                gl.GL_RGB, gl.GL_UNSIGNED_BYTE, img_data)
 
-                image = Image.open(image_path)
-                img_data = image.tobytes()
-                gl.glTexSubImage3D(gl.GL_TEXTURE_2D_ARRAY, 0, offset_x, offset_y, 0, self.tile_size, self.tile_size, 1,
-                                   gl.GL_RGB, gl.GL_UNSIGNED_BYTE, img_data)
-
-            # Set texture parameters
-            gl.glGenerateMipmap(gl.GL_TEXTURE_2D_ARRAY)
-            gl.glTexParameterf(gl.GL_TEXTURE_2D_ARRAY, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR)
-            gl.glTexParameterf(gl.GL_TEXTURE_2D_ARRAY, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR)
-
-        else:
-            # each image receives it's own texture. This is not very ideal but is needed for the bing option
-
-            for image_path in self.local_paths:
-                texture = gl.glGenTextures(1)
-                self.map_textures.append(texture)
-                gl.glBindTexture(gl.GL_TEXTURE_2D, texture)
-                image = Image.open(image_path)
-                img_data = image.tobytes()
-                gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_RGB, image.width, image.height, 0, gl.GL_RGB,
-                                gl.GL_UNSIGNED_BYTE, img_data)
-
-                # Texture parameters
-                gl.glGenerateMipmap(gl.GL_TEXTURE_2D)
-                gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR)
-                gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST_MIPMAP_LINEAR)
+        # Set texture parameters
+        gl.glGenerateMipmap(gl.GL_TEXTURE_2D_ARRAY)
+        gl.glTexParameterf(gl.GL_TEXTURE_2D_ARRAY, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR)
+        gl.glTexParameterf(gl.GL_TEXTURE_2D_ARRAY, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR)
 
     def tile_render(self):
 
-        if self.array_load:
-            # Vertex array object for the 2D texture array
-            texvertices = np.array(self.bbox_corners, dtype=np.float32)
-            textexcoords = np.array([(1, 1), (1, 0), (0, 0), (0, 1)], dtype=np.float32)
-            self.tiles.append(RenderObject(gl.GL_TRIANGLE_FAN, vertex=texvertices, texcoords=textexcoords))
-        else:
-            # Vertex array object for each individual texture
-            for corner in self.render_corners:
-                texvertices = np.array(corner, dtype=np.float32)
-                textexcoords = np.array([(1, 1), (1, 0), (0, 0), (0, 1)], dtype=np.float32)
-                self.tiles.append(RenderObject(gl.GL_TRIANGLE_FAN, vertex=texvertices, texcoords=textexcoords))
+        # Vertex array object for the 2D texture array
+        texvertices = np.array(self.bbox_corners, dtype=np.float32)
+        textexcoords = np.array([(1, 1), (1, 0), (0, 0), (0, 1)], dtype=np.float32)
+        self.tiles.append(RenderObject(gl.GL_TRIANGLE_FAN, vertex=texvertices, texcoords=textexcoords))
 
     def paint_map(self):
 
-        if self.array_load:
-            # Use maptile shader for texture array and have one draw call
-            self.radar_widget.maptile_shader.use()
+        # Use maptile shader for texture array and have one draw call
+        self.radar_widget.maptile_shader.use()
 
-            gl.glBindTexture(gl.GL_TEXTURE_2D_ARRAY, self.map_textures[0])
-            self.tiles[0].draw()
-
-        else:
-            # Use radar widget shader for each individual texture and have one draw call per texture
-            self.radar_widget.texture_shader.use()
-            for i in range(len(self.tile_array)):
-                gl.glBindTexture(gl.GL_TEXTURE_2D, self.map_textures[i])
-                self.tiles[i].draw()
+        gl.glBindTexture(gl.GL_TEXTURE_2D_ARRAY, self.map_textures[0])
+        self.tiles[0].draw()
 
     def clear_tiles(self):
-
         # unbind and delete textures
         for i in range(len(self.tiles)):
             self.tiles[i].unbind_all()
@@ -340,51 +236,8 @@ class MapTiles(Entity):
         self.local_paths = []
         self.tiles = []
         self.map_textures = []
-        self.render_corners = []
         self.local_paths_offset = []
         self.tile_offset = []
-
-    def license_load(self):
-
-        # clear license things for reload
-        self.license_texture = []
-        self.license = []
-
-        # check if image exists and create if not
-        if not path.exists(self.map_tile_license_path):
-            self.generate_license_txt()
-        
-        # Open image
-        image = Image.open(self.map_tile_license_path).convert('RGB')
-        img_data = image.tobytes()
-        
-        # Create and bind texture 
-        texture = gl.glGenTextures(1)
-        self.license_texture.append(texture)
-        gl.glBindTexture(gl.GL_TEXTURE_2D, texture)
-        gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_RGB, image.width, image.height, 0, gl.GL_RGB,
-                        gl.GL_UNSIGNED_BYTE, img_data)
-
-        # Texture parameters
-        gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
-        gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST)
-
-        # get corner info of license
-        bottom, right = self.radar_widget.pixelCoordsToLatLon(self.radar_widget.width, self.radar_widget.height)
-        top, left = self.radar_widget.pixelCoordsToLatLon(self.radar_widget.width - image.width, self.radar_widget.height - image.height)
-
-        # Get corner latlon of license text
-        corner = (bottom, right), (bottom, left), (top, left), (top, right)
-
-        # Create vertex array object for license text
-        texvertices = np.array(corner, dtype=np.float32)
-        textexcoords = np.array([(1, 1), (1, 0), (0, 0), (0, 1)], dtype=np.float32)
-        self.license.append(RenderObject(gl.GL_TRIANGLE_FAN, vertex=texvertices, texcoords=textexcoords))
-
-    def paint_license(self):
-        self.radar_widget.texture_shader.use()
-        gl.glBindTexture(gl.GL_TEXTURE_2D, self.license_texture[0])
-        self.license[0].draw()
 
     # Non-drawing functions from here on
     def process_tiles(self):
@@ -392,37 +245,15 @@ class MapTiles(Entity):
         with concurrent.futures.ThreadPoolExecutor() as executor:
             executor.map(self.download_tile, self.tile_array)
 
-        # Image operations
-        if self.enable_tiles and self.LOAD_ALTERED:
-            # Perform image operations in multiple threads
-            with concurrent.futures.ThreadPoolExecutor() as executor:
-                executor.map(self.alter_tile, self.tile_array)
-
-        # Create local path names and get corner info
+        # Create local path names to access
         for item in self.tile_array:
             x = item[0]  # tile x
             y = item[1]  # tile y
 
             img_path = path.join(str(self.zoom_level), str(x), str(y))
-            alt_local_path = path.join(self.tile_dir, f'{img_path}a{self.tile_format}')
-            raw_local_path = path.join(self.tile_dir, img_path + self.tile_format)
+            local_path = path.join(self.tile_dir, img_path + self.tile_format)
 
-            if self.LOAD_ALTERED:
-                local_path = alt_local_path
-            else:
-                local_path = raw_local_path
-
-            # create array of tile corners only needed if not using texture arrays
-            if bs.settings.tile_standard == 'osm':
-                img_corner = self.tile_corners(x, y, self.zoom_level)
-            elif bs.settings.tile_standard == 'bing':
-                # use image metadata to get corner info for rendering. perhaps save this data so it goes faster on
-                # reruns
-                img_corner = self.bing_bbox(x, y)
-
-            self.render_corners.append(img_corner)
-
-            # create arrays of local paths for later use
+            # create array of local paths for later use
             self.local_paths.append(local_path)
 
         # Create local path dictionary with image offsets
@@ -460,7 +291,7 @@ class MapTiles(Entity):
                     self.tile_array[row, col] = (self.tile_array[row, col - 1][0] + 1,
                                                  self.tile_array[row, col - 1][1])
 
-                # create tile offsets of texture array to create list of tuples with the local_path
+                # create tile offsets of texture array and create list of tuples with the local_path
                 self.tile_offset.append((row, col))
 
         # flatten tile array
@@ -478,6 +309,7 @@ class MapTiles(Entity):
 
             # Download tile if it has not been downloaded
             if not path.exists(raw_local_path):
+
                 # create new paths, first create directories for zoom level and x
                 img_dirs = path.join(self.tile_dir, str(self.zoom_level), str(x))
 
@@ -487,15 +319,10 @@ class MapTiles(Entity):
                 except FileExistsError:
                     pass
 
-                # download image from web
-                if bs.settings.tile_standard == 'osm':
-                    # osm tile_format downloads have the same image path as local folder
-                    url_img_path = f'{str(self.zoom_level)}/{str(x)}/{str(y)}'
-                elif bs.settings.tile_standard == 'bing':
-                    # alter image path for bing maps url download
-                    lat2, lon1, lat1, lon2 = self.tileEdges(x, y, self.zoom_level)
-                    map_area = f'{lat2},{lon1},{lat1},{lon2}'
-                    url_img_path = f'?mapArea={map_area}&zoomlevel={str(self.zoom_level)}'
+                # download image from server
+              
+                # osm tile_format downloads have the same image path as local folder
+                url_img_path = f'{str(self.zoom_level)}/{str(x)}/{str(y)}'
 
                 image_url = self.url_prefix + url_img_path + self.url_suffix
 
@@ -508,88 +335,12 @@ class MapTiles(Entity):
                         print(f'Failed to download tiles. Ensure that url is valid: {image_url}')
                         remove(raw_local_path)
 
-                        # set some variables to cancel map tile loop
+                        # cancel map tile downloading loop
                         self.enable_tiles = False
 
-                # Convert to RGBA
+                # Convert to RGBA for OpenGL
                 img = Image.open(raw_local_path).convert('RGB')
                 img.save(raw_local_path)
-
-    def alter_tile(self, tile):
-
-        x = tile[0]  # tile x
-        y = tile[1]  # tile y
-
-        img_path = path.join(str(self.zoom_level), str(x), str(y))
-        alt_local_path = path.join(self.tile_dir, f'{img_path}a{self.tile_format}')
-        raw_local_path = path.join(self.tile_dir, img_path + self.tile_format)
-
-        # check if you want to make a new change or if path exists.
-        if not path.exists(alt_local_path) or self.ALTER_TILE:
-
-            # Open image
-            altered_image = Image.open(raw_local_path)
-
-            # invert image
-            if self.INVERT:
-                altered_image = ImageChops.invert(altered_image)
-
-            # increase contrast, increasing contrast factor means more contrast
-            if self.CONTRAST:
-                enhancer = ImageEnhance.Contrast(altered_image)
-                altered_image = enhancer.enhance(self.con_factor)
-
-            altered_image.save(alt_local_path)
-
-    def bing_bbox(self, x, y):
-
-        # get area of tile and create the bing url for a metadata request
-        lat2, lon1, lat1, lon2 = self.tileEdges(x, y, self.zoom_level)
-        map_area = f'{lat2},{lon1},{lat1},{lon2}'
-
-        url_img_path = f'?mapArea={map_area}&zoomlevel={str(self.zoom_level)}'
-
-        image_url = self.url_prefix + url_img_path + self.url_suffix + '&mmd=1'
-
-        # create request
-        bbox_image = requests.get(image_url).json()['resourceSets'][0]['resources'][0]['bbox']
-        img_corner = ((bbox_image[0], bbox_image[3]), (bbox_image[0], bbox_image[1]),
-                      (bbox_image[2], bbox_image[1]), (bbox_image[2], bbox_image[3]))
-        return img_corner
-
-    def generate_license_txt(self):
-        # generate license text. Need to fix this in future
-        
-        # Import things
-        from PIL import ImageFont, ImageDraw 
-
-        # set font for image
-        font_size = 10
-
-        font_path = path.join(bs.settings.mpt_path,'font','OpenSans-Regular.ttf')
-
-        font = ImageFont.truetype(font_path, font_size)
-
-        # get image size based on txt size
-        txt_w, txt_h = font.getsize(self.map_tile_license_txt)
-
-        # set new image height
-        img_width = txt_w
-        img_height = txt_h
-
-        # create image to edit
-        image = Image.new('RGB', (img_width,img_height), (255,255,255))
-
-        # Initialize drawing context
-        draw = ImageDraw.Draw(image)
-
-        # Add text to image
-        draw.rectangle((0, 0, img_width, img_height), fill='white')
-        draw.text((0, 0), self.map_tile_license_txt, fill=(0, 0, 0), font=font)
-
-        # save image
-        image.save(self.map_tile_license_path)
-
 
     # ----------------------------------------------------------------------
     # Translates between lat/long and the slippy-map tile numbering scheme
