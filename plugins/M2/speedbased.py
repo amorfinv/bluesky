@@ -80,15 +80,13 @@ class SpeedBased(ConflictResolution):
         
         # Descend and ascend checks
         can_ascend = True
-        can_descend = True
         should_ascend = True
-        should_descend = True
         
         # Check if aircraft can ascend or descend to another cruise layer
         # Basically, we check if there are other aircraft above or below
         for idx_other, dist in enumerate(dist2others):
             # First, check if distance is smaller than rpz * 1.5
-            if dist < (conf.rpz[idx] + conf.rpz[idx_other]) * 1.5:
+            if dist < (conf.rpz[idx] + conf.rpz[idx_other]) * 2:
                 # Check if the vertical distance is smaller than one layer hop, but also
                 # that we're not already in a conflict with this aircraft
                 vertical_dist = ownship.alt[idx] - intruder.alt[idx_other]
@@ -97,9 +95,6 @@ class SpeedBased(ConflictResolution):
                     if vertical_dist < 0:
                         # An aircraft is above
                         can_ascend = False
-                    elif vertical_dist > 0:
-                        # An aircraft is below
-                        can_descend = False
         
         # Initialise some variables
         t = bs.settings.asas_dtlookahead
@@ -158,13 +153,13 @@ class SpeedBased(ConflictResolution):
             # First, let's clear some vertical matters. If an intruder is in front and
             # is performing a vertical maneuver, then prevent aircraft in back from
             # performing the same maneuver.
-            if (-20 < qdr_intruder < 20):
+            if (-10 < qdr_intruder < 10):
                 if intruder.vs[idx_intruder] > 0.1:
                     # Aircraft in front is performing an ascent maneuver
                     should_ascend = False
-                elif intruder.vs[idx_intruder] < -0.1:
-                    # Aircraft in front is performing a descent maneuver
-                    should_descend = False
+                    
+            if not(-10 < qdr_intruder < 10):
+                should_ascend = False
             
             # Set the target altitude in case we can ascend
             target_alt = intruder.alt[idx] + self.cruiselayerdiff
@@ -180,18 +175,11 @@ class SpeedBased(ConflictResolution):
     
             v_intruder = np.array([intruder.gseast[idx_intruder], intruder.gsnorth[idx_intruder]])
 
-            # Get circle
-            circle = Point(x/t).buffer(r/t)
-
             # Get cutoff legs
             left_leg_circle_point, right_leg_circle_point = self.cutoff_legs(x, r, t)
 
             right_leg_extended = right_leg_circle_point * t
             left_leg_extended = left_leg_circle_point * t
-
-            #triangle_poly = Polygon([right_leg_extended, right_leg_circle_point, left_leg_circle_point, left_leg_extended])
-
-            #final_poly = cascaded_union([triangle_poly, circle])
             
             final_poly = Polygon([right_leg_extended, (0,0), left_leg_extended])
             
@@ -237,6 +225,15 @@ class SpeedBased(ConflictResolution):
             if (ownship.id[idx] == pair[0]):
                 idx_pairs = np.append(idx_pairs, idx_pair)
         return idx_pairs
+    
+    def reso_pairs(self, conf, ownship, intruder, idx):
+        '''Returns the indices of aircraft that are resolving conflicts with aircraft idx.
+        '''
+        idx_confs = np.array([], dtype = int)
+        for pair in self.resopairs:
+            if pair[0] == ownship.id[idx]:
+                idx_confs = np.append(idx_confs, ownship.id.index(pair[1]))
+        return idx_confs
     
     def perp_left(self, a):
         ''' Gives perpendicular unit vector pointing to the "left" (+90 deg)
@@ -344,12 +341,15 @@ class SpeedBased(ConflictResolution):
                 # Stop here, there's nothing to do anyway with this aircraft
                 continue
             
-            # We check if conflict resolution is active for this aircraft but it
-            # is no longer in conflict pairs. It means it is stuck in CR mode behind some
-            # slower aircraft.
+            # We check if aircraft is active but is no longer in conflict pairs. 
+            # It means it's a candidate for getting stuck. We can then check the heading
+            # between the two aircraft and see if one is behind the other. 
             if ownship.cr.active[idx] and not self.in_confpairs(idx):
-                # If aircraft is stuck, we stop here as is_stuck also
-                # unstucks it if possible. 
+                idx_others = self.reso_pairs(conf, ownship, intruder, idx)
+                for idx_intruder in idx_others:
+                    qdr_intruder = ((conf.qdr_mat[idx, idx_intruder]- ownship.trk[idx]) + 180) % 360 - 180
+                    if not(-10 < qdr_intruder < 10):
+                        should_ascend = False
                 target_alt = ownship.alt[idx] + self.cruiselayerdiff
                 if can_ascend and should_ascend:
                     # Aircraft can ascend to next layer
