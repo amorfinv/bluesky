@@ -37,7 +37,7 @@ class SpeedBased(ConflictResolution):
         self.cruiselayerdiff = 75 * ft
         self.min_alt = 50 * ft
         with self.settrafarrays():
-            self.last_conflicts = []
+            self.in_headon_conflict = []
         
     def resolve(self, conf, ownship, intruder):
         '''We want to only solve in the velocity direction while still following the heading
@@ -46,7 +46,6 @@ class SpeedBased(ConflictResolution):
         If there is no solution, it should then apply speed 0 by default, and the aircraft stops.'''
              
         # Make a copy of traffic data, track and ground speed
-        newtrack    = np.copy(ownship.trk)
         newgscapped = np.copy(ownship.gs)
         newvs       = np.copy(ownship.vs)
         
@@ -55,14 +54,12 @@ class SpeedBased(ConflictResolution):
             # Find the pairs in which IDX is involved in a conflict
             idx_pairs = self.pairs(conf, ownship, intruder, idx)
             
-            self.last_conflicts[idx] = [ownship.id[x] for x in idx_pairs]
-            
             # Find solution for aircraft 'idx'
             gs_new, vs_new = self.SpeedBased(conf, ownship, intruder, idx, idx_pairs)
             
             # Write the new velocity of aircraft 'idx' to traffic data
             newgscapped[idx] = gs_new    
-            newvs[idx] = vs_new       
+            newvs[idx] = vs_new    
         
         # Speed based, and 2D, for now.
         alt            = ownship.ap.alt 
@@ -115,8 +112,10 @@ class SpeedBased(ConflictResolution):
             # TODO: Introduce proper priority.
             qdr_intruder = ((qdr - ownship.trk[idx]) + 180) % 360 - 180
             # Check if intruder is coming from the back or left.
-            if (-180 <= qdr_intruder  < -135) or (135 <= qdr_intruder  < 180) \
-                    or not (0 <= qdr_intruder  <= 180):
+            if (-180 <= qdr_intruder  < -135) or (135 <= qdr_intruder  < 180):
+                # From the back, but if we're in a loss of separation, then just
+                # advance
+                return ownship.ap.tas[idx], ownship.ap.vs[idx]
                 # go to next pair
                 continue      
             
@@ -149,18 +148,6 @@ class SpeedBased(ConflictResolution):
             
             # --------------- Actual conflict resolution calculation------------
             # Until now we had exceptions, now we do actual maneuvers.
-            
-            # First, let's clear some vertical matters. If an intruder is in front and
-            # is performing a vertical maneuver, then prevent aircraft in back from
-            # performing the same maneuver.
-            if (-10 < qdr_intruder < 10):
-                if intruder.vs[idx_intruder] > 0.1:
-                    # Aircraft in front is performing an ascent maneuver
-                    should_ascend = False
-                    
-            if not(-10 < qdr_intruder < 10):
-                should_ascend = False
-            
             # Set the target altitude in case we can ascend
             target_alt = intruder.alt[idx] + self.cruiselayerdiff
             
@@ -172,8 +159,28 @@ class SpeedBased(ConflictResolution):
 
             # Relative position vector between ownship and intruder
             x = np.array([np.sin(qdr)*dist, np.cos(qdr)*dist])
-    
             v_intruder = np.array([intruder.gseast[idx_intruder], intruder.gsnorth[idx_intruder]])
+            
+            # First, let's clear some vertical matters. If an intruder is in front and
+            # is performing a vertical maneuver, then prevent aircraft in back from
+            # performing the same maneuver.
+            if (-10 < qdr_intruder < 10):
+                if intruder.vs[idx_intruder] > 0.1:
+                    # Aircraft in front is performing an ascent maneuver
+                    should_ascend = False
+                    
+                # Here is a good place to also check if this is a head-on conflict
+                if ((np.degrees(self.angle(v_ownship, v_intruder))) > 170):
+                    # This is a head-on conflict, immediately ascend into an unused layer (50 ft above)
+                    # Also, current aircraft doesn't have a vertical velocity so an altitude command
+                    # is possible. 
+                    if self.in_headon_conflict[idx] != True:
+                        stack.stack(f'ALT {ownship.id[idx]} {(ownship.alt[idx])/ft + 50}')
+                        
+                    self.in_headon_conflict[idx] = True
+                    
+            if not(-10 < qdr_intruder < 10):
+                should_ascend = False
 
             # Get cutoff legs
             left_leg_circle_point, right_leg_circle_point = self.cutoff_legs(x, r, t)
@@ -188,7 +195,7 @@ class SpeedBased(ConflictResolution):
             VelocityObstacles.append(final_poly_translated)
             
         # Went through all intruders, now let's try to hop a layer
-        if can_ascend and should_ascend:
+        if can_ascend and should_ascend and self.in_headon_conflict[idx] != True:
             stack.stack(f'ALT {ownship.id[idx]} {target_alt/ft}')
         
         # Combine all velocity obstacles into one figure
@@ -210,10 +217,16 @@ class SpeedBased(ConflictResolution):
         if intersection:
             solutions = []
             for velocity in list(intersection.coords):
-                solutions.append(self.norm(velocity))
+                # Check whether to put velocity "negative" or "positive". 
+                # Drones can fly backwards.
+                if np.degrees(self.angle(velocity, v_ownship)) < 1:
+                    solutions.append(self.norm(velocity))
+                else:
+                    solutions.append(-self.norm(velocity))
             gs_new = min(solutions)
         else:
-            gs_new = ownship.ap.tas[idx]
+            # Maintain current speed
+            gs_new = ownship.gs[idx]
         
         return gs_new, ownship.ap.vs[idx]
     
@@ -250,21 +263,6 @@ class SpeedBased(ConflictResolution):
         b[0] = a[1]
         b[1] = -a[0]
         return b/np.linalg.norm(b)
-    
-    # def cutoff_legs(self, x, r, t):
-    #     '''Gives the cutoff point of the left leg.'''
-    #     # Find vector that describes radius
-    #     r_vec = self.perp_left(x) * r
-    #     # Find the big left leg vector
-    #     left_leg = x + r_vec
-    #     # Find the left leg direction
-    #     left_cutoff_leg_dir = self.normalized(left_leg)
-    #     # Save this for later
-    #     self.left_cutoff_leg_dir = left_cutoff_leg_dir
-    #     # Find the length of the left cutoff leg
-    #     left_cutoff_leg = np.sqrt(self.norm_sq(x/t) - (r/t)*(r/t))
-    #     # Return left cutoff vector
-    #     return left_cutoff_leg * left_cutoff_leg_dir
         
     def cutoff_legs(self, x, r, t):
         '''Gives the cutoff point of the right leg.'''
@@ -333,6 +331,10 @@ class SpeedBased(ConflictResolution):
             if abs(ownship.vs[idx]) > 0.01:
                 continue
             
+            # We also ignore it if it's currently in a head-on conflict
+            if self.in_headon_conflict[idx] == True:
+                continue
+            
             # Descend and ascend checks
             can_ascend, can_descend, should_ascend, should_descend = \
                     self.check_ascent_descent(conf, ownship, intruder, idx)
@@ -370,6 +372,7 @@ class SpeedBased(ConflictResolution):
     def check_ascent_descent(self, conf, ownship, intruder, idx):
         # Check distance to other aircraft
         dist2others = conf.dist_mat[idx]
+        qdr2others  = conf.qdr_mat[idx]
         
         dlookahead = bs.settings.asas_dtlookahead * ownship.gs[idx]
         # Descend and ascend checks
@@ -390,8 +393,7 @@ class SpeedBased(ConflictResolution):
             # Check if there is any aircraft in front within the lookahead time that
             # is doing a vertical maneuver
             if dist < dlookahead:
-                qdr, dummy = kwikqdrdist(ownship.lat[idx], ownship.lon[idx], 
-                                    intruder.lat[idx_other], intruder.lon[idx_other])
+                qdr = qdr2others[idx_other]
                 qdr_intruder = ((qdr - ownship.trk[idx]) + 180) % 360 - 180
                 qdr_list = np.append(qdr_list, qdr_intruder)
                 
@@ -538,6 +540,8 @@ class SpeedBased(ConflictResolution):
                 changeactive[idx1] = changeactive.get(idx1, False)
                 # If conflict is solved, remove it from the resopairs list
                 delpairs.add(conflict)
+                # In case it was a head-on conflict
+                self.in_headon_conflict[idx1] = False
                 # Re-enable vnav
                 stack.stack(f'VNAV {ownship.id[idx1]} ON')
 
