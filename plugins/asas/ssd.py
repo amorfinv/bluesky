@@ -58,7 +58,7 @@ class SSD(ConflictResolution):
         import sys
         return "pyclipper" in sys.modules
 
-    def detect(asas, traf):
+    def detect(self, asas, traf):
         """ Detect all current conflicts """
 
         # Check if ASAS is ON first!
@@ -66,7 +66,7 @@ class SSD(ConflictResolution):
             return
 
         # Construct the SSD
-        constructSSD(asas, traf)
+        self.constructSSD(asas, traf)
 
 
     def resolve(self, conf, ownship, intruder):
@@ -139,7 +139,7 @@ class SSD(ConflictResolution):
         N = 0
         # Parameters
         N_angle = 180  # [-] Number of points on circle (discretization)
-        hsep = conf.rpz  # [m] Horizontal separation (5 NM)
+        hsep = np.average(conf.rpz)  # [m] Horizontal separation (5 NM)
         margin = self.resofach  # [-] Safety margin for evasion
         hsepm = hsep * margin  # [m] Horizontal separation with safety margin
         alpham = 0.4999 * np.pi  # [rad] Maximum half-angle for VO
