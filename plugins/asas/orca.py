@@ -82,8 +82,9 @@ class ORCA(ConflictResolution):
             # time to make the solution better. The lookahead time is used to
             # cut off the VO cone. The asas update time (dt) is used to find the
             # best solution for the next time step in case of LOS.
+            # Added +5 for the lookahead as it works better
             dv, n = self.get_avoidance_velocity(conf, ownship, intruder, qdr, dist, idx
-                    , idx_intruder, bs.settings.asas_dtlookahead, bs.settings.asas_dt)
+                    , idx_intruder, bs.settings.asas_dtlookahead + 5, bs.settings.asas_dt)
             
             # Solutions are cooperative
             factor = 0.5
@@ -141,7 +142,7 @@ class ORCA(ConflictResolution):
              np.array([intruder.gseast[idx_intruder], intruder.gsnorth[idx_intruder]]))
         
         # Take minimum separation and multiply it with safely factor
-        r = conf.rpz * self.resofach
+        r = (conf.rpz[idx] + conf.rpz[idx_intruder]) * self.resofach
     
         x_len_sq = self.norm_sq(x)
     

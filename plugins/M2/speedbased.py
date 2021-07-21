@@ -35,7 +35,7 @@ class SpeedBased(ConflictResolution):
     def __init__(self):
         super().__init__()
         self.cruiselayerdiff = 75 * ft
-        self.min_alt = 50 * ft
+        self.min_alt = 25 * ft
         with self.settrafarrays():
             self.in_headon_conflict = []
         
@@ -314,7 +314,7 @@ class SpeedBased(ConflictResolution):
         
         return np.array([x_l, y_l]), np.array([x_r, y_r])
     
-    @core.timed_function(name = 'stuck_checker', dt=5)
+    #@core.timed_function(name = 'stuck_checker', dt=5)
     def check_traffic(self):
         """This function does a periodic sweep of all aircraft and
         checks whether they are stuck behind a slow moving aircraft

@@ -111,7 +111,7 @@ static PyObject* casas_detect(PyObject* self, PyObject* args)
             lat1.ptr++; lon1.ptr++; trk1.ptr++; gs1.ptr++; alt1.ptr++; vs1.ptr++;
         }
 
-        return PyTuple_Pack(11, confpairs.attr, lospairs.attr, inconf.arr, tcpamax.arr, qdr.attr, dist.attr, dcpa.attr, tcpa.attr, tinconf.attr);
+        return PyTuple_Pack(9, confpairs.attr, lospairs.attr, inconf.arr, tcpamax.arr, qdr.attr, dist.attr, dcpa.attr, tcpa.attr, tinconf.attr);
     }
 
     Py_RETURN_NONE;
