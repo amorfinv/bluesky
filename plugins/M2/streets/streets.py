@@ -7,6 +7,7 @@ import json
 import numpy as np
 from numpy import *
 from collections import Counter
+import networkx as nx
 
 import bluesky as bs
 from bluesky import core, stack, traf, scr, sim  #settings, navdb, tools
@@ -396,3 +397,6 @@ node_dict = {v: k for k, v in node_dict.items()}
 
 # Initialize EdgeTraffic class
 edge_traffic = EdgeTraffic()
+
+# Load graph
+graph = nx.read_graphml('processed_graph.graphml')
