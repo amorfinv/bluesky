@@ -1,6 +1,6 @@
 #include <iostream>
 #include <vector>
-#include "asas.hpp"
+#include "dist.hpp"
 #define DEG2RAD 0.017453292519943295
 #define RAD2DEG 57.29577951308232
 #define M2NM 0.0005399568034557236
@@ -53,12 +53,14 @@ static PyObject* casas_detect(PyObject* self, PyObject* args)
         // Return values
         PyDoubleArrayAttr tcpamax(size);
         PyBoolArrayAttr inconf(size);
-        PyListAttr confpairs, lospairs, qdr, dist, dcpa, tcpa, tinconf;
+        PyListAttr confpairs, lospairs, qdr, dist, dcpa, tcpa, tinconf, qdr_mat, dist_mat;
 
         for (unsigned int i = 0; i < size; ++i) {
             acinconf = NPY_FALSE;
             for (unsigned int j = 0; j < size; ++j) {
                 if (i != j) {
+                    // Get the distance and qdr between these two and store em
+                    
                     // Vectical detection first
                     dalt = *alt1.ptr - *alt2.ptr;
                     dvs  = *vs1.ptr  - *vs2.ptr;

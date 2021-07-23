@@ -3,10 +3,15 @@ Airspace edge information. Copies traffic, autopilot, route, activewaypoint
 """
 # TODO: check if deleting routes/aircraft/waypoints works
 
+from bluesky.tools.misc import lat2txt
 import json
 import numpy as np
+import dill
 from numpy import *
 from collections import Counter
+from plugins.streets.flow_control import street_graph,bbox
+from plugins.streets.agent_path_planning import PathPlanning
+
 
 import bluesky as bs
 from bluesky import core, stack, traf, scr, sim  #settings, navdb, tools
@@ -39,8 +44,8 @@ def update():
     _, dis_to_turn = geo.qdrdist_matrix(traf.lat, traf.lon, edge_traffic.actedge.turn_intersection_lat, edge_traffic.actedge.turn_intersection_lon)
 
 ######################## TIMED FUNCTION  ##########################
-@core.timed_function(dt=5)
-def measure_density():
+@core.timed_function(dt=30)
+def do_flowcontrol():
     # tells you how many aircraft in an edge
     # TODO: perhaps only useful for stroke_groups
     edge_density_dict = dict(Counter(edge_traffic.actedge.wpedgeid))
@@ -96,6 +101,31 @@ class EdgeTraffic(Entity):
 
             self.edgeap   = EdgesAp()
             self.actedge  = ActiveEdge()
+
+class PathPlans(Entity):
+    def __init__(self):
+        super().__init__()
+        self.getGraph()
+        self.graph = street_graph(self.G, self.edges)
+        
+        with self.settrafarrays():
+            self.pathplanning = []
+            
+    def create(self, n = 1):
+        super().create(n)
+        traf = bs.traf
+        lat1 = traf.ap.route[-n].wplat[0]
+        lon1 = traf.ap.route[-n].wplon[0]
+        lat2 = traf.ap.route[-n].wplat[-1]
+        lon2 = traf.ap.route[-n].wplon[-1]
+        d_start,start_index=self.graph.get_nearest_node(lon1,lat1)
+        d_dest,dest_index=self.graph.get_nearest_node(lon2,lat2)
+        self.pathplanning[-n:] = PathPlanning(self.G, self.edges, start_index, dest_index) 
+        
+    def getGraph(self):
+        self.G = dill.load(open("plugins/streets/G-multigraph.dill", "rb"))
+        self.edge = dill.load(open("plugins/streets/edge_gdf.dill", "rb"))#load edge_geometry
+        
 
 # "autopilot"
 class EdgesAp(Entity):
@@ -396,3 +426,5 @@ node_dict = {v: k for k, v in node_dict.items()}
 
 # Initialize EdgeTraffic class
 edge_traffic = EdgeTraffic()
+
+path_plans = PathPlans()
