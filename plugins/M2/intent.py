@@ -1,20 +1,40 @@
 import bluesky as bs
 from bluesky.tools.geo import kwikpos, kwikqdrdist
 import numpy as np
-from bluesky.core import Entity
+from bluesky.core import Entity, timed_function
 from shapely.geometry import LineString
 from bluesky.tools.aero import nm
 
-class Intent(Entity, replaceable = True):
+
+def init_plugin():
+
+    # Instantiate our example entity
+    intent = Intent()
+    
+    # Configuration parameters
+    config = {
+        # The name of your plugin
+        'plugin_name':     'INTENT',
+
+        # The type of this plugin. For now, only simulation plugins are possible.
+        'plugin_type':     'sim'
+    }
+
+    return config
+
+class Intent(Entity):
     def __init__(self):
         super().__init__()
         with self.settrafarrays():
             self.intent = []
-        
-        
-    def update(self, ownship):
+        bs.traf.intent = self.intent
+            
+    @timed_function(name = 'intent_update', dt = 1)           
+    def update(self):
+        ownship = bs.traf
         # Called from within traffic
         self.calc_intent(ownship)
+        bs.traf.intent = self.intent
         return
 
     def calc_intent(self, ownship):

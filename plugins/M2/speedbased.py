@@ -124,27 +124,30 @@ class SpeedBased(ConflictResolution):
             if dist < r:
                 return 1, 0   
             
-            # Let's also do some intent check
-            own_intent, own_target_alt = ownship.intent.intent[idx]
-            intruder_intent, intruder_target_alt = intruder.intent.intent[idx_intruder]
-            # Find closest points between the two intent paths
-            pown, pint = nearest_points(own_intent, intruder_intent)
-            # Find the distance between the points
-            point_distance = kwikdist(pown.y, pown.x, pint.y, pint.x) * nm #[m]
-            # Also do vertical intent
-            # Difference between own altitude and intruder target
-            diff = ownship.alt[idx] - intruder_target_alt
-            # Basically, there are three conditions to be met in order to skip
-            # a conflict due to intent:
-            # 1. The minimum distance between the horizontal intent lines is greater than r;
-            # 2. The difference between the current altitude and the target altitude of the 
-            # intruder is greater than the vertical separation margin;
-            # 3. The altitude difference and vertical velocity of the intruder have the same sign.
-            # This means that if the aircraft is coming from above (negative), and the altitude difference
-            # is positive (thus target altitude is below ownship), then their paths will intersect. 
-            if (point_distance > r) and (abs(diff) >= conf.hpz[idx]) and \
-                (diff *  intruder.vs[idx_intruder] > 0):
-                continue
+            # Let's also do some intent check if the intent plugin is loaded
+            try:
+                own_intent, own_target_alt = ownship.intent[idx]
+                intruder_intent, intruder_target_alt = intruder.intent[idx_intruder]
+                # Find closest points between the two intent paths
+                pown, pint = nearest_points(own_intent, intruder_intent)
+                # Find the distance between the points
+                point_distance = kwikdist(pown.y, pown.x, pint.y, pint.x) * nm #[m]
+                # Also do vertical intent
+                # Difference between own altitude and intruder target
+                diff = ownship.alt[idx] - intruder_target_alt
+                # Basically, there are three conditions to be met in order to skip
+                # a conflict due to intent:
+                # 1. The minimum distance between the horizontal intent lines is greater than r;
+                # 2. The difference between the current altitude and the target altitude of the 
+                # intruder is greater than the vertical separation margin;
+                # 3. The altitude difference and vertical velocity of the intruder have the same sign.
+                # This means that if the aircraft is coming from above (negative), and the altitude difference
+                # is positive (thus target altitude is below ownship), then their paths will intersect. 
+                if ((point_distance > r) or (abs(diff) >= conf.hpz[idx])) and \
+                    (abs(intruder.vs[idx_intruder]) < 0.1):
+                    continue
+            except:
+                print('Intent plugin not loaded.')
             
             # --------------- Actual conflict resolution calculation------------
             # Until now we had exceptions, now we do actual maneuvers.
