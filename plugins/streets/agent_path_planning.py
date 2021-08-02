@@ -13,7 +13,7 @@ import heapq
 import numpy as np
 import math
 import copy
-
+from flow_control import sstreet_graph,bbox
 
 class Node:
     av_speed_horizontal= 10.0
@@ -316,22 +316,36 @@ def get_path(path,graph, G,edges,edges_old=None,change=False,change_list=[]):
         else:
             turns.append(1)
     turns.append(0)
-        
+     
+
     return route,turns
         
 class PathPlanning:
     
-    def __init__(self,G ,edges,start_index,goal_index):
-        self.start_index=start_index
-        self.goal_index=goal_index
-        self.G = G
-        self.edge_gdf=copy.deepcopy(edges)
+    def __init__(self,flow_control_graph,lon_start,lat_start,lon_dest,lat_dest):
+        self.start_index=None
+        self.goal_index=None
+        self.G = None#G
+        self.edge_gdf=None#copy.deepcopy(edges)
         self.path=None
         self.os_keys_dict_succ={}
         self.os_keys_dict_pred={}
         self.os_keys_dict={}
+        self.route=[]
+        self.turns=[]
+        self.flow_control_graph=flow_control_graph
 
 
+        exp_const=0.005 ## we need to think about the value of that constant
+        box=bbox(min(lat_start,lat_dest)-exp_const,min(lon_start,lon_dest)-exp_const,max(lat_start,lat_dest)+exp_const,max(lon_start,lon_dest)+exp_const) 
+        
+        self.G,edges=self.flow_control_graph.extract_subgraph(box)
+        self.edge_gdf=copy.deepcopy(edges)
+
+        d_start,self.start_index=self.flow_control_graph.get_nearest_node(lon_start,lat_start)
+        d_dest,self.goal_index=self.flow_control_graph.get_nearest_node(lon_dest,lat_dest)
+        
+        
         #Create the graph
         self.graph=[]
         omsnx_keys_list=list(self.G.keys())
@@ -500,7 +514,9 @@ class PathPlanning:
         turns=[]
         if path_found:
             route,turns=get_path(self.path,self.graph, self.G,self.edge_gdf)
-            
+                
+        self.route=route
+        self.turns=turns    
         return route,turns
     
     def replan(self,edges_g,current_point_index,index_change_list):
@@ -519,25 +535,32 @@ class PathPlanning:
         
         self.path.start=start_node
         
+        edges_g=copy.deepcopy(self.edge_gdf)
         change_list=[]
         for t in index_change_list:
-            tmp=[]
+            if t[0] in self.os_keys_dict_succ.keys() and t[1] in self.os_keys_dict_succ[t[0]].keys():
+                tmp=[]
+                ind=self.os_keys_dict_succ[t[0]][t[1]]
+                print(ind)
+                tmp.append(self.graph[ind])
+                ind=self.os_keys_dict_pred[t[1]][t[0]]
+                print(ind)
+                tmp.append(self.graph[ind])
+                change_list.append(tmp)
+                edges_g[t[0]][t[1]].speed=t[2]
 
-            ind=self.os_keys_dict_succ[t[0]][t[1]]
-            print(ind)
-            tmp.append(self.graph[ind])
-            ind=self.os_keys_dict_pred[t[1]][t[0]]
-            print(ind)
-            tmp.append(self.graph[ind])
-            change_list.append(tmp)
 
-        print(self.edge_gdf[index_change_list[0][0]][index_change_list[0][1]].max_speed)
-        route=[]
-        turns=[]
-        route,turns=get_path(self.path,self.graph, self.G,edges_g,self.edge_gdf,True,change_list)
-        self.edge_gdf=copy.deepcopy(edges_g)
-        
-        return route,turns
+        if change_list!=[]: ##get new path only if tehre are changes in the aircraft's subgraph
+            #print(self.edge_gdf[index_change_list[0][0]][index_change_list[0][1]].max_speed)
+            route=[]
+            turns=[]
+            route,turns=get_path(self.path,self.graph, self.G,edges_g,self.edge_gdf,True,change_list)
+            self.edge_gdf=copy.deepcopy(edges_g)
+            
+            self.route=route
+            self.turns=turns
+            
+        return self.route,self.turns
         
         
         

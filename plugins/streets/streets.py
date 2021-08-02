@@ -116,9 +116,7 @@ class PathPlans(Entity):
         lon1 = traf.ap.route[-n].wplon[0]
         lat2 = traf.ap.route[-n].wplat[-1]
         lon2 = traf.ap.route[-n].wplon[-1]
-        d_start,start_index=self.graph.get_nearest_node(lon1,lat1)
-        d_dest,dest_index=self.graph.get_nearest_node(lon2,lat2)
-        self.pathplanning[-n:] = PathPlanning(self.G, self.edges, start_index, dest_index) 
+        self.pathplanning[-n:] = PathPlanning(self.graph,lon1,lat1,lon2,lat2) 
         
     def getGraph(self):
         self.G = dill.load(open("plugins/streets/G-multigraph.dill", "rb"))

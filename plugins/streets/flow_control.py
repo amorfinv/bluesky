@@ -392,13 +392,30 @@ class street_graph:
         
         density=0
         
-    def update_geovectors():
-        #for edge in edges 
-            #density=compute_density(edge)
-            #update max_speed based on density
-            #which aircrafts should be notified?
-            #should flow control maintain a list of origin-destination for all flying drones?
-        speed=0
+    def update_geovectors(self):
+        ##Compute the densities
+        ##After computing a density, if teh density is high the density of the parent edge should be assigned a high value as well
+        
+        edges_changes=[]
+        
+        edge_keys=self.edges_graph.keys()
+        
+        for i in edge_keys:
+            keys=self.edges_graph[i].keys()
+            for j in keys:
+                edge=self.edge_graph[i][j]
+                if edge.density>=0.5* edge.max_density:
+                    if edge.speed!=edge.max_speed/2:
+                        tmp=[i,j,edge.max_speed/2]#the keys of the vertices of the edges, followed by the new speed
+                        edges_changes.append(tmp)
+                    edge.speed=edge.max_speed/2
+                elif edge.density<0.5* edge.max_density:
+                    if edge.speed!=edge.max_speed:
+                        tmp=[i,j,edge.max_speed]
+                        edges_changes.append(tmp)
+                    edge.speed=edge.max_speed
+                    
+        return edges_changes
         
     def add_no_fly_zone():
         speed=0
