@@ -9,7 +9,7 @@ from shapely.geometry import Point, LineString
 from shapely.geometry.polygon import Polygon
 from shapely.ops import cascaded_union, nearest_points
 from shapely.affinity import translate
-from bluesky.tools.geo import kwikdist, kwikqdrdist
+from bluesky.tools.geo import kwikdist, kwikqdrdist, latlondist, qdrdist
 from bluesky.tools.aero import nm, ft
 import bluesky as bs
 import numpy as np
@@ -69,6 +69,7 @@ class SpeedBased(ConflictResolution):
 
 
     def SpeedBased(self, conf, ownship, intruder, idx, idx_pairs):
+        print(f'------------ {ownship.id[idx]} ------------')
         # Extract ownship data
         v_ownship = np.array([ownship.gseast[idx], ownship.gsnorth[idx]])# [m/s]
         
@@ -93,6 +94,8 @@ class SpeedBased(ConflictResolution):
                         # An aircraft is above
                         can_ascend = False
         
+        #print(f'#1 - can ascend - {can_ascend}')
+        
         # Initialise some variables
         t = bs.settings.asas_dtlookahead
         target_alt = ownship.alt[idx]
@@ -102,72 +105,41 @@ class SpeedBased(ConflictResolution):
         # intruders one by one, and create their polygons
         for i, idx_pair in enumerate(idx_pairs):
             idx_intruder = intruder.id.index(conf.confpairs[idx_pair][1])
+            print(f'### {intruder.id[idx_intruder]} ###')
+            v_intruder = np.array([intruder.gseast[idx_intruder], intruder.gsnorth[idx_intruder]])
             # Extract conflict bearing and distance information
             qdr = conf.qdr[idx_pair]
             dist= conf.dist[idx_pair]
-
-            # Get the separation distance
-            r = (conf.rpz[idx] + conf.rpz[idx_intruder]) * 1.1
             
-            # TODO: Introduce proper priority.
-            qdr_intruder = ((qdr - ownship.trk[idx]) + 180) % 360 - 180
-            # Check if intruder is coming from the back or left.
-            if (-180 <= qdr_intruder  < -135) or (135 <= qdr_intruder  < 180):
-                # From the back, but if we're in a loss of separation, then just
-                # advance
-                return ownship.ap.tas[idx], ownship.ap.vs[idx]
-                # go to next pair
-                continue      
+            dist2 = qdrdist(ownship.lat[idx], ownship.lon[idx], 
+                            intruder.lat[idx_intruder], intruder.lon[idx_intruder])
+
+            dist3 = latlondist(ownship.lat[idx], ownship.lon[idx], 
+                            intruder.lat[idx_intruder], intruder.lon[idx_intruder])
+            
+            # Get the separation distance
+            r = (conf.rpz[idx]) * 1.1
+            
+            # Find the bearing of the intruder with respect to where we are heading
+            qdr_intruder = ((qdr - ownship.trk[idx]) + 180) % 360 - 180  
             
             # If we have a loss of separation, or the conflict is vertical,
             # just break, and stop the vertical speed
-            if dist < r:
-                return 1, 0   
-            
-            # Let's also do some intent check if the intent plugin is loaded
-            try:
-                own_intent, own_target_alt = ownship.intent[idx]
-                intruder_intent, intruder_target_alt = intruder.intent[idx_intruder]
-                # Find closest points between the two intent paths
-                pown, pint = nearest_points(own_intent, intruder_intent)
-                # Find the distance between the points
-                point_distance = kwikdist(pown.y, pown.x, pint.y, pint.x) * nm #[m]
-                # Also do vertical intent
-                # Difference between own altitude and intruder target
-                diff = ownship.alt[idx] - intruder_target_alt
-                # Basically, there are three conditions to be met in order to skip
-                # a conflict due to intent:
-                # 1. The minimum distance between the horizontal intent lines is greater than r;
-                # 2. The difference between the current altitude and the target altitude of the 
-                # intruder is greater than the vertical separation margin;
-                # 3. The altitude difference and vertical velocity of the intruder have the same sign.
-                # This means that if the aircraft is coming from above (negative), and the altitude difference
-                # is positive (thus target altitude is below ownship), then their paths will intersect. 
-                if ((point_distance > r) or (abs(diff) >= conf.hpz[idx])) and \
-                    (abs(intruder.vs[idx_intruder]) < 0.1):
-                    continue
-            except:
-                print('Intent plugin not loaded.')
-            
-            # --------------- Actual conflict resolution calculation------------
-            # Until now we had exceptions, now we do actual maneuvers.
-            # Set the target altitude in case we can ascend
-            target_alt = intruder.alt[idx] + self.cruiselayerdiff
-            
-            # Determine the index of the intruder
-            idx_intruder = intruder.id.index(conf.confpairs[idx_pair][1])
-            
-            # Convert qdr from degrees to radians
-            qdr = np.radians(qdr)
-
-            # Relative position vector between ownship and intruder
-            x = np.array([np.sin(qdr)*dist, np.cos(qdr)*dist])
-            v_intruder = np.array([intruder.gseast[idx_intruder], intruder.gsnorth[idx_intruder]])
+            print(f'#2 - dist < r - {dist < r}')
+            print(f'#2 - dist - {dist}')
+            print(f'#2 - r - {r}')
+            print(f'#3 - qdr_intruder - {qdr_intruder}') 
             
             # First, let's clear some vertical matters. If an intruder is in front and
             # is performing a vertical maneuver, then prevent aircraft in back from
             # performing the same maneuver.
             if (-10 < qdr_intruder < 10):
+                if (dist < r):
+                    #print(dist, r)
+                    # We have a loss of separation
+                    can_ascend = False
+                    can_descend = False
+                    return 1, 1
                 if intruder.vs[idx_intruder] > 0.1:
                     # Aircraft in front is performing an ascent maneuver
                     should_ascend = False
@@ -184,6 +156,73 @@ class SpeedBased(ConflictResolution):
                     
             if not(-10 < qdr_intruder < 10):
                 should_ascend = False
+            
+            print(f'#4 - should_ascend - {should_ascend}')   
+            print(f'#5 - in_headon_conflict - {self.in_headon_conflict[idx]}')   
+            # Check if intruder is coming from the back. If yes, then ignore it.
+            if (-180 <= qdr_intruder  < -160) or (160 <= qdr_intruder  < 180):
+                # From the back, but if we're in a loss of separation, then just
+                # advance normally
+                if dist < r:
+                    return ownship.ap.tas[idx], ownship.ap.vs[idx]
+                # go to next pair
+                continue    
+                    
+            # Let's also do some intent check if the intent plugin is loaded
+            own_intent, own_target_alt = ownship.intent[idx]
+            intruder_intent, intruder_target_alt = intruder.intent[idx_intruder]
+            # Find closest points between the two intent paths
+            pown, pint = nearest_points(own_intent, intruder_intent)
+            # Find the distance between the points
+            point_distance = kwikdist(pown.y, pown.x, pint.y, pint.x) * nm #[m]
+            # Also do vertical intent
+            # Difference between own altitude and intruder target
+            diff = ownship.alt[idx] - intruder_target_alt
+            # Basically, there are three conditions to be met in order to skip
+            # a conflict due to intent:
+            # 1. The minimum distance between the horizontal intent lines is greater than r;
+            # 2. The difference between the current altitude and the target altitude of the 
+            # intruder is greater than the vertical separation margin;
+            # 3. The altitude difference and vertical velocity of the intruder have the same sign.
+            # This means that if the aircraft is coming from above (negative), and the altitude difference
+            # is positive (thus target altitude is below ownship), then their paths will intersect. 
+            #print(f'#6 - point_distance > r - {point_distance > r}')  
+            #print(f'#7 - abs(diff) >= conf.hpz[idx] - {abs(diff) >= conf.hpz[idx]}')  
+            if ((point_distance > r) or (abs(diff) >= conf.hpz[idx])) and \
+                (abs(intruder.vs[idx_intruder]) < 0.1):
+                continue
+            
+            # Finally, let's do a priority check. We ignore aircraft with a priority
+            # (or callsign in case of draw) less then the ownships'.
+            ownship_prio = ownship.priority[idx]
+            intruder_prio = intruder.priority[idx_intruder]
+            
+            print(f'#8 - ownship_prio - {ownship_prio}')
+            print(f'#9 - intruder_prio - {ownship_prio}')
+            
+            if (ownship_prio > intruder_prio) and self.in_headon_conflict[idx] != True:
+                # Priority of intruder is greater, continue.
+                continue
+            
+            if (ownship_prio == intruder_prio) and self.in_headon_conflict[idx] != True:
+                # Determine which ACID number is bigger
+                id_ownship = ownship.id[idx]
+                id_intruder = intruder.id[idx]
+                if int(''.join(filter(str.isdigit, id_ownship))) > int(''.join(filter(str.isdigit, id_intruder))):
+                    continue
+                
+            # --------------- Actual conflict resolution calculation------------
+            # Until now we had exceptions, now we do actual maneuvers.
+            # Set the target altitude in case we can ascend
+            target_alt = intruder.alt[idx] + self.cruiselayerdiff
+            
+            # Convert qdr from degrees to radians
+            qdr = np.radians(qdr)
+
+            # Relative position vector between ownship and intruder
+            x = np.array([np.sin(qdr)*dist, np.cos(qdr)*dist])
+            
+            print('x', x)
 
             # Get cutoff legs
             left_leg_circle_point, right_leg_circle_point = self.cutoff_legs(x, r, t)
@@ -277,6 +316,10 @@ class SpeedBased(ConflictResolution):
         # Find the angle itself
         angle = np.arcsin(anglesin) # Radians
         
+        print('r', r)
+        print('x', x)
+        print('x_len', x_len)
+        
         # Find the rotation matrices
         rotmat_left = np.array([[np.cos(angle), -np.sin(angle)],
                            [np.sin(angle), np.cos(angle)]])
@@ -338,6 +381,10 @@ class SpeedBased(ConflictResolution):
             if self.in_headon_conflict[idx] == True:
                 continue
             
+            # We definitely ignore it if it is currently solving a conflict
+            if self.active[idx] == True:
+                continue
+            
             # Descend and ascend checks
             can_ascend, can_descend, should_ascend, should_descend = \
                     self.check_ascent_descent(conf, ownship, intruder, idx)
@@ -349,7 +396,7 @@ class SpeedBased(ConflictResolution):
             # We check if aircraft is active but is no longer in conflict pairs. 
             # It means it's a candidate for getting stuck. We can then check the heading
             # between the two aircraft and see if one is behind the other. 
-            if ownship.cr.active[idx] and not self.in_confpairs(idx):
+            if self.active[idx] and not self.in_confpairs(idx):
                 idx_others = self.reso_pairs(conf, ownship, intruder, idx)
                 for idx_intruder in idx_others:
                     qdr_intruder = ((conf.qdr_mat[idx, idx_intruder]- ownship.trk[idx]) + 180) % 360 - 180
@@ -408,7 +455,7 @@ class SpeedBased(ConflictResolution):
                     
                 # Checking if any aircraft are above
                 # Check if distance is smaller than rpz * 1.5
-                if dist < (conf.rpz[idx] + conf.rpz[idx_other]) * 2:
+                if dist < (conf.rpz[idx]) * 2:
                     # Check if the vertical distance is smaller than one layer hop, but also
                     # that we're not already in a conflict with this aircraft
                     vertical_dist = ownship.alt[idx] - intruder.alt[idx_other]
@@ -515,6 +562,7 @@ class SpeedBased(ConflictResolution):
                 distance = self.norm(dist)
                 dist_ok = (distance > 100)
                 alt_ok = abs((ownship.alt[idx1]-intruder.alt[idx2])/ft) >= (self.cruiselayerdiff - 1)
+                vs_ok = abs(ownship.vs[idx1]) < 0.1
 
 
                 # hor_los:
@@ -534,7 +582,7 @@ class SpeedBased(ConflictResolution):
 
             # Start recovery for ownship if intruder is deleted, or if past CPA
             # and not in horizontal LOS or a bouncing conflict
-            if idx2 >= 0 and (((not past_cpa or not dist_ok) and (not alt_ok)) or hor_los or is_bouncing):
+            if idx2 >= 0 and (((not past_cpa or not (dist_ok or (alt_ok and vs_ok)) or hor_los or is_bouncing))):
                 # Enable ASAS for this aircraft
                 changeactive[idx1] = True
             else:

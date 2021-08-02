@@ -11,7 +11,6 @@ from numpy import *
 from collections import Counter
 from plugins.streets.flow_control import street_graph,bbox
 from plugins.streets.agent_path_planning import PathPlanning
-
 import bluesky as bs
 from bluesky import core, stack, traf, scr, sim  #settings, navdb, tools
 from bluesky.tools.aero import ft, kts, nm
