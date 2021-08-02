@@ -262,7 +262,7 @@ class SpeedBased(ConflictResolution):
         line = LineString([v_line_min, v_line_max])
         intersection = CombinedObstacles.intersection(line)
         
-        # Check if autopilot given speed is also good for velocity obstacle
+        # Check if autopilot given speed is also for velocity obstacle, then just do it
         apyv = ownship.ap.tas[idx] * np.sin(np.radians(ownship.ap.trk[idx]))
         apxv = -ownship.ap.tas[idx] * np.cos(np.radians(ownship.ap.trk[idx]))
         appoint = Point(apxv, apyv)
@@ -271,7 +271,6 @@ class SpeedBased(ConflictResolution):
         print(f'#12 - ap_ok = {ap_ok}')
         
         if ap_ok:
-            print('')
             return ownship.ap.tas[idx], ownship.ap.vs[idx]
 
         # First check if the autopilot speed creates any conflict
