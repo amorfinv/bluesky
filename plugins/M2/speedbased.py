@@ -139,7 +139,7 @@ class SpeedBased(ConflictResolution):
                     # We have a loss of separation
                     can_ascend = False
                     can_descend = False
-                    return 1, 1
+                    return 1, 0
                 if intruder.vs[idx_intruder] > 0.1:
                     # Aircraft in front is performing an ascent maneuver
                     should_ascend = False
@@ -204,15 +204,22 @@ class SpeedBased(ConflictResolution):
                 # Priority of intruder is greater, continue.
                 continue
             
+            print(f'#10 - prio=prio - {ownship_prio == intruder_prio}')
             if (ownship_prio == intruder_prio) and self.in_headon_conflict[idx] != True:
                 # Determine which ACID number is bigger
                 id_ownship = ownship.id[idx]
-                id_intruder = intruder.id[idx]
-                if int(''.join(filter(str.isdigit, id_ownship))) > int(''.join(filter(str.isdigit, id_intruder))):
+                id_intruder = intruder.id[idx_intruder]
+                prio_bigger = int(''.join(filter(str.isdigit, id_ownship))) > int(''.join(filter(str.isdigit, id_intruder)))
+                print(f'#10.1 - prio_bigger - {prio_bigger}')
+                if prio_bigger:
                     continue
                 
             # --------------- Actual conflict resolution calculation------------
             # Until now we had exceptions, now we do actual maneuvers.
+            # If we didn't skip this aircraft until now, do a final loss of separation
+            # check for any other situation in which it could happen
+            if dist < r:
+                return 1, 0
             # Set the target altitude in case we can ascend
             target_alt = intruder.alt[idx] + self.cruiselayerdiff
             
@@ -254,8 +261,20 @@ class SpeedBased(ConflictResolution):
         # Create velocity line
         line = LineString([v_line_min, v_line_max])
         intersection = CombinedObstacles.intersection(line)
+        
+        # Check if autopilot given speed is also good for velocity obstacle
+        apyv = ownship.ap.tas[idx] * np.sin(np.radians(ownship.ap.trk[idx]))
+        apxv = -ownship.ap.tas[idx] * np.cos(np.radians(ownship.ap.trk[idx]))
+        appoint = Point(apxv, apyv)
+        print(f'#11 - apxv, apyv - {apxv, apyv}')
+        ap_ok = not CombinedObstacles.contains(appoint)
+        print(f'#12 - ap_ok = {ap_ok}')
+        
+        if ap_ok:
+            print('')
+            return ownship.ap.tas[idx], ownship.ap.vs[idx]
 
-        # For now let's just go with the slowest solution
+        # First check if the autopilot speed creates any conflict
         if intersection:
             solutions = []
             for velocity in list(intersection.coords):
@@ -560,7 +579,7 @@ class SpeedBased(ConflictResolution):
 
                 # Also check the distance and altitude between the two aircraft.
                 distance = self.norm(dist)
-                dist_ok = (distance > 100)
+                dist_ok = (distance > 50)
                 alt_ok = abs((ownship.alt[idx1]-intruder.alt[idx2])/ft) >= (self.cruiselayerdiff - 1)
                 vs_ok = abs(ownship.vs[idx1]) < 0.1
 
