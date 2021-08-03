@@ -37,6 +37,10 @@ def update():
     # Update edege autopilot
     edge_traffic.edgeap.update()
 
+    # update variables available in bs.traf
+    bs.traf.edgeap = edge_traffic.edgeap
+    bs.traf.actedge = edge_traffic.actedge
+
     # get distance of drones to next intersection/turn intersection
     _, dis_to_int = geo.qdrdist_matrix(traf.lat, traf.lon, edge_traffic.actedge.intersection_lat, edge_traffic.actedge.intersection_lon)
     _, dis_to_turn = geo.qdrdist_matrix(traf.lat, traf.lon, edge_traffic.actedge.turn_intersection_lat, edge_traffic.actedge.turn_intersection_lon)
@@ -100,6 +104,9 @@ class EdgeTraffic(Entity):
             self.edgeap   = EdgesAp()
             self.actedge  = ActiveEdge()
 
+        # make variables available in bs.traf
+        bs.traf.edgeap = self.edgeap
+        bs.traf.actedge = self.actedge
 class PathPlans(Entity):
     def __init__(self):
         super().__init__()
