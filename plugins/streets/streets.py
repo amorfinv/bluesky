@@ -6,16 +6,13 @@ Airspace edge information. Copies traffic, autopilot, route, activewaypoint
 from bluesky.tools.misc import lat2txt
 import json
 import numpy as np
-import dill
 from numpy import *
 from collections import Counter
-from plugins.streets.flow_control import street_graph,bbox
-from plugins.streets.agent_path_planning import PathPlanning
+
 import bluesky as bs
 from bluesky import core, stack, traf, scr, sim  #settings, navdb, tools
 from bluesky.tools.aero import ft, kts, nm
 from bluesky.tools import geo
-
 from bluesky.core import Entity, Replaceable
 
 def init_plugin():
@@ -37,6 +34,10 @@ def update():
     # Update edege autopilot
     edge_traffic.edgeap.update()
 
+    # update variables available in bs.traf
+    bs.traf.edgeap = edge_traffic.edgeap
+    bs.traf.actedge = edge_traffic.actedge
+
     # get distance of drones to next intersection/turn intersection
     _, dis_to_int = geo.qdrdist_matrix(traf.lat, traf.lon, edge_traffic.actedge.intersection_lat, edge_traffic.actedge.intersection_lon)
     _, dis_to_turn = geo.qdrdist_matrix(traf.lat, traf.lon, edge_traffic.actedge.turn_intersection_lat, edge_traffic.actedge.turn_intersection_lon)
@@ -46,8 +47,8 @@ def update():
 def do_flowcontrol():
     # tells you how many aircraft in an edge
     # TODO: perhaps only useful for stroke_groups
-    edge_density_dict = dict(Counter(edge_traffic.actedge.wpedgeid))
-    print(edge_density_dict)
+    edge_count_dict = dict(Counter(edge_traffic.actedge.wpedgeid))
+    print(edge_count_dict)
 
 ######################## STACK COMMANDS ##########################
 @stack.command
@@ -100,28 +101,9 @@ class EdgeTraffic(Entity):
             self.edgeap   = EdgesAp()
             self.actedge  = ActiveEdge()
 
-class PathPlans(Entity):
-    def __init__(self):
-        super().__init__()
-        self.getGraph()
-        self.graph = street_graph(self.G, self.edges)
-        
-        with self.settrafarrays():
-            self.pathplanning = []
-            
-    def create(self, n = 1):
-        super().create(n)
-        traf = bs.traf
-        lat1 = traf.ap.route[-n].wplat[0]
-        lon1 = traf.ap.route[-n].wplon[0]
-        lat2 = traf.ap.route[-n].wplat[-1]
-        lon2 = traf.ap.route[-n].wplon[-1]
-        self.pathplanning[-n:] = PathPlanning(self.graph,lon1,lat1,lon2,lat2) 
-        
-    def getGraph(self):
-        self.G = dill.load(open("plugins/streets/G-multigraph.dill", "rb"))
-        self.edge = dill.load(open("plugins/streets/edge_gdf.dill", "rb"))#load edge_geometry
-        
+        # make variables available in bs.traf
+        bs.traf.edgeap = self.edgeap
+        bs.traf.actedge = self.actedge
 
 # "autopilot"
 class EdgesAp(Entity):
@@ -145,7 +127,7 @@ class EdgesAp(Entity):
 
         # See if waypoints have reached their destinations
         for i in bs.traf.actwp.Reached(qdr, dist2wp, bs.traf.actwp.flyby,
-                                       bs.traf.actwp.flyturn,bs.traf.actwp.turnrad):
+                                       bs.traf.actwp.flyturn,bs.traf.actwp.turnrad,bs.traf.actwp.swlastwp):
 
             # get next wpedgeid for aircraft and lat lon of next intersection/turn
             edge_traffic.actedge.wpedgeid[i], edge_traffic.actedge.nextturnnode[i], \
@@ -384,7 +366,7 @@ class Route_edge(Replaceable):
             name_ = name_[:-len_]+fmt_.format(appi)
         return name_
 
-######################## PLUGIN CODE  ##########################
+######################## OTHER EDGE PLUGIN CODE  ##########################
 
 def osmid_to_latlon(osmid , i=2):
 
@@ -423,5 +405,95 @@ node_dict = {v: k for k, v in node_dict.items()}
 # Initialize EdgeTraffic class
 edge_traffic = EdgeTraffic()
 
+######################### FLOW CONTROL ##################
+
+import dill
+import networkx as nx
+
+from plugins.streets.flow_control import street_graph,bbox
+from plugins.streets.agent_path_planning import PathPlanning
+class PathPlans(Entity):
+    def __init__(self):
+        super().__init__()
+        self.getGraph()
+        self.graph = street_graph(self.G, self.edges)
+        with self.settrafarrays():
+            self.pathplanning = []
+            
+    # def create(self, n = 1):
+    #     print(n)
+    #     super().create(n)
+    #     traf = bs.traf
+    #     lat1 = traf.ap.route[-n].wplat[0]
+    #     lon1 = traf.ap.route[-n].wplon[0]
+    #     lat2 = traf.ap.route[-n].wplat[-1]
+    #     lon2 = traf.ap.route[-n].wplon[-1]
+    #     self.pathplanning[-n:] = PathPlanning(self.graph,lon1,lat1,lon2,lat2) 
+        
+    def getGraph(self):
+        self.G = dill.load(open("plugins/streets/G-multigraph.dill", "rb"))
+        # self.edge = dill.load(open("plugins/streets/edge_gdf.dill", "rb"))
+        self.nodes, self.edges = graph_to_dfs(self.G)
+
+
+def graph_to_dfs(G):
+    """
+    Adapted from osmnx code: https://github.com/gboeing/osmnx
+
+    Convert a MultiDiGraph to node and edge DataFrames.
+
+    Parameters
+    ----------
+    G : networkx.MultiDiGraph
+        input graph
+
+    Returns
+    -------
+    pandas.DataFrame or tuple
+        gdf_nodes or gdf_edges or tuple of (gdf_nodes, gdf_edges). gdf_nodes
+        is indexed by osmid and gdf_edges is multi-indexed by u, v, key
+        following normal MultiDiGraph structure.
+    """
+    import pandas as pd
+    from shapely.geometry import LineString, Point
+    import networkx as nx
+
+    # create node dataframe
+    nodes, data = zip(*G.nodes(data=True))
+
+    # convert node x/y attributes to Points for geometry column
+    geom = (Point(d["x"], d["y"]) for d in data)
+    df_nodes = pd.DataFrame(data, index=nodes)
+    df_nodes['geometry'] = list(geom)
+
+    df_nodes.index.rename("osmid", inplace=True)
+
+    # create edge dataframe 
+    u, v, k, data = zip(*G.edges(keys=True, data=True))
+
+    # subroutine to get geometry for every edge: if edge already has
+    # geometry return it, otherwise create it using the incident nodes
+    x_lookup = nx.get_node_attributes(G, "x")
+    y_lookup = nx.get_node_attributes(G, "y")
+
+    def make_geom(u, v, data, x=x_lookup, y=y_lookup):
+        if "geometry" in data:
+            return data["geometry"]
+        else:
+            return LineString((Point((x[u], y[u])), Point((x[v], y[v]))))
+
+    geom = map(make_geom, u, v, data)
+    df_edges = pd.DataFrame(data)
+    df_edges['geometry'] = list(geom)
+
+    # add u, v, key attributes as index
+    df_edges["u"] = u
+    df_edges["v"] = v
+    df_edges["key"] = k
+    df_edges.set_index(["u", "v", "key"], inplace=True)
+
+    return df_nodes, df_edges
+
+# Initialize Path Plans
 path_plans = PathPlans()
 
