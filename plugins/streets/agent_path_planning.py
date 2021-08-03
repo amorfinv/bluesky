@@ -13,7 +13,7 @@ import heapq
 import numpy as np
 import math
 import copy
-from flow_control import sstreet_graph,bbox
+from plugins.streets.flow_control import street_graph,bbox
 
 class Node:
     av_speed_horizontal= 10.0
