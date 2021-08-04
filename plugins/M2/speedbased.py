@@ -71,7 +71,7 @@ class SpeedBased(ConflictResolution):
 
 
     def SpeedBased(self, conf, ownship, intruder, idx, idx_pairs):
-        print(f'------------ {ownship.id[idx]} ------------')
+        #print(f'------------ {ownship.id[idx]} ------------')
         # Extract ownship data
         v_ownship = np.array([ownship.gseast[idx], ownship.gsnorth[idx]])# [m/s]
         
@@ -111,7 +111,7 @@ class SpeedBased(ConflictResolution):
         # intruders one by one, and create their polygons
         for i, idx_pair in enumerate(idx_pairs):
             idx_intruder = intruder.id.index(conf.confpairs[idx_pair][1])
-            print(f'### {intruder.id[idx_intruder]} ###')
+            #print(f'### {intruder.id[idx_intruder]} ###')
             v_intruder = np.array([intruder.gseast[idx_intruder], intruder.gsnorth[idx_intruder]])
             
             # Do the check for turn waypoints
@@ -132,13 +132,6 @@ class SpeedBased(ConflictResolution):
             
             # Find the bearing of the intruder with respect to where we are heading
             qdr_intruder = ((qdr - ownship.trk[idx]) + 180) % 360 - 180  
-            
-            # If we have a loss of separation, or the conflict is vertical,
-            # just break, and stop the vertical speed
-            print(f'#2 - dist < r - {dist < r}')
-            print(f'#2 - dist - {dist}')
-            print(f'#2 - r - {r}')
-            print(f'#3 - qdr_intruder - {qdr_intruder}') 
             
             # First, let's clear some vertical matters. If an intruder is in front and
             # is performing a vertical maneuver, then only let aircraft in back perform
@@ -167,17 +160,6 @@ class SpeedBased(ConflictResolution):
                     
             if not(-self.front_tolerance < qdr_intruder < self.front_tolerance):
                 should_ascend = False
-            
-            print(f'#4 - should_ascend - {should_ascend}')   
-            print(f'#5 - in_headon_conflict - {self.in_headon_conflict[idx]}')   
-            # Check if intruder is coming from the back. If yes, then ignore it.
-            if (-180 <= qdr_intruder  < (-180 + self.front_tolerance)) or ((180 - self.front_tolerance) <= qdr_intruder  < 180):
-                # From the back, but if we're in a loss of separation, then just
-                # advance normally, but stop ascending/descending
-                if dist < r:
-                    return ownship.ap.tas[idx], 0
-                # go to next pair
-                continue    
                     
             # Let's also do some intent check if the intent plugin is loaded
             own_intent, own_target_alt = ownship.intent[idx]
@@ -208,25 +190,29 @@ class SpeedBased(ConflictResolution):
             ownship_prio = ownship.priority[idx]
             intruder_prio = intruder.priority[idx_intruder]
             
-            print(f'#8 - ownship_prio - {ownship_prio}')
-            print(f'#9 - intruder_prio - {ownship_prio}')
+            if (ownship_prio > intruder_prio) and self.in_headon_conflict[idx] != True:
+                # Priority of intruder is greater, continue.
+                continue
             
-            if not(-self.front_tolerance < qdr_intruder < self.front_tolerance):
-                # Only check priority if we're not in the back of the intruder. Then we always
-                # solve.
-                if (ownship_prio > intruder_prio) and self.in_headon_conflict[idx] != True:
-                    # Priority of intruder is greater, continue.
+            if (ownship_prio == intruder_prio) and self.in_headon_conflict[idx] != True:
+                # Determine which ACID number is bigger
+                id_ownship = ownship.id[idx]
+                id_intruder = intruder.id[idx_intruder]
+                prio_bigger = int(''.join(filter(str.isdigit, id_ownship))) > int(''.join(filter(str.isdigit, id_intruder)))
+                if prio_bigger:
                     continue
+                    
+            # If we reached this point, our priority is not greater. Check if aircraft is coming
+            # from the bck. If yes, then ignore it in certain situations.
+            if (-180 <= qdr_intruder  < (-180 + self.front_tolerance)) or ((180 - self.front_tolerance) <= qdr_intruder  < 180):
+                # So it is coming from the back. If the vertical distance between us is still
+                # ok, then we simply continue our way but we stop ascending.
+                if (abs(ownship.alt[idx] - intruder.alt[idx_intruder]) > conf.hpz[idx]):
+                    # We are still in the clear altitude wise, just continue but stop ascending
+                    return ownship.ap.tas[idx], 0
                 
-                print(f'#10 - prio=prio - {ownship_prio == intruder_prio}')
-                if (ownship_prio == intruder_prio) and self.in_headon_conflict[idx] != True:
-                    # Determine which ACID number is bigger
-                    id_ownship = ownship.id[idx]
-                    id_intruder = intruder.id[idx_intruder]
-                    prio_bigger = int(''.join(filter(str.isdigit, id_ownship))) > int(''.join(filter(str.isdigit, id_intruder)))
-                    print(f'#10.1 - prio_bigger - {prio_bigger}')
-                    if prio_bigger:
-                        continue
+                # In any other case, we just continue doing what we were doing.
+                continue    
                 
             # --------------- Actual conflict resolution calculation------------
             # Until now we had exceptions, now we do actual maneuvers.
@@ -244,8 +230,6 @@ class SpeedBased(ConflictResolution):
 
             # Relative position vector between ownship and intruder
             x = np.array([np.sin(qdr)*dist, np.cos(qdr)*dist])
-            
-            print('x', x)
 
             # Get cutoff legs
             left_leg_circle_point, right_leg_circle_point = self.cutoff_legs(x, r, t)
@@ -357,10 +341,6 @@ class SpeedBased(ConflictResolution):
         anglesin = r / x_len
         # Find the angle itself
         angle = np.arcsin(anglesin) # Radians
-        
-        print('r', r)
-        print('x', x)
-        print('x_len', x_len)
         
         # Find the rotation matrices
         rotmat_left = np.array([[np.cos(angle), -np.sin(angle)],
