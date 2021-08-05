@@ -30,10 +30,11 @@ def init_plugin():
 
     return config
 
-class SpeedBased(ConflictResolution): 
+class ORCASpeedBased(ConflictResolution): 
     # Define some variables
     def __init__(self):
         super().__init__()
+        self.turn_speed = 10*kts
         
     def resolve(self, conf, ownship, intruder):
         '''We want to only solve in the velocity direction while still following the heading
@@ -51,7 +52,7 @@ class SpeedBased(ConflictResolution):
             idx_pairs = self.pairs(conf, ownship, intruder, idx)
             
             # Find solution for aircraft 'idx'
-            gs_new, vs_new = self.SpeedBased(conf, ownship, intruder, idx, idx_pairs)
+            gs_new, vs_new = self.ORCASpeedBased(conf, ownship, intruder, idx, idx_pairs)
             
             # Write the new velocity of aircraft 'idx' to traffic data
             newgscapped[idx] = gs_new    
@@ -64,14 +65,18 @@ class SpeedBased(ConflictResolution):
         return newtrack, newgscapped, newvs, alt
 
 
-    def SpeedBased(self, conf, ownship, intruder, idx, idx_pairs):
+    def ORCASpeedBased(self, conf, ownship, intruder, idx, idx_pairs):
         #print(f'------------ {ownship.id[idx]} ------------')
         # Extract ownship data
         v_ownship = np.array([ownship.gseast[idx], ownship.gsnorth[idx]])# [m/s]
         
+        # Check if we can simply apply the waypoint constraint
+        next_spd_ok = True
+        
         # Initialise some variables
         t = bs.settings.asas_dtlookahead
         VelocityObstacles = []
+        
         # Go through all conflict pairs for aircraft "idx", basically take
         # intruders one by one, and create their polygons
         for i, idx_pair in enumerate(idx_pairs):
@@ -349,7 +354,7 @@ class SpeedBased(ConflictResolution):
                 # Also check the distance and altitude between the two aircraft.
                 distance = self.norm(dist)
                 dist_ok = (distance > 50)
-                alt_ok = abs((ownship.alt[idx1]-intruder.alt[idx2])/ft) >= (self.cruiselayerdiff - 1)
+                alt_ok = abs((ownship.alt[idx1]-intruder.alt[idx2])/ft) >= (conf.hpz[idx1])
                 vs_ok = abs(ownship.vs[idx1]) < 0.1
 
 
@@ -379,8 +384,6 @@ class SpeedBased(ConflictResolution):
                 changeactive[idx1] = changeactive.get(idx1, False)
                 # If conflict is solved, remove it from the resopairs list
                 delpairs.add(conflict)
-                # In case it was a head-on conflict
-                self.in_headon_conflict[idx1] = False
                 # Re-enable vnav
                 stack.stack(f'VNAV {ownship.id[idx1]} ON')
 

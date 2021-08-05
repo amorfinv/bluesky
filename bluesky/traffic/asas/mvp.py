@@ -359,3 +359,12 @@ class MVP(ConflictResolution):
         dv = np.array([dv1,dv2,dv3])
 
         return dv, tsolV
+    
+    @property
+    def hdgactive(self):
+        ''' Return a boolean array sized according to the number of aircraft
+            with True for all elements where heading is currently controlled by
+            the conflict resolution algorithm.
+        '''
+        #TODO: Here is a good place to implement Open Airpace vs Restricted Airspace logic
+        return np.array([False] * len(self.active))
