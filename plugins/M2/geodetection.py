@@ -1,12 +1,41 @@
 """ Detection of geofence conflicts."""
 import numpy as np
 import bluesky as bs
-from bluesky.core import Entity
+from bluesky.core import Entity, timed_function
 from shapely.ops import nearest_points
 from shapely.geometry.polygon import Polygon, Point, LineString
 from bluesky.tools import geo
 from bluesky.tools.aero import nm
 
+def init_plugin():
+    # Create new geofences dictionary
+    bs.traf.geod = GeofenceDetection()
+    # Create new point search MATRIX
+    
+    # Configuration parameters
+    config = {
+        # The name of your plugin
+        'plugin_name'      : 'GEODETECTION',
+        'plugin_type'      : 'sim',
+        'update_interval'  :  1.0,
+
+        # The update function is called after traffic is updated. Use this if you
+        # want to do things as a result of what happens in traffic. If you need to
+        # something before traffic is updated please use preupdate.
+        # 'update':          update,
+
+        # The preupdate function is called before traffic is updated. Use this
+        # function to provide settings that need to be used by traffic in the current
+        # timestep. Examples are ASAS, which can give autopilot commands to resolve
+        # a conflict.
+        # 'preupdate':       preupdate,
+
+        # Reset all geofences
+        'reset':         bs.traf.geod.reset
+        }
+
+    # init_plugin() should always return these two dicts.
+    return config
 class Tile:
     def __init__(self, x, y):
         self.x = x
@@ -46,11 +75,13 @@ class GeofenceDetection(Entity):
         return
     
     # This function is called from within traffic
-    def update(self, ownship):
+    @timed_function(name = 'geofencedetection', dt = 0.5)
+    def update(self):
+        ownship = bs.traf
         # Select detection method
-        if bs.traf.geod.method == 'TILES':
+        if self.method == 'TILES':
             self.GeodetectTiles(ownship)   
-        elif bs.traf.geod.method == 'RTREE':
+        elif self.method == 'RTREE':
             self.GeodetectRtree(ownship)
         return
         
@@ -92,7 +123,6 @@ class GeofenceDetection(Entity):
         '''The tiles based method is more accurate than the Rtree method, as it does not assume the Earth to be
         flat. However, it is about 10x slower. It also performes badly if geofences are really big while the zoom
         level is really small.'''
-        self.geoconfs = dict()
         # Check if geofence plugin is enabled
         if 'geofence' not in bs.core.varexplorer.varlist:
             return 'Geofence plugin not loaded.'
@@ -166,20 +196,18 @@ class GeofenceDetection(Entity):
                         geoinvicinity.append(geofence) 
                         
             # Detect conflicts with geofences
-            self.GeoconfDetect(acid, i, trajectory, geoinvicinity)
+            self.GeoconfDetect(pos_ac, acid, i, trajectory, geoinvicinity)
         return
     
     def GeodetectRtree(self, ownship):
         ''' This detection method uses spacial indexing and bounding boxes. It is only accurate
         on a small scale as it basically assumes the world is flat.'''
-        self.geoconfs = dict()
-
         # Check if geofence plugin is enabled
-        if 'geofence' not in bs.core.varexplorer.varlist:
+        if 'geofenceold' not in bs.core.varexplorer.varlist:
             return 'Geofence plugin not loaded.'
         
         # Load the plugin
-        geofenceplugin = bs.core.varexplorer.varlist['geofence'][0]
+        geofenceplugin = bs.core.varexplorer.varlist['geofenceold'][0]
         
         # Get the necessary data from the plugin
         geofenceData = geofenceplugin.geofences
@@ -216,24 +244,58 @@ class GeofenceDetection(Entity):
                 geoinvicinity.append(geofenceData[geofencename])
                 
             # Detect conflicts with geofences
-            self.GeoconfDetect(acid, i, trajectory, geoinvicinity)
+            self.GeoconfDetect(pos_ac, acid, i, trajectory, geoinvicinity)
         return
             
-    def GeoconfDetect(self, acid, idx_ac, trajectory, geoinvicinity):
+    def GeoconfDetect(self, pos_ac, acid, idx_ac, trajectory, geoinvicinity):
         ''' Detects conflicts between an aircraft an the geofences in its vicinity.
         Assumes flat earth.'''
         # Iterate over geofence objects and check if there is an intersection
         for geofence in geoinvicinity:
             # First do horizontal check. We check using shapely if projected line intersects polygon.
             geopoly = geofence.getPoly()
+            if acid not in self.geoconfs:
+                self.geoconfs[acid] = set()
+                
+            if acid not in self.geobreaches:
+                self.geobreaches[acid] = set()
+                
             if trajectory.intersects(geopoly):
                 # We have a conflict, add conflict to dictionary
-                if acid not in self.geoconfs:
-                    self.geoconfs[acid] = set()
+                # Check if this conflict was already there
+                if geofence not in self.geoconfs[acid]:
+                    self.allgeoconfs.append((acid, geofence.name))
+                    self.geoconfs[acid].add(geofence)
                 
-                # Add geofence to this set
-                self.geoconfs[acid].add(geofence)
-                self.active[idx_ac] = True 
+            else:
+                # Remove entry if it exists
+                if geofence in self.geoconfs[acid]:
+                    print(acid, 'remove', geofence)
+                    self.geoconfs[acid].remove(geofence)
+            
+            # Also check if we have breached the geofence
+            pos_point = Point(pos_ac[0], pos_ac[1])
+            if geopoly.contains(pos_point):              
+                # Check if this breach was already there
+                if geofence not in self.geobreaches[acid]:
+                    self.allgeobreaches.append((acid, geofence.name))
+                    self.geobreaches[acid].add(geofence)
+            else:
+                # Remove entry if it exists
+                if geofence in self.geobreaches[acid]:
+                    self.geobreaches[acid].remove(geofence)
+                    
+        # Do a sweep to remove geofences that are not in vicinity from geoconfs and geobreaches
+        for geofence in self.geoconfs[acid].copy():
+            if geofence not in geoinvicinity:
+                self.geoconfs[acid].remove(geofence)
+                
+        for geofence in self.geobreaches[acid].copy():
+            if geofence not in geoinvicinity:
+                self.geobreaches[acid].remove(geofence)
+                
+        print('allgeoconfs', self.allgeoconfs)
+        print('allgeobreaches', self.allgeobreaches)  
         return
  
     # Helper functions   
