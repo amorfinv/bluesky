@@ -71,11 +71,11 @@ class ORCASpeedBased(ConflictResolution):
         v_ownship = np.array([ownship.gseast[idx], ownship.gsnorth[idx]])# [m/s]
         
         # Check if we can simply apply the waypoint constraint
-        next_spd_ok = True
+        # next_spd_ok = True
         
         # Initialise some variables
         t = bs.settings.asas_dtlookahead
-        VelocityObstacles = []
+        solutions = []
         
         # Go through all conflict pairs for aircraft "idx", basically take
         # intruders one by one, and create their polygons
@@ -100,85 +100,87 @@ class ORCASpeedBased(ConflictResolution):
             # Get the separation distance
             r = (conf.rpz[idx]) * 1.1
             
-            # Break priorities
-            # Priority is based on who has the lower callsign (and thus probably travelled the most by)
-            # that time. 
-            id_ownship = ownship.id[idx]
-            id_intruder = intruder.id[idx_intruder]
-            prio_bigger = int(''.join(filter(str.isdigit, id_ownship))) < int(''.join(filter(str.isdigit, id_intruder)))
-            if prio_bigger:
-                continue
-                
-            # --------------- Actual conflict resolution calculation------------
-            # Until now we had exceptions, now we do actual maneuvers.
-            # If we didn't skip this aircraft until now, do a final loss of separation
-            # check for any other situation in which it could happen
-            if dist < r and (abs(ownship.alt[idx] - intruder.alt[idx_intruder]) < conf.hpz[idx]):
-                return 1, 0
-            
-            if dist < r and (abs(ownship.alt[idx] - intruder.alt[idx_intruder]) > conf.hpz[idx]):
-                continue
-            
-            # Convert qdr from degrees to radians
-            qdr = np.radians(qdr)
-
             # Relative position vector between ownship and intruder
             x = np.array([np.sin(qdr)*dist, np.cos(qdr)*dist])
+            v_rel = v_ownship - v_intruder
             
             circle = Point(x/t).buffer(r/t)
-
+            
             # Get cutoff legs
             left_leg_circle_point, right_leg_circle_point = self.cutoff_legs(x, r, t)
-
+            
             right_leg_extended = right_leg_circle_point * t
             left_leg_extended = left_leg_circle_point * t
             
             triangle_poly = Polygon([right_leg_extended, right_leg_circle_point,
-                                     left_leg_circle_point, left_leg_extended])
+                                    left_leg_circle_point, left_leg_extended])
             
             final_poly = cascaded_union([triangle_poly, circle])
             
-            final_poly_translated = translate(final_poly, v_intruder[0], v_intruder[1])
+            # plt.plot(*final_poly.exterior.xy)
+            # plt.scatter(v_rel[0], v_rel[1])
             
-            VelocityObstacles.append(final_poly_translated)
+            # Create relative velocity point
+            v_rel_point = Point(v_rel[0], v_rel[1])
+            
+            # Find nearest point on polygon
+            p1, p2 = nearest_points(final_poly.exterior, v_rel_point)
+            
+            # Let's see it
+            v_change = np.array(list(p1.coords))[0] - v_rel
+            
+            # So now we need to compute the velocity change for each aircraft
+            # such that the new relative velocity changes by v_change
+            # Compute unit direction vector of each aircraft
+            norm_own = self.norm(v_ownship)
+            norm_intruder = self.norm(v_intruder)
+            norm_change_sq = self.norm_sq(v_change)
+            
+            # Own change that is guaranteed to be in the same direction as where
+            # we are currently heading. 
+            own_change = (np.dot(v_change, v_ownship)/norm_own**2)*v_ownship
         
-        # Combine all velocity obstacles into one figure
-        CombinedObstacles = cascaded_union(VelocityObstacles)
+            if np.degrees(self.angle(own_change, v_ownship)) < 1:
+                solutions.append(self.norm(own_change))
+            else:
+                solutions.append(-self.norm(own_change))
         
         # Get minimum and maximum speed of ownship
         vmin = ownship.perf.vmin[idx]
         vmax = ownship.perf.vmax[idx]
-        # Create velocity line
-        v_dir = self.normalized(v_ownship)
-        v_line_min = v_dir * vmin
-        v_line_max = v_dir * vmax
         
-        # Create velocity line
-        line = LineString([v_line_min, v_line_max])
-        intersection = CombinedObstacles.intersection(line)
-                    
-        if next_spd_ok:
-            wpyv = ownship.actwp.nextspd[idx] * np.sin(np.radians(ownship.trk[idx]))
-            wpxv = -ownship.actwp.nextspd[idx] * np.cos(np.radians(ownship.trk[idx]))
-            wpoint = Point(wpxv, wpyv)
-            wpv_ok = not CombinedObstacles.contains(wpoint)
-            if wpv_ok:
-                return ownship.actwp.nextspd[idx], ownship.ap.vs[idx]
-
-        # First check if the autopilot speed creates any conflict
-        if intersection:
-            solutions = []
-            for velocity in list(intersection.coords):
-                # Check whether to put velocity "negative" or "positive". 
-                # Drones can fly backwards.
-                if np.degrees(self.angle(velocity, v_ownship)) < 1:
-                    solutions.append(self.norm(velocity))
-                else:
-                    solutions.append(-self.norm(velocity))
-            gs_new = min(solutions)
+        # Get the minimum solution
+        min_limit = min(solutions)
+        # Get the maximum solution
+        max_limit = max(solutions)
+        # Check if the max_limit is truly bigger than our current speed
+        if max_limit > ownship.gs[idx]:
+            # Get the difference
+            max_difference = max_limit - ownship.gs[idx]
         else:
-            # Maintain current speed
-            gs_new = ownship.gs[idx]
+            max_difference = 0
+            max_limit = ownship.gs[idx]
+            
+        # Do the same for the minimum
+        if min_limit < ownship.gs[idx]:
+            # Get the difference
+            min_difference = ownship.gs[idx] - min_limit
+        else:
+            min_difference = 0
+            min_limit = ownship.gs[idx]
+            
+        # Apply the speed that is closest to our current one
+        if min_difference < max_difference:
+            gs_new = min_limit
+        else:
+            gs_new = max_limit
+            
+        # So we have all the velocity limits. According to ORCA, all speeds that are
+        # lower than ours are basically lower limits. All speeds that are greater are
+        # upper limits. So the minimum and maximum values for the limits tell us the
+        # interval in which we cannot be. Thus, take the min, take the max, and our
+        # new velocity is the one that 
+
         
         return gs_new, ownship.ap.vs[idx]
     
