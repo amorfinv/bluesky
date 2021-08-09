@@ -66,7 +66,7 @@ class ORCASpeedBased(ConflictResolution):
 
 
     def ORCASpeedBased(self, conf, ownship, intruder, idx, idx_pairs):
-        #print(f'------------ {ownship.id[idx]} ------------')
+        print(f'------------ {ownship.id[idx]} ------------')
         # Extract ownship data
         v_ownship = np.array([ownship.gseast[idx], ownship.gsnorth[idx]])# [m/s]
         
@@ -99,6 +99,10 @@ class ORCASpeedBased(ConflictResolution):
             
             # Get the separation distance
             r = (conf.rpz[idx]) * 1.1
+            
+            # In case of loss of separation, just continue
+            if dist < r:
+                continue
             
             # Relative position vector between ownship and intruder
             x = np.array([np.sin(qdr)*dist, np.cos(qdr)*dist])
@@ -133,47 +137,28 @@ class ORCASpeedBased(ConflictResolution):
             # such that the new relative velocity changes by v_change
             # Compute unit direction vector of each aircraft
             norm_own = self.norm(v_ownship)
-            norm_intruder = self.norm(v_intruder)
-            norm_change_sq = self.norm_sq(v_change)
             
             # Own change that is guaranteed to be in the same direction as where
             # we are currently heading. 
             own_change = (np.dot(v_change, v_ownship)/norm_own**2)*v_ownship
-        
-            if np.degrees(self.angle(own_change, v_ownship)) < 1:
-                solutions.append(self.norm(own_change))
-            else:
-                solutions.append(-self.norm(own_change))
+            solutions.append(self.norm(own_change + v_ownship))
         
         # Get minimum and maximum speed of ownship
         vmin = ownship.perf.vmin[idx]
         vmax = ownship.perf.vmax[idx]
         
+        if not solutions:
+            return ownship.gs[idx], ownship.ap.vs[idx]
+        
         # Get the minimum solution
         min_limit = min(solutions)
-        # Get the maximum solution
-        max_limit = max(solutions)
-        # Check if the max_limit is truly bigger than our current speed
-        if max_limit > ownship.gs[idx]:
-            # Get the difference
-            max_difference = max_limit - ownship.gs[idx]
-        else:
-            max_difference = 0
-            max_limit = ownship.gs[idx]
-            
-        # Do the same for the minimum
-        if min_limit < ownship.gs[idx]:
-            # Get the difference
-            min_difference = ownship.gs[idx] - min_limit
-        else:
-            min_difference = 0
-            min_limit = ownship.gs[idx]
             
         # Apply the speed that is closest to our current one
-        if min_difference < max_difference:
+        if min_limit > vmin:
             gs_new = min_limit
         else:
-            gs_new = max_limit
+            #Do nothing I guess
+            gs_new = ownship.gs[idx]
             
         # So we have all the velocity limits. According to ORCA, all speeds that are
         # lower than ours are basically lower limits. All speeds that are greater are
