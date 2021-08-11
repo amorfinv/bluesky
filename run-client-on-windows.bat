@@ -1,2 +1,2 @@
-python.exe Bluesky.py --client
+python.exe Bluesky.py
 pause
