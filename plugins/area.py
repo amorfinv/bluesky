@@ -46,9 +46,7 @@ confheader = \
     '#######################################################\n\n' + \
     'Parameters [Units]:\n' + \
     'Simulation time [s], ' + \
-    'Total number of conflicts in exp area [-],' + \
-    'Total number of losses of separation in exp area [-],' + \
-    'Total number of geofence breaches in exp area [-]\n'
+    'Total number of conflicts in exp area [-]\n'
 
 # Global data
 area = None
@@ -107,8 +105,8 @@ class Area(Entity):
         self.confinside_all = 0
 
         # The FLST logger
-        #self.flst = datalog.crelog('FLSTLOG', None, flstheader)
-        #self.conflog = datalog.crelog('CONFLOG', None, confheader)
+        self.flst = datalog.crelog('FLSTLOG', None, flstheader)
+        self.conflog = datalog.crelog('CONFLOG', None, confheader)
 
         with self.settrafarrays():
             self.insdel = np.array([], dtype=np.bool) # In deletion area or not
@@ -121,13 +119,6 @@ class Area(Entity):
             self.workstart = np.array([])
             self.entrytime = np.array([])
             self.create_time = np.array([])
-    
-    @stack.command()      
-    def sesarlog(self):
-        # Loggers
-        traf.flst.start()
-        traf.conflog.start()
-        stack.stack('ECHO Loggers started.')
 
     def reset(self):
         ''' Reset area state when simulation is reset. '''
@@ -138,7 +129,12 @@ class Area(Entity):
         self.swtaxi = True
         self.swtaxialt = 1500.0
         self.confinside_all = 0
-
+        
+    @stack.command()
+    def sesarlog(self):
+        traf.flst.start()
+        traf.conflog.start()
+    
     def create(self, n=1):
         ''' Create is called when new aircraft are created. '''
         super().create(n)
