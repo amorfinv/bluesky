@@ -1,6 +1,7 @@
 ''' Plugin that creates and keeps track of geofences.'''
 # Geofences need shapely
 import bluesky as bs
+from bluesky import stack
 import shapely
 import numpy as np
 import pickle
@@ -497,7 +498,7 @@ geoidx_geotoid = dict()
 # First ID. 
 geoidx_id = 0
 
-
+@stack.command()
 def detectmethod(name):
     if name in ['TILE', 'tile']:
         bs.traf.geod.method = 'TILE'

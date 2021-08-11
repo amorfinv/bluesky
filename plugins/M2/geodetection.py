@@ -65,17 +65,13 @@ class GeofenceDetection(Entity):
         self.geobreaches = dict() # Stores current breaches
         self.method = 'RTREE'
         
-        # Array to store if an aircraft is in conflict with a geofence
-        with self.settrafarrays():
-            self.active = np.array([]) 
-        
         # Historic lists
         self.allgeobreaches = [] # Stores all pastgeofence breaches 
         self.allgeoconfs = [] # Stores all past geofence conflicts
         return
     
     # This function is called from within traffic
-    @timed_function(name = 'geofencedetection', dt = 0.5)
+    @timed_function(name = 'geofencedetection', dt = 1)
     def update(self):
         ownship = bs.traf
         # Select detection method
@@ -92,7 +88,6 @@ class GeofenceDetection(Entity):
         self.geobreaches = dict()
         self.allgeobreaches = []
         self.allgeoconfs = []
-        self.active = np.array([]) 
         return
         
     def delgeofence(self, geofencename):
@@ -270,7 +265,6 @@ class GeofenceDetection(Entity):
             else:
                 # Remove entry if it exists
                 if geofence in self.geoconfs[acid]:
-                    print(acid, 'remove', geofence)
                     self.geoconfs[acid].remove(geofence)
             
             # Also check if we have breached the geofence
@@ -280,6 +274,8 @@ class GeofenceDetection(Entity):
                 if geofence not in self.geobreaches[acid]:
                     self.allgeobreaches.append((acid, geofence.name))
                     self.geobreaches[acid].add(geofence)
+                    bs.traf.numgeobreaches[idx_ac] += 1
+                    bs.traf.numgeobreaches_all += 1
             else:
                 # Remove entry if it exists
                 if geofence in self.geobreaches[acid]:
@@ -294,8 +290,6 @@ class GeofenceDetection(Entity):
             if geofence not in geoinvicinity:
                 self.geobreaches[acid].remove(geofence)
                 
-        print('allgeoconfs', self.allgeoconfs)
-        print('allgeobreaches', self.allgeobreaches)  
         return
  
     # Helper functions   
