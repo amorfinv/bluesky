@@ -91,6 +91,15 @@ confheader = \
     'Total number of conflicts [-],' + \
     'Total number of losses of separation[-],' +\
     'Total number of geofence breaches[-]\n'
+    
+regheader = \
+    '#######################################################\n' + \
+    'REGULAR LOG\n' + \
+    'Statistics recorded once every 10 seconds\n' + \
+    '#######################################################\n\n' + \
+    'Parameters [Units]:\n' + \
+    'Simulation time [s], ' + \
+    'Flying number of aircraft[-]\n'
 
 
 class Traffic(Entity):
@@ -121,6 +130,7 @@ class Traffic(Entity):
         # Loggers
         self.flst = datalog.crelog('FLSTLOG', None, flstheader)
         self.conflog = datalog.crelog('CONFLOG', None, confheader)
+        self.reglog = datalog.crelog('REGLOG', None, regheader)
         self.prevconfpairs = set()
         self.confinside_all = 0
         self.numgeobreaches_all = 0
@@ -532,10 +542,15 @@ class Traffic(Entity):
     
     @timed_function(name='deleteroaming', dt = 1)    
     def delete_roaming(self):
-        delete = self.swlnav - self.actwp.swlastwp
+        delete = self.swlnav.astype(np.int32) - self.actwp.swlastwp.astype(np.int32)
         indices = np.where(delete == -1)[0]
         for index in indices:
             bs.stack.stack(f'DEL {self.id[index]}')
+            
+    @timed_function(name='reglog', dt=10)
+    def thereglog(self):
+        self.reglog.log(self.ntraf)
+        return
 
     def update_airspeed(self):
         # Compute horizontal acceleration

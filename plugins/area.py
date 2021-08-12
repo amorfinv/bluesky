@@ -134,6 +134,7 @@ class Area(Entity):
     def sesarlog(self):
         traf.flst.start()
         traf.conflog.start()
+        traf.reglog.start()
     
     def create(self, n=1):
         ''' Create is called when new aircraft are created. '''
