@@ -488,7 +488,7 @@ class Traffic(Entity):
         self.ap.update()  # Autopilot logic
         self.update_asas()  # Airborne Separation Assurance
         self.aporasas.update()   # Decide to use autopilot or ASAS for commands
-
+        
         #---------- Performance Update ------------------------
         self.perf.update()
 
@@ -529,6 +529,13 @@ class Traffic(Entity):
         # Conflict detection and resolution
         self.cd.update(self, self)
         self.cr.update(self.cd, self, self)
+    
+    @timed_function(name='deleteroaming', dt = 1)    
+    def delete_roaming(self):
+        delete = self.swlnav - self.actwp.swlastwp
+        indices = np.where(delete == -1)[0]
+        for index in indices:
+            bs.stack.stack(f'DEL {self.id[index]}')
 
     def update_airspeed(self):
         # Compute horizontal acceleration

@@ -131,14 +131,27 @@ class VOSpeedBased(ConflictResolution):
         # First check if the autopilot speed creates any conflict
         if intersection:
             solutions = []
-            for velocity in list(intersection.coords):
-                # Check whether to put velocity "negative" or "positive". 
-                # Drones can fly backwards.
-                if np.degrees(self.angle(velocity, v_ownship)) < 1:
-                    solutions.append(self.norm(velocity))
-                else:
-                    solutions.append(-self.norm(velocity))
-            gs_new = min(solutions)
+            if intersection.geom_type == 'MultiLineString':
+                for line in intersection:
+                    for velocity in list(line.coords):
+                        # Check whether to put velocity "negative" or "positive". 
+                        # Drones can fly backwards.
+                        if np.degrees(self.angle(velocity, v_ownship)) < 1:
+                            solutions.append(self.norm(velocity))
+                        else:
+                            solutions.append(-self.norm(velocity))
+            elif intersection.geom_type == 'LineString':
+                for velocity in list(intersection.coords):
+                    # Check whether to put velocity "negative" or "positive". 
+                    # Drones can fly backwards.
+                    if np.degrees(self.angle(velocity, v_ownship)) < 1:
+                        solutions.append(self.norm(velocity))
+                    else:
+                        solutions.append(-self.norm(velocity))
+                gs_new = min(solutions)
+            else:
+                print(f'Impelement check for {intersection.geom_type}')
+                gs_new = ownship.gs[idx]
         else:
             # Maintain current speed
             gs_new = ownship.gs[idx]
