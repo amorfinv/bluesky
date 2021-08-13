@@ -140,6 +140,7 @@ class VOSpeedBased(ConflictResolution):
                             solutions.append(self.norm(velocity))
                         else:
                             solutions.append(-self.norm(velocity))
+                gs_new = min(solutions)
             elif intersection.geom_type == 'LineString':
                 for velocity in list(intersection.coords):
                     # Check whether to put velocity "negative" or "positive". 

@@ -48,7 +48,7 @@ def do_flowcontrol():
     # tells you how many aircraft in an edge
     # TODO: perhaps only useful for stroke_groups
     edge_count_dict = dict(Counter(edge_traffic.actedge.wpedgeid))
-    print(edge_count_dict)
+    #print(edge_count_dict)
 
 ######################## STACK COMMANDS ##########################
 @stack.command
