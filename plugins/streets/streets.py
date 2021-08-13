@@ -15,6 +15,8 @@ from bluesky.tools.aero import ft, kts, nm
 from bluesky.tools import geo
 from bluesky.core import Entity, Replaceable
 
+streets_bool = False
+
 def init_plugin():
 
     config = {
@@ -22,7 +24,8 @@ def init_plugin():
         'plugin_name'      : 'streets',
         'plugin_type'      : 'sim',
         # 'update_interval'  :  1.0,
-        'update':          update
+        'update':          update,
+        'reset':           reset
         }
     
     return config
@@ -33,12 +36,23 @@ def init_plugin():
 ######################## UPDATE FUNCTION  ##########################
 
 def update():
-    # Main update function for streets plugin. updates edge and flight layer tracking
-    # Update edege autopilot
-    edge_traffic.edgeap.update()
+    global streets_bool
 
-    # update layer tracking
-    flight_layers.layer_tracking()
+    # Only update if strets_bool is enabled
+    if streets_bool:
+        # Main update function for streets plugin. updates edge and flight layer tracking
+        # Update edege autopilot
+        edge_traffic.edgeap.update()
+
+        # update layer tracking
+        flight_layers.layer_tracking()
+
+######################## RESET FUNCTION  ##########################
+def reset():
+    # when reseting bluesky turn off streets
+    global streets_bool
+
+    streets_bool = False
 
 ######################## TIMED FUNCTION  ##########################
 # @core.timed_function(dt=10)
@@ -71,6 +85,15 @@ def addwpt2(acid: 'acid', lat: float, lon: float, alt: float = -999, spd: float 
 
     # add edge info to stack
     edge_traffic.edgeap.edge_rou[acid].addwptedgeStack(acid, latlon, alt, spd, wpedgeid, group_number, edge_layer_dict)
+
+@stack.command
+def streetsenable():
+    """streetsenable"""
+
+    # Turns on streets for scenario
+    global streets_bool
+
+    streets_bool = True
 
 @stack.command
 def edgeid(acid: 'txt'):
