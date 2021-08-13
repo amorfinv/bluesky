@@ -47,6 +47,9 @@ def update():
         # update layer tracking
         flight_layers.layer_tracking()
 
+        # layer switching
+        flight_layers.layer_switching()
+
 ######################## RESET FUNCTION  ##########################
 def reset():
     # when reseting bluesky turn off streets
@@ -64,7 +67,8 @@ def reset():
 
 ######################## STACK COMMANDS ##########################
 @stack.command
-def addwpt2(acid: 'acid', lat: float, lon: float, alt: float = -999, spd: float = -999, wpedgeid: 'txt'="",  group_number: 'txt' = ""):
+def addwpt2(acid: 'acid', lat: float, lon: float, alt: float = -999, spd: float = -999, wpedgeid: 'txt'="",  
+            group_number: 'txt' = "", turn_lat: float=48.1351, turn_lon: float = 11.58):
     
     """ADDWPT2 acid, (lat,lon),[alt],[spd],[edgeid],[group_number]"""
     # edgeid comes from graph
@@ -84,7 +88,8 @@ def addwpt2(acid: 'acid', lat: float, lon: float, alt: float = -999, spd: float 
     edge_layer_dict = flight_layers.layer_dict["config"][edge_layer_type]['levels']
 
     # add edge info to stack
-    edge_traffic.edgeap.edge_rou[acid].addwptedgeStack(acid, latlon, alt, spd, wpedgeid, group_number, edge_layer_dict)
+    edge_traffic.edgeap.edge_rou[acid].addwptedgeStack(acid, latlon, alt, spd, wpedgeid, group_number, 
+                                                       edge_layer_dict, turn_lat, turn_lon)
 
 @stack.command
 def streetsenable():
@@ -174,13 +179,18 @@ class EdgesAp(Entity):
             # get next wpedgeid for aircraft and lat lon of next intersection
             edge_traffic.actedge.wpedgeid[i], \
             edge_traffic.actedge.intersection_lat[i] , edge_traffic.actedge.intersection_lon[i], \
-            edge_traffic.actedge.group_number[i], edge_traffic.actedge.edge_layer_dict[i] \
+            edge_traffic.actedge.group_number[i], edge_traffic.actedge.edge_layer_dict[i], \
+            edge_traffic.actedge.turn_lat[i], edge_traffic.actedge.turn_lon[i],  \
                  = self.edge_rou[i].getnextwp()
         
         # get distance of drones to next intersection intersection
         _, dis_to_int = geo.qdrdist_matrix(traf.lat, traf.lon, edge_traffic.actedge.intersection_lat,
                                                                 edge_traffic.actedge.intersection_lon)
         edge_traffic.actedge.dis_to_int = np.asarray(dis_to_int).flatten()
+
+        _, dis_to_turn = geo.qdrdist_matrix(traf.lat, traf.lon, edge_traffic.actedge.turn_lat,
+                                                                edge_traffic.actedge.turn_lon)
+        edge_traffic.actedge.dis_to_turn = np.asarray(dis_to_turn).flatten()
 
         # update variables available in bs.traf
         bs.traf.edgeap = edge_traffic.edgeap
@@ -199,11 +209,14 @@ class ActiveEdge(Entity):
             self.intersection_lat = np.array([])
             self.intersection_lon = np.array([])
 
+            self.turn_lat = np.array([])
+            self.turn_lon = np.array([])
+
             self.dis_to_int = np.array([])
+            self.dis_to_turn = np.array([])
 
             self.group_number = np.array([], dtype=int)
             self.edge_layer_dict = np.array([], dtype=object)
-
     
     def create(self, n=1):
         super().create(n)
@@ -214,7 +227,11 @@ class ActiveEdge(Entity):
         self.intersection_lat[-n:]          = 89.99
         self.intersection_lon[-n:]          = 89.99
 
+        self.turn_lat[-n:]                  = 89.99
+        self.turn_lon[-n:]                  = 89.99
+
         self.dis_to_int[-n:]                = 9999.9
+        self.dis_to_turn[-n:]               = 9999.9
 
         self.group_number[-n:]              = 999
         self.edge_layer_dict[-n:]           = {}
@@ -242,7 +259,11 @@ class Route_edge(Replaceable):
         # initialize edge_layer_dict
         self.edge_layer_dict = []
 
-    def addwptedgeStack(self, idx, latlon, alt, spd, wpedgeid, group_number, edge_layer_dict): 
+        # get turn lat and lon
+        self.turn_lat = []
+        self.turn_lon = []
+
+    def addwptedgeStack(self, idx, latlon, alt, spd, wpedgeid, group_number, edge_layer_dict, turn_lat, turn_lon): 
 
         # send command to bluesky waypoint stack
         traf.ap.route[idx].addwptStack(idx, latlon, alt, spd)
@@ -251,7 +272,7 @@ class Route_edge(Replaceable):
         name    = bs.traf.id[idx]
         
         # Add waypoint
-        wpidx = self.addwpt(idx, name, wpedgeid, group_number, edge_layer_dict)
+        wpidx = self.addwpt(idx, name, wpedgeid, group_number, edge_layer_dict, turn_lat, turn_lon)
 
         # Check for success by checking inserted location in flight plan >= 0
         if wpidx < 0:
@@ -268,23 +289,23 @@ class Route_edge(Replaceable):
 
         return True
 
-    def overwrite_wpt_data(self, wpidx, wpname, wpedgeid, group_number, edge_layer_dict):
+    def overwrite_wpt_data(self, wpidx, wpname, wpedgeid, group_number, edge_layer_dict, turn_lat, turn_lon):
         """
         Overwrites information for a waypoint, via addwpt_data/9
         """
         # TODO: check if it works
 
-        self.addwpt_data(True, wpidx, wpname, wpedgeid, group_number, edge_layer_dict)
+        self.addwpt_data(True, wpidx, wpname, wpedgeid, group_number, edge_layer_dict, turn_lat, turn_lon)
 
-    def insert_wpt_data(self, wpidx, wpname, wpedgeid, group_number, edge_layer_dict):
+    def insert_wpt_data(self, wpidx, wpname, wpedgeid, group_number, edge_layer_dict, turn_lat, turn_lon):
         """
         Inserts information for a waypoint, via addwpt_data/9
         """
         # TODO: check if it works
 
-        self.addwpt_data(False, wpidx, wpname, wpedgeid, group_number, edge_layer_dict)
+        self.addwpt_data(False, wpidx, wpname, wpedgeid, group_number, edge_layer_dict, turn_lat, turn_lon)
 
-    def addwpt_data(self, overwrt, wpidx, wpname, wpedgeid, group_number, edge_layer_dict):
+    def addwpt_data(self, overwrt, wpidx, wpname, wpedgeid, group_number, edge_layer_dict, turn_lat, turn_lon):
         """
         Overwrites or inserts information for a waypoint
         """
@@ -295,14 +316,17 @@ class Route_edge(Replaceable):
             self.wpedgeid[wpidx] = wpedgeid
             self.group_number[wpidx] = group_number
             self.edge_layer_dict[wpidx] = edge_layer_dict
-
+            self.turn_lat[wpidx] = turn_lat
+            self.turn_lon[wpidx] = turn_lon
         else:
             self.wpname.insert(wpidx, wpname)
             self.wpedgeid.insert(wpidx, wpedgeid)
             self.group_number.insert(wpidx, group_number)
             self.edge_layer_dict.insert(wpidx, edge_layer_dict)
+            self.turn_lat.insert(wpidx, turn_lat)
+            self.turn_lon.insert(wpidx, turn_lon)
 
-    def addwpt(self, iac, name, wpedgeid ="", group_number="", edge_layer_dict =""):
+    def addwpt(self, iac, name, wpedgeid ="", group_number="", edge_layer_dict ="", turn_lat=48.1351, turn_lon=11.582):
         """Adds waypoint an returns index of waypoint, lat/lon [deg], alt[m]"""
 
         # For safety
@@ -315,7 +339,7 @@ class Route_edge(Replaceable):
 
         wpidx = self.nwp
 
-        self.addwpt_data(False, wpidx, newname, wpedgeid, group_number, edge_layer_dict)
+        self.addwpt_data(False, wpidx, newname, wpedgeid, group_number, edge_layer_dict, turn_lat, turn_lon)
 
         idx = wpidx
         self.nwp += 1
@@ -375,6 +399,10 @@ class Route_edge(Replaceable):
             edge_traffic.actedge.group_number[idx] = self.group_number[wpidx]
             edge_traffic.actedge.edge_layer_dict[idx] = self.edge_layer_dict[wpidx]
 
+            edge_traffic.actedge.turn_lat[idx] = self.turn_lat[wpidx]
+            edge_traffic.actedge.turn_lon[idx] = self.turn_lon[wpidx]
+
+
             return True
         else:
             return False, "Waypoint " + wpnam + " not found"
@@ -392,7 +420,11 @@ class Route_edge(Replaceable):
         group_number = self.group_number[self.iactwp]
         edge_layer_dict = self.edge_layer_dict[self.iactwp]
 
-        return wpedgeid, intersection_lat, intersection_lon, group_number, edge_layer_dict
+        # update turn lat and lon
+        turn_lat = self.turn_lat[self.iactwp]
+        turn_lon = self.turn_lon[self.iactwp]
+
+        return wpedgeid, intersection_lat, intersection_lon, group_number, edge_layer_dict, turn_lat, turn_lon
     
     def delrte(self,iac=None):
         """Delete complete route"""
@@ -455,6 +487,8 @@ class FlightLayers(Entity):
             self.closest_turn_layer_bottom      = np.array([], dtype=int)
             self.closest_turn_layer_top         = np.array([], dtype=int)
 
+            self.alt_commands                   = np.array([], dtype=str)
+
         # Assign info to bs.trafic
         bs.traf.flight_levels = self.flight_levels
         bs.traf.flight_layer_type = self.flight_layer_type
@@ -487,9 +521,12 @@ class FlightLayers(Entity):
         self.closest_turn_layer_top[-n:]        = 0
         self.closest_turn_layer_bottom[-n:]     = 0
 
+        self.alt_commands[-n:]                  = ""
+
     def layer_tracking(self):
         # update flight levels
         self.flight_levels = np.array((np.round((bs.traf.alt/ft) / self.layer_spacing))*self.layer_spacing, dtype=int)
+        # print(f' Flight levels {self.flight_levels}')
 
         # update flight layer type
         edge_layer_dicts = edge_traffic.actedge.edge_layer_dict
@@ -510,6 +547,67 @@ class FlightLayers(Entity):
         bs.traf.closest_turn_layer_top = self.closest_turn_layer_top
 
         return
+
+    def layer_switching(self):
+        # check which values are True in flyturn
+
+        turn_index = np.argwhere(edge_traffic.actedge.dis_to_turn*nm < 100)
+        turn_index = np.asarray(turn_index).flatten()
+
+        # check at which altitude turning aircraft should be
+        for idx in turn_index:
+
+            # only change altitude of aircraft that are in a cruise layer
+            if self.flight_layer_type[idx] == 'C':
+
+                # first check turn layer at bottom then top
+                if self.closest_turn_layer_bottom[idx]:
+                    new_alt = self.closest_turn_layer_bottom[idx]
+                    
+                elif self.closest_turn_layer_top[idx]:
+                    new_alt = self.closest_turn_layer_top[idx]
+
+                new_command = f'ALT {bs.traf.id[idx]} {new_alt}'
+            
+                # send altitude commands
+                # if self.flight_levels[idx] != new_alt or self.alt_commands[idx] != new_command:
+                if self.alt_commands[idx] != new_command:
+                    if abs(bs.traf.vs[idx]) < 0.1:
+
+                        stack.stack(new_command)
+                        stack.stack(f'LNAV {bs.traf.id[idx]} ON')
+                        stack.stack(f'VNAV {bs.traf.id[idx]} ON')
+
+                        self.alt_commands[idx] =  new_command
+
+        # Now send altitude commands to cruise aircraft that should not be in turn layer
+        cruise_index = np.argwhere(edge_traffic.actedge.dis_to_turn*nm > 200)
+        cruise_index = np.asarray(cruise_index).flatten()
+
+        for idx in cruise_index:
+
+            # only change altitude if aircraft in turn layer
+            if self.flight_layer_type[idx] == 'T':
+
+                # firt check cruise layer at bottom then top
+                if self.closest_cruise_layer_bottom[idx]:
+                    new_alt = self.closest_cruise_layer_bottom[idx]
+                
+                elif self.closest_cruise_layer_top[idx]:
+                    new_alt = self.closest_cruise_layer_top[idx]
+            
+                # send altitude commands
+                new_command = f'ALT {bs.traf.id[idx]} {new_alt}'
+            
+                # send altitude commands only if it is different
+                if self.alt_commands[idx] != new_command:
+                    if abs(bs.traf.vs[idx]) < 0.1:
+                        
+                        stack.stack(new_command)
+                        stack.stack(f'LNAV {bs.traf.id[idx]} ON')
+                        stack.stack(f'VNAV {bs.traf.id[idx]} ON')
+
+                        self.alt_commands[idx] =  new_command
 
     @staticmethod
     def get_layer_type(flight_level, edge_layer_dict):
