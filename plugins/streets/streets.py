@@ -137,8 +137,8 @@ class EdgeTraffic(Entity):
             self.actedge  = ActiveEdge()
 
         # make variables available in bs.traf
-        bs.traf.edgeap = self.edgeap
-        bs.traf.actedge = self.actedge
+        bs.traf.edgeap = np.array(self.edgeap, dtype=object)
+        bs.traf.actedge = np.array(self.actedge, dtype=object)
 
         # initialize edge and nodes dictionaries
         
@@ -193,8 +193,8 @@ class EdgesAp(Entity):
         edge_traffic.actedge.dis_to_turn = np.asarray(dis_to_turn).flatten()
 
         # update variables available in bs.traf
-        bs.traf.edgeap = edge_traffic.edgeap
-        bs.traf.actedge = edge_traffic.actedge
+        bs.traf.edgeap = np.array(edge_traffic.edgeap, dtype=object)
+        bs.traf.actedge = np.array(edge_traffic.actedge, dtype=object)
 
         return
 # active edge class "the active waypoint"
@@ -535,16 +535,14 @@ class FlightLayers(Entity):
         if bs.traf.ntraf > 0:
             self.flight_layer_type, self.closest_cruise_layer_bottom, self.closest_cruise_layer_top, \
                 self.closest_turn_layer_bottom, self.closest_turn_layer_top = self.layer_info(self.flight_levels, edge_layer_dicts)
-        else:
-            self.flight_layer_type, self.closest_cruise_layer_bottom, self.closest_cruise_layer_top, \
-                self.closest_turn_layer_bottom, self.closest_turn_layer_top = "", "", "", "", ""
-        # update bs.traf
-        bs.traf.flight_levels = self.flight_levels
-        bs.traf.flight_layer_type = self.flight_layer_type
-        bs.traf.closest_cruise_layer_bottom = self.closest_cruise_layer_bottom
-        bs.traf.closest_cruise_layer_top = self.closest_cruise_layer_top
-        bs.traf.closest_turn_layer_bottom = self.closest_turn_layer_bottom
-        bs.traf.closest_turn_layer_top = self.closest_turn_layer_top
+
+            # update bs.traf
+            bs.traf.flight_levels = self.flight_levels
+            bs.traf.flight_layer_type = self.flight_layer_type
+            bs.traf.closest_cruise_layer_bottom = self.closest_cruise_layer_bottom
+            bs.traf.closest_cruise_layer_top = self.closest_cruise_layer_top
+            bs.traf.closest_turn_layer_bottom = self.closest_turn_layer_bottom
+            bs.traf.closest_turn_layer_top = self.closest_turn_layer_top
 
         return
 
