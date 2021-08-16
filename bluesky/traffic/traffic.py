@@ -540,7 +540,7 @@ class Traffic(Entity):
         self.cd.update(self, self)
         self.cr.update(self.cd, self, self)
     
-    @timed_function(name='deleteroaming', dt = 1)    
+    @timed_function(name='deleteroaming', dt = 0.01)    
     def delete_roaming(self):
         delete = self.swlnav.astype(np.int32) - self.actwp.swlastwp.astype(np.int32)
         indices = np.where(delete == -1)[0]

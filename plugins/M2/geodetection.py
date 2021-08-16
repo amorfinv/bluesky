@@ -282,13 +282,15 @@ class GeofenceDetection(Entity):
                     self.geobreaches[acid].remove(geofence)
                     
         # Do a sweep to remove geofences that are not in vicinity from geoconfs and geobreaches
-        for geofence in self.geoconfs[acid].copy():
-            if geofence not in geoinvicinity:
-                self.geoconfs[acid].remove(geofence)
-                
-        for geofence in self.geobreaches[acid].copy():
-            if geofence not in geoinvicinity:
-                self.geobreaches[acid].remove(geofence)
+        if acid in self.geoconfs:
+            for geofence in self.geoconfs[acid].copy():
+                if geofence not in geoinvicinity:
+                    self.geoconfs[acid].remove(geofence)
+        
+        if acid in self.geobreaches:            
+            for geofence in self.geobreaches[acid].copy():
+                if geofence not in geoinvicinity:
+                    self.geobreaches[acid].remove(geofence)
                 
         return
  
