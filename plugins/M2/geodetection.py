@@ -49,16 +49,6 @@ class GeofenceDetection(Entity):
         # enough (or tile zoom is large enough) and an aircraft is inside it, because 
         # of the tile-based optimisation, it will not be detected. For this situation 
         # specifically, we need to keep track of aircraft that are inside a geofence. 
-
-        # First dictionary can be used to check if an aircraft is inside any geofences.
-        # If aircraft ID is not present, then aircraft is not inside any geofence. Same if
-        # entry for ACID is empty. 
-        self.acingeofence = dict()
-
-        # Second dictionary checks whether a geofence has aircraft inside it. If geofence name
-        # is not present, there are no aircraft inside it. Same if entry for geofence name is
-        # empty. 
-        self.geofencehasac = dict()
         
         # Conflict detection
         self.geoconfs = dict() # Stores current conflicts
@@ -71,7 +61,7 @@ class GeofenceDetection(Entity):
         return
     
     # This function is called from within traffic
-    @timed_function(name = 'geofencedetection', dt = 1)
+    @timed_function(name = 'geofencedetection', dt = 0.1)
     def update(self):
         ownship = bs.traf
         # Select detection method
@@ -80,10 +70,30 @@ class GeofenceDetection(Entity):
         elif self.method == 'RTREE':
             self.GeodetectRtree(ownship)
         return
+    
+    @timed_function(name = 'geocleanup', dt = 0.1)
+    def cleanup(self):
+        # Cleans up geofence breaches
+        # Go through all the entries in geofence breaches
+        newdict = dict()
+        for acid in self.geobreaches:
+            if acid not in bs.traf.id:
+                continue
+            
+            i = bs.traf.id.index(acid)
+            pos_point = Point(bs.traf.lat[i], bs.traf.lon[i])
+            geofences_to_stay = set()
+            for geofence in self.geobreaches[acid]:
+                if geofence.getPoly().contains(pos_point):
+                    geofences_to_stay.add(geofence)
+            
+            if geofences_to_stay:
+                newdict[acid] = geofences_to_stay
+                
+        self.geobreaches = newdict
+                
         
     def reset(self):
-        self.acingeofence = dict()
-        self.geofencehasac = dict()
         self.geoconfs = dict()
         self.geobreaches = dict()
         self.allgeobreaches = []
@@ -93,13 +103,17 @@ class GeofenceDetection(Entity):
     def delgeofence(self, geofencename):
         '''Delete geofence from the dictionaries in this class.'''
         # First do the easy bit, simply remove geofence entry
-        if geofencename in self.geofencehasac:
+        if geofencename in self.geoconfs:
             self.geofencehasac.pop(geofencename)
             
         # Then the harder part. For loop over dictionary
-        for key in self.acingeofence:
-            if geofencename in self.acingeofence[key]:
-                self.acingeofence[key].remove(geofencename)
+        for key in self.geoconfs:
+            if geofencename in self.geoconfs[key]:
+                self.geoconfs[key].remove(geofencename)
+                
+        for key in self.geoconfs:
+            if geofencename in self.geoconfs[key]:
+                self.geoconfs[key].remove(geofencename)
         return
         
     def delaircraft(self, acid):
@@ -214,7 +228,6 @@ class GeofenceDetection(Entity):
             return
         
         # Create the dict
-        self.geoinvicinity = dict()
         ntraf = ownship.ntraf
         dlookahead = bs.settings.geofence_dlookahead
         
@@ -249,49 +262,25 @@ class GeofenceDetection(Entity):
         for geofence in geoinvicinity:
             # First do horizontal check. We check using shapely if projected line intersects polygon.
             geopoly = geofence.getPoly()
-            if acid not in self.geoconfs:
-                self.geoconfs[acid] = set()
-                
-            if acid not in self.geobreaches:
-                self.geobreaches[acid] = set()
-                
-            if trajectory.intersects(geopoly):
-                # We have a conflict, add conflict to dictionary
-                # Check if this conflict was already there
-                if geofence not in self.geoconfs[acid]:
-                    self.allgeoconfs.append((acid, geofence.name))
-                    self.geoconfs[acid].add(geofence)
-                
-            else:
-                # Remove entry if it exists
-                if geofence in self.geoconfs[acid]:
-                    self.geoconfs[acid].remove(geofence)
             
-            # Also check if we have breached the geofence
+            #Check if we have breached the geofence
             pos_point = Point(pos_ac[0], pos_ac[1])
-            if geopoly.contains(pos_point):              
+            if geopoly.contains(pos_point):   
+                if acid not in self.geobreaches:
+                    self.geobreaches[acid] = set()  
+                    self.allgeobreaches.append((acid, geofence.name))
+                    self.geobreaches[acid].add(geofence)
+                    bs.traf.numgeobreaches[idx_ac] += 1
+                    bs.traf.numgeobreaches_all += 1
+                    return   
+                          
                 # Check if this breach was already there
                 if geofence not in self.geobreaches[acid]:
                     self.allgeobreaches.append((acid, geofence.name))
                     self.geobreaches[acid].add(geofence)
                     bs.traf.numgeobreaches[idx_ac] += 1
-                    bs.traf.numgeobreaches_all += 1
-            else:
-                # Remove entry if it exists
-                if geofence in self.geobreaches[acid]:
-                    self.geobreaches[acid].remove(geofence)
-                    
-        # Do a sweep to remove geofences that are not in vicinity from geoconfs and geobreaches
-        if acid in self.geoconfs:
-            for geofence in self.geoconfs[acid].copy():
-                if geofence not in geoinvicinity:
-                    self.geoconfs[acid].remove(geofence)
-        
-        if acid in self.geobreaches:            
-            for geofence in self.geobreaches[acid].copy():
-                if geofence not in geoinvicinity:
-                    self.geobreaches[acid].remove(geofence)
-                
+                    bs.traf.numgeobreaches_all += 1   
+                    return  
         return
  
     # Helper functions   
