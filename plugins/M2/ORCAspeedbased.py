@@ -14,6 +14,7 @@ from bluesky.tools.aero import nm, ft, kts
 import bluesky as bs
 import numpy as np
 import itertools
+import matplotlib.pyplot as plt
 
 def init_plugin():
 
@@ -84,18 +85,11 @@ class ORCASpeedBased(ConflictResolution):
             #print(f'### {intruder.id[idx_intruder]} ###')
             v_intruder = np.array([intruder.gseast[idx_intruder], intruder.gsnorth[idx_intruder]])
             
-            # Do the check for turn waypoints
-            if not (ownship.actwp.nextspd[idx] == self.turn_speed) and \
-            (conf.tLOS[idx_pair] * ownship.gs[idx] > nm \
-                    * kwikdist(ownship.actwp.lat[idx],
-                                ownship.actwp.lon[idx],
-                                ownship.lat[idx],
-                                ownship.lon[idx])):
-                next_spd_ok = False
-            
             # Extract conflict bearing and distance information
             qdr = conf.qdr[idx_pair]
             dist= conf.dist[idx_pair]
+            
+            qdr_rad = np.radians(qdr)
             
             # Get the separation distance
             r = (conf.rpz[idx]) * 1.1
@@ -105,7 +99,7 @@ class ORCASpeedBased(ConflictResolution):
                 continue
             
             # Relative position vector between ownship and intruder
-            x = np.array([np.sin(qdr)*dist, np.cos(qdr)*dist])
+            x = np.array([np.sin(qdr_rad)*dist, np.cos(qdr_rad)*dist])
             v_rel = v_ownship - v_intruder
             
             circle = Point(x/t).buffer(r/t)
@@ -121,14 +115,17 @@ class ORCASpeedBased(ConflictResolution):
             
             final_poly = cascaded_union([triangle_poly, circle])
             
-            # plt.plot(*final_poly.exterior.xy)
-            # plt.scatter(v_rel[0], v_rel[1])
-            
             # Create relative velocity point
             v_rel_point = Point(v_rel[0], v_rel[1])
             
-            # Find nearest point on polygon
-            p1, p2 = nearest_points(final_poly.exterior, v_rel_point)
+            # Check if v_rel is the same as the circle centre
+            if (v_rel == x/t).all():
+                # Project along the velocity
+                p1 = final_poly.intersection(LineString([[0,0], [v_rel[0], v_rel[1]]]))
+                
+            else:    
+                # Find nearest point on polygon
+                p1, p2 = nearest_points(final_poly.exterior, v_rel_point)
             
             # Let's see it
             v_change = np.array(list(p1.coords))[0] - v_rel
@@ -137,28 +134,30 @@ class ORCASpeedBased(ConflictResolution):
             # such that the new relative velocity changes by v_change
             # Compute unit direction vector of each aircraft
             norm_own = self.norm(v_ownship)
-            
             # Own change that is guaranteed to be in the same direction as where
             # we are currently heading. 
             own_change = (np.dot(v_change, v_ownship)/norm_own**2)*v_ownship
-            solutions.append(self.norm(own_change + v_ownship))
+            
+            if np.degrees(self.angle(own_change, v_ownship)) < 1:
+                solutions.append(self.norm(own_change))
+            else:
+                solutions.append(-self.norm(own_change))
         
         # Get minimum and maximum speed of ownship
         vmin = ownship.perf.vmin[idx]
         vmax = ownship.perf.vmax[idx]
         
         if not solutions:
-            return ownship.gs[idx], ownship.ap.vs[idx]
+            return ownship.ap.tas[idx], ownship.ap.vs[idx]
         
-        # Get the minimum solution
-        min_limit = min(solutions)
-            
+        # Get the closest solution
+        closest = min(solutions, key = abs)
         # Apply the speed that is closest to our current one
-        if min_limit > vmin:
-            gs_new = min_limit
+        if closest > vmin and closest < vmax:
+            gs_new = closest + ownship.gs[idx]
         else:
             #Do nothing I guess
-            gs_new = ownship.gs[idx]
+            gs_new = ownship.ap.tas[idx]
             
         # So we have all the velocity limits. According to ORCA, all speeds that are
         # lower than ours are basically lower limits. All speeds that are greater are
