@@ -99,7 +99,8 @@ regheader = \
     '#######################################################\n\n' + \
     'Parameters [Units]:\n' + \
     'Simulation time [s], ' + \
-    'Flying number of aircraft[-]\n'
+    'Aircraft in air[-],' + \
+    'Aircraft that reached destination[-]\n'
 
 
 class Traffic(Entity):
@@ -135,6 +136,7 @@ class Traffic(Entity):
         self.confinside_all = 0
         self.numgeobreaches_all = 0
         self.prevnumgeobreaches_all = 0
+        self.deleted_aircraft = 0
 
         self.cond = Condition()  # Conditional commands list
         self.wind = WindSim()
@@ -257,6 +259,7 @@ class Traffic(Entity):
         self.confinside_all = 0
         self.numgeobreaches_all = 0
         self.prevnumgeobreaches_all = 0
+        self.deleted_aircraft = 0
 
     def mcre(self, n, actype="B744", acalt=None, acspd=None, dest=None):
         """ Create one or more random aircraft in a specified area """
@@ -485,6 +488,7 @@ class Traffic(Entity):
 
         # Update number of aircraft
         self.ntraf = len(self.lat)
+        self.deleted_aircraft += 1
         return True
 
     def update(self):
@@ -553,7 +557,7 @@ class Traffic(Entity):
             
     @timed_function(name='reglog', dt=10)
     def thereglog(self):
-        self.reglog.log(self.ntraf)
+        self.reglog.log(self.ntraf, self.deleted_aircraft)
         return
 
     def update_airspeed(self):
