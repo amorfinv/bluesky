@@ -86,7 +86,6 @@ data/cache
 data/performance/BADA/*
 !/data/performance/BADA/README
 ssd.obj
-data/geofence/*
 
 # IPython
 *-checkpoint.py
