@@ -480,8 +480,8 @@ class Traffic(Entity):
             self.aporasas.tas[idx]/kts,
             self.aporasas.vs[idx]/fpm,
             self.aporasas.hdg[idx],
-            int(self.numgeobreaches[idx],
-            self.turn_layer_time[idx]))
+            int(self.numgeobreaches[idx]),
+            self.turn_layer_time[idx])
         
         # If this is a multiple delete, sort first for list delete
         # (which will use list in reverse order to avoid index confusion)
