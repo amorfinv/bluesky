@@ -113,9 +113,6 @@ class VOSpeedBased(ConflictResolution):
             
             VelocityObstacles.append(final_poly_translated)
         
-        # Combine all velocity obstacles into one figure
-        CombinedObstacles = cascaded_union(VelocityObstacles)
-        
         # Get minimum and maximum speed of ownship
         vmin = ownship.perf.vmin[idx]
         vmax = ownship.perf.vmax[idx]
@@ -126,36 +123,46 @@ class VOSpeedBased(ConflictResolution):
         
         # Create velocity line
         line = LineString([v_line_min, v_line_max])
-        intersection = CombinedObstacles.intersection(line)
-
-        # First check if the autopilot speed creates any conflict
-        if intersection:
-            solutions = []
+        
+        velocity_diffs = []
+        gs_own = ownship.gs[idx]
+        
+        # Find solutions to all velocity obstacles, and then sum em up
+        for obstacle in VelocityObstacles:
+            temp_vels = []
+            intersection = obstacle.intersection(line)
+            print(intersection)
+            # Check out intersection
             if intersection.geom_type == 'MultiLineString':
                 for line in intersection:
                     for velocity in list(line.coords):
                         # Check whether to put velocity "negative" or "positive". 
                         # Drones can fly backwards.
-                        if np.degrees(self.angle(velocity, v_ownship)) < 1:
-                            solutions.append(self.norm(velocity))
+                        if -90 < np.degrees(self.angle(velocity, v_ownship)) < 90:
+                            temp_vels.append(self.norm(velocity))
                         else:
-                            solutions.append(-self.norm(velocity))
-                gs_new = min(solutions)
+                            temp_vels.append(-self.norm(velocity))
+                #Take the smallest difference (fastest way out)
+                print(temp_vels)
+                temp_diffs = [x - gs_own for x in temp_vels]
+                velocity_diffs.append(min(temp_diffs, key = abs))
+
             elif intersection.geom_type == 'LineString':
                 for velocity in list(intersection.coords):
                     # Check whether to put velocity "negative" or "positive". 
                     # Drones can fly backwards.
-                    if np.degrees(self.angle(velocity, v_ownship)) < 1:
-                        solutions.append(self.norm(velocity))
+                    if -90 < np.degrees(self.angle(velocity, v_ownship)) < 90:
+                        temp_vels.append(self.norm(velocity))
                     else:
-                        solutions.append(-self.norm(velocity))
-                gs_new = min(solutions)
-            else:
-                print(f'Impelement check for {intersection.geom_type}')
-                gs_new = ownship.gs[idx]
-        else:
-            # Maintain current speed
-            gs_new = ownship.gs[idx]
+                        temp_vels.append(-self.norm(velocity))
+                #Take the smallest difference (fastest way out)
+                print(temp_vels)
+                temp_diffs = [x - gs_own for x in temp_vels]
+                velocity_diffs.append(min(temp_diffs, key = abs))
+                        
+                        
+        # We have all the velocities, compute the velocity change
+        gs_new = sum(velocity_diffs)
         
         return gs_new, ownship.ap.vs[idx]
     
