@@ -23,7 +23,7 @@ def init_plugin():
     # Configuration parameters
     config = {
         # The name of your plugin
-        'plugin_name':     'VOSPEEDBASED',
+        'plugin_name':     'ORCASPEEDBASEDC',
 
         # The type of this plugin. For now, only simulation plugins are possible.
         'plugin_type':     'sim'
@@ -31,7 +31,7 @@ def init_plugin():
 
     return config
 
-class VOSpeedBased(ConflictResolution): 
+class ORCASpeedBasedC(ConflictResolution): 
     # Define some variables
     def __init__(self):
         super().__init__()
@@ -53,7 +53,7 @@ class VOSpeedBased(ConflictResolution):
             idx_pairs = self.pairs(conf, ownship, intruder, idx)
             
             # Find solution for aircraft 'idx'
-            gs_new, vs_new = self.VOSpeedBased(conf, ownship, intruder, idx, idx_pairs)
+            gs_new, vs_new = self.ORCASpeedBasedC(conf, ownship, intruder, idx, idx_pairs)
             
             print(gs_new)
             
@@ -68,7 +68,7 @@ class VOSpeedBased(ConflictResolution):
         return newtrack, newgscapped, newvs, alt
 
 
-    def VOSpeedBased(self, conf, ownship, intruder, idx, idx_pairs):
+    def ORCASpeedBasedC(self, conf, ownship, intruder, idx, idx_pairs):
         #print(f'------------ {ownship.id[idx]} ------------')
         # Extract ownship data
         v_ownship = np.array([ownship.gseast[idx], ownship.gsnorth[idx]])# [m/s]
@@ -112,7 +112,10 @@ class VOSpeedBased(ConflictResolution):
             right_leg_extended = right_leg_circle_point * t
             left_leg_extended = left_leg_circle_point * t
             
-            final_poly = Polygon([right_leg_extended, (0,0), left_leg_extended])
+            triangle_poly = Polygon([right_leg_extended, right_leg_circle_point,
+                                    left_leg_circle_point, left_leg_extended])
+            
+            final_poly = cascaded_union([triangle_poly, circle])
             
             # Create relative velocity point
             v_rel_point = Point(v_rel[0], v_rel[1])
@@ -149,15 +152,33 @@ class VOSpeedBased(ConflictResolution):
         if not solutions:
             return ownship.ap.tas[idx], ownship.ap.vs[idx]
         
-        # Get the closest solution
-        average = np.average(solutions)
-        # Apply the average speed IF it is within perf limits
-        if average + ownship.gs[idx] > vmin and average + ownship.gs[idx] < vmax:
-            gs_new = average + ownship.gs[idx]
+        # Basically, greatest speed change is guaranteed to solve all conflicts if
+        # all solutions are greater than 0. Otherwise, the smallest. If we have both
+        # bigger and smaller, then do average.
+        if np.all([x > 0 for x in solutions]):
+            # All are greater than 0, take the greatest solution
+            delta = max(solutions)
+        elif np.all([x < 0 for x in solutions]):
+            # Take minimum
+            delta = min(solutions)
+        else:
+            #Take average
+            delta = np.average(solutions)
+            
+        # Apply the speed if it's within vmin and vmax
+        if delta + ownship.gs[idx] > vmin and delta + ownship.gs[idx] < vmax:
+            gs_new = delta + ownship.gs[idx]
         else:
             #Do nothing I guess
             gs_new = ownship.ap.tas[idx]
+            
+        # So we have all the velocity limits. According to ORCA, all speeds that are
+        # lower than ours are basically lower limits. All speeds that are greater are
+        # upper limits. So the minimum and maximum values for the limits tell us the
+        # interval in which we cannot be. Thus, take the min, take the max, and our
+        # new velocity is the one that 
 
+        
         return gs_new, ownship.ap.vs[idx]
     
     def pairs(self, conf, ownship, intruder, idx):

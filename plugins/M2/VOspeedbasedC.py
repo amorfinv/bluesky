@@ -23,7 +23,7 @@ def init_plugin():
     # Configuration parameters
     config = {
         # The name of your plugin
-        'plugin_name':     'VOSPEEDBASED',
+        'plugin_name':     'VOSPEEDBASEDC',
 
         # The type of this plugin. For now, only simulation plugins are possible.
         'plugin_type':     'sim'
@@ -31,7 +31,7 @@ def init_plugin():
 
     return config
 
-class VOSpeedBased(ConflictResolution): 
+class VOSpeedBasedC(ConflictResolution): 
     # Define some variables
     def __init__(self):
         super().__init__()
@@ -53,7 +53,7 @@ class VOSpeedBased(ConflictResolution):
             idx_pairs = self.pairs(conf, ownship, intruder, idx)
             
             # Find solution for aircraft 'idx'
-            gs_new, vs_new = self.VOSpeedBased(conf, ownship, intruder, idx, idx_pairs)
+            gs_new, vs_new = self.VOSpeedBasedC(conf, ownship, intruder, idx, idx_pairs)
             
             print(gs_new)
             
@@ -68,7 +68,7 @@ class VOSpeedBased(ConflictResolution):
         return newtrack, newgscapped, newvs, alt
 
 
-    def VOSpeedBased(self, conf, ownship, intruder, idx, idx_pairs):
+    def VOSpeedBasedC(self, conf, ownship, intruder, idx, idx_pairs):
         #print(f'------------ {ownship.id[idx]} ------------')
         # Extract ownship data
         v_ownship = np.array([ownship.gseast[idx], ownship.gsnorth[idx]])# [m/s]
@@ -112,7 +112,10 @@ class VOSpeedBased(ConflictResolution):
             right_leg_extended = right_leg_circle_point * t
             left_leg_extended = left_leg_circle_point * t
             
-            final_poly = Polygon([right_leg_extended, (0,0), left_leg_extended])
+            triangle_poly = Polygon([right_leg_extended, right_leg_circle_point,
+                                    left_leg_circle_point, left_leg_extended])
+            
+            final_poly = cascaded_union([triangle_poly, circle])
             
             # Create relative velocity point
             v_rel_point = Point(v_rel[0], v_rel[1])

@@ -55,6 +55,8 @@ class ORCASpeedBased(ConflictResolution):
             # Find solution for aircraft 'idx'
             gs_new, vs_new = self.ORCASpeedBased(conf, ownship, intruder, idx, idx_pairs)
             
+            print(gs_new)
+            
             # Write the new velocity of aircraft 'idx' to traffic data
             newgscapped[idx] = gs_new    
             newvs[idx] = vs_new    
@@ -110,10 +112,7 @@ class ORCASpeedBased(ConflictResolution):
             right_leg_extended = right_leg_circle_point * t
             left_leg_extended = left_leg_circle_point * t
             
-            triangle_poly = Polygon([right_leg_extended, right_leg_circle_point,
-                                    left_leg_circle_point, left_leg_extended])
-            
-            final_poly = cascaded_union([triangle_poly, circle])
+            final_poly = Polygon([right_leg_extended, (0,0), left_leg_extended])
             
             # Create relative velocity point
             v_rel_point = Point(v_rel[0], v_rel[1])
@@ -150,11 +149,22 @@ class ORCASpeedBased(ConflictResolution):
         if not solutions:
             return ownship.ap.tas[idx], ownship.ap.vs[idx]
         
-        # Get the closest solution
-        closest = min(solutions, key = abs)
-        # Apply the speed that is closest to our current one
-        if closest > vmin and closest < vmax:
-            gs_new = closest + ownship.gs[idx]
+        # Basically, greatest speed change is guaranteed to solve all conflicts if
+        # all solutions are greater than 0. Otherwise, the smallest. If we have both
+        # bigger and smaller, then do average.
+        if np.all([x > 0 for x in solutions]):
+            # All are greater than 0, take the greatest solution
+            delta = max(solutions)
+        elif np.all([x < 0 for x in solutions]):
+            # Take minimum
+            delta = min(solutions)
+        else:
+            #Take average
+            delta = np.average(solutions)
+            
+        # Apply the speed if it's within vmin and vmax
+        if delta + ownship.gs[idx] > vmin and delta + ownship.gs[idx] < vmax:
+            gs_new = delta + ownship.gs[idx]
         else:
             #Do nothing I guess
             gs_new = ownship.ap.tas[idx]
