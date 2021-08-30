@@ -78,8 +78,9 @@ flstheader = \
     'Pilot ALT [ft], ' + \
     'Pilot SPD (TAS) [kts], ' + \
     'Pilot HDG [deg], ' + \
-    'Pilot VS [fpm]' + \
-    'Geofence breaches [-]\n'
+    'Pilot VS [fpm],' + \
+    'Geofence breaches [-],' + \
+    'Time outside cruise layers [s]\n'
 
 confheader = \
     '#######################################################\n' + \
@@ -90,7 +91,9 @@ confheader = \
     'Simulation time [s], ' + \
     'Total number of conflicts [-],' + \
     'Total number of losses of separation[-],' +\
-    'Total number of geofence breaches[-]\n'
+    'Total number of geofence breaches[-],' + \
+    'LAT1 of event [deg],' + \
+    'LON1 of event [deg]\n'
     
 regheader = \
     '#######################################################\n' + \
@@ -223,6 +226,7 @@ class Traffic(Entity):
             self.distance3D = np.array([])
             self.numgeobreaches = np.array([])
             self.create_time = np.array([])
+            self.turn_layer_time = np.array([])
 
         # Default bank angles per flight phase
         self.bphase = np.deg2rad(np.array([15, 35, 35, 35, 15, 45]))
@@ -476,7 +480,8 @@ class Traffic(Entity):
             self.aporasas.tas[idx]/kts,
             self.aporasas.vs[idx]/fpm,
             self.aporasas.hdg[idx],
-            int(self.numgeobreaches[idx]))
+            int(self.numgeobreaches[idx],
+            self.turn_layer_time[idx]))
         
         # If this is a multiple delete, sort first for list delete
         # (which will use list in reverse order to avoid index confusion)
@@ -533,6 +538,12 @@ class Traffic(Entity):
         # Update metrics
         self.distance2D += bs.sim.simdt * self.gs
         self.distance3D += bs.sim.simdt * resultantspd
+        # Check which aircraft are not in cruise layers 
+        in25 = np.array([24*ft<x<26*ft for x in self.alt])
+        in75 = np.array([74*ft<x<76*ft for x in self.alt])
+        inturnlayer = np.logical_not(np.logical_or(in25, in75))
+        self.turn_layer_time += bs.sim.simdt * inturnlayer
+        
         
         confpairs_new = list(set(self.cd.confpairs) - self.prevconfpairs)
         if confpairs_new or self.numgeobreaches_all != self.prevnumgeobreaches_all:
