@@ -92,8 +92,12 @@ confheader = \
     'Total number of conflicts [-],' + \
     'Total number of losses of separation[-],' +\
     'Total number of geofence breaches[-],' + \
-    'LAT1 of event [deg],' + \
-    'LON1 of event [deg]\n'
+    'LAT1 [deg],' + \
+    'LON1 [deg],' + \
+    'ALT1 [ft],' + \
+    'LAT2 [deg],' + \
+    'LON2 [deg],' + \
+    'ALT2 [ft]\n'
     
 regheader = \
     '#######################################################\n' + \
@@ -546,10 +550,26 @@ class Traffic(Entity):
         
         
         confpairs_new = list(set(self.cd.confpairs) - self.prevconfpairs)
-        if confpairs_new or self.numgeobreaches_all != self.prevnumgeobreaches_all:
+        if confpairs_new:
+            done_pairs = []
+            for pair in set(confpairs_new):
+                # Get the two aircraft
+                idx1 = self.id.index(pair[0])
+                idx2 = self.id.index(pair[1])
+                done_pairs.append((idx1,idx2))
+                if (idx2,idx1) in done_pairs:
+                    continue
+                    
+                self.conflog.log(len(self.cd.confpairs_all), 
+                                len(self.cd.lospairs_all), 
+                                int(self.numgeobreaches_all),
+                                self.lat[idx1], self.lon[idx1],self.alt[idx1],
+                                self.lat[idx2], self.lon[idx2],self.alt[idx2])
+                
+        if self.numgeobreaches_all != self.prevnumgeobreaches_all:
             self.conflog.log(len(self.cd.confpairs_all), 
                              len(self.cd.lospairs_all), 
-                             int(self.numgeobreaches_all))
+                             int(self.numgeobreaches_all), 0, 0, 0, 0, 0, 0)
         self.prevconfpairs = set(self.cd.confpairs)
         self.prevnumgeobreaches_all = self.numgeobreaches_all
 
