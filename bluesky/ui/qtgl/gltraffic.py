@@ -1,7 +1,6 @@
 ''' Traffic OpenGL visualisation. '''
 import numpy as np
 from bluesky.ui.qtgl import glhelpers as glh
-from os import path
 
 import bluesky as bs
 from bluesky.tools import geo
@@ -86,16 +85,10 @@ class Traffic(glh.RenderObject, layer=100):
         self.protectedzone.set_attribs(lat=self.lat, lon=self.lon, scale=self.rpz,
                                        color=self.color, instance_divisor=1)
 
-        acvertices = np.array([(-1.0*ac_size, -1.0 * ac_size), (-1.0 * ac_size, 1.0 * ac_size),
-                               (1.0*ac_size, 1.0 * ac_size), (1.0 * ac_size, -1.0 * ac_size)],
+        acvertices = np.array([(0.0, 0.5 * ac_size), (-0.5 * ac_size, -0.5 * ac_size),
+                               (0.0, -0.25 * ac_size), (0.5 * ac_size, -0.5 * ac_size)],
                               dtype=np.float32)
-
-        texcoords = np.array([1, 1, 1, 0, 0, 0, 0, 1], dtype=np.float32)
-        fname = path.join(settings.gfx_path, 'quadcopter.png')
-
-        # self.map.create(vertex=mapvertices, texcoords=texcoords, texture=fname)
-
-        self.ac_symbol.create(vertex=acvertices, texcoords=texcoords, texture=fname)
+        self.ac_symbol.create(vertex=acvertices)
 
         self.ac_symbol.set_attribs(lat=self.lat, lon=self.lon, color=self.color,
                                    orientation=self.hdg, instance_divisor=1)

@@ -1,4 +1,4 @@
-""" PLugin to replace aircraft symbol with a quadcopter """
+""" Plugin to replace aircraft symbol with a quadcopter """
 import numpy as np
 from os import path
 
@@ -40,7 +40,7 @@ class QuadTraffic(Traffic):
         texcoords = np.array([1, 1, 1, 0, 0, 0, 0, 1], dtype=np.float32)
 
         # filepath of the texture
-        fname = path.join(settings.gfx_path, 'quadcopter.png')
+        fname = path.join(settings.plugin_path, 'quadcopter', 'quadcopter.png')
 
         # create the vertex array object. NOTE: will get a warning. But ignore it.
         self.ac_symbol.create(vertex=acvertices, texcoords=texcoords, texture=fname)
