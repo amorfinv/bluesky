@@ -100,6 +100,7 @@ class MapTiles(ui.RenderObject, layer=100):
         self.map_textures = []
         self.tiles = []
         self.tile_array = []
+        self.render_corners = []
         self.tile_offset = []
         self.local_paths = []
         self.local_paths_offset = []
@@ -123,13 +124,37 @@ class MapTiles(ui.RenderObject, layer=100):
 
         self.maptiles.create(vertex=mapvertices, texcoords=texcoords, texture=fname)
 
+        if self.array_load:
+            # Vertex array object for the 2D texture array
+            mapvertices = np.array(self.bbox_corners, dtype=np.float32)
+            texcoords = np.array([(1, 1), (1, 0), (0, 0), (0, 1)], dtype=np.float32)
+            self.maptiles.create(vertex=texvertices, texcoords=textexcoords))
+        else:
+            # Vertex array object for each individual texture
+            for corner in self.render_corners:
+                texvertices = np.array(corner, dtype=np.float32)
+                textexcoords = np.array([(1, 1), (1, 0), (0, 0), (0, 1)], dtype=np.float32)
+                self.maptiles.append(RenderObject(gl.GL_TRIANGLE_FAN, vertex=texvertices, texcoords=textexcoords))
+
     def draw(self):
         self.shaderset.set_vertex_scale_type(self.shaderset.VERTEX_IS_LATLON)
-        self.maptiles.draw()
+        if self.array_load:
+            # Use maptile shader for texture array and have one draw call
+            self.radar_widget.maptile_shader.use()
 
+            gl.glBindTexture(gl.GL_TEXTURE_2D_ARRAY, self.map_textures[0])
+            self.maptiles[0].draw()
+
+        else:
+            # Use radar widget shader for each individual texture and have one draw call per texture
+            self.radar_widget.texture_shader.use()
+            for i in range(len(self.tile_array)):
+                gl.glBindTexture(gl.GL_TEXTURE_2D, self.map_textures[i])
+                self.maptiles[i].draw()
+            
     def clear_tiles(self):
         # unbind and delete textures from memory
-        for i in range(len(self.tiles)):
+        for i in range(len(self.maptiles)):
             self.tiles[i].unbind_all()
 
         gl.glDeleteTextures(len(self.map_textures), self.map_textures)
@@ -141,6 +166,8 @@ class MapTiles(ui.RenderObject, layer=100):
         self.local_paths_offset = []
         self.tile_offset = []
 
+        self.array_load = False
+
 
     def tile_load(self):
         # create a tile array and texture offset values
@@ -149,41 +176,59 @@ class MapTiles(ui.RenderObject, layer=100):
         # process tiles, download tiles if necessary
         self.process_tiles()
 
-        # Bind texture aray and give image data. 
+        if self.array_load:
+            # Bind texture aray and give image data. 
+            
+            # Calculate pixel size in a single tile by opening one image and checking. (square tiles)
+            self.tile_size = Image.open(self.local_paths[0]).height
+
+            # Calculate pixel size needed for the texture array
+            self.tex_width = self.tile_size * self.tex_columns
+            self.tex_height = self.tile_size * self.tex_rows
+
+            # Create texture and bind.
+            # For some reason code only works when adding texture name to a list
+            texture = gl.glGenTextures(1)
+            self.map_textures.append(texture)
+            gl.glBindTexture(gl.GL_TEXTURE_2D_ARRAY, self.map_textures[0])
+
+            # Specify storage needed for the texture array
+            gl.glTexStorage3D(gl.GL_TEXTURE_2D_ARRAY, 1, gl.GL_RGB8, self.tex_width, self.tex_height, 1)
+
+            # Loop to send image data to texture array.
+            # TODO: figure out faster way to send img_data byte information (perhaps in multiple threads) or maybe QT does this?
+            for item in self.local_paths_offset:
+                image_path = item[0]
+                offset_y = item[1][0] * self.tile_size
+                offset_x = item[1][1] * self.tile_size
+
+                # open image, get byte information and specify subimage of texture array
+                image = Image.open(image_path)
+                img_data = image.tobytes()
+                gl.glTexSubImage3D(gl.GL_TEXTURE_2D_ARRAY, 0, offset_x, offset_y, 0, self.tile_size, self.tile_size, 1,
+                                    gl.GL_RGB, gl.GL_UNSIGNED_BYTE, img_data)
+
+            # Set texture parameters
+            gl.glGenerateMipmap(gl.GL_TEXTURE_2D_ARRAY)
+            gl.glTexParameterf(gl.GL_TEXTURE_2D_ARRAY, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR)
+            gl.glTexParameterf(gl.GL_TEXTURE_2D_ARRAY, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR)
         
-        # Calculate pixel size in a single tile by opening one image and checking. (square tiles)
-        self.tile_size = Image.open(self.local_paths[0]).height
+        else:
 
-        # Calculate pixel size needed for the texture array
-        self.tex_width = self.tile_size * self.tex_columns
-        self.tex_height = self.tile_size * self.tex_rows
+            for image_path in self.local_paths:
+                texture = gl.glGenTextures(1)
+                self.map_textures.append(texture)
+                gl.glBindTexture(gl.GL_TEXTURE_2D, texture)
+                image = Image.open(image_path)
+                img_data = image.tobytes()
+                gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_RGB, image.width, image.height, 0, gl.GL_RGB,
+                                gl.GL_UNSIGNED_BYTE, img_data)
 
-        # Create texture and bind.
-        # For some reason code only works when adding texture name to a list
-        texture = gl.glGenTextures(1)
-        self.map_textures.append(texture)
-        gl.glBindTexture(gl.GL_TEXTURE_2D_ARRAY, self.map_textures[0])
+                # Texture parameters
+                gl.glGenerateMipmap(gl.GL_TEXTURE_2D)
+                gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR)
+                gl.glTexParameterf(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST_MIPMAP_LINEAR)
 
-        # Specify storage needed for the texture array
-        gl.glTexStorage3D(gl.GL_TEXTURE_2D_ARRAY, 1, gl.GL_RGB8, self.tex_width, self.tex_height, 1)
-
-        # Loop to send image data to texture array.
-        # TODO: figure out faster way to send img_data byte information (perhaps in multiple threads) or maybe QT does this?
-        for item in self.local_paths_offset:
-            image_path = item[0]
-            offset_y = item[1][0] * self.tile_size
-            offset_x = item[1][1] * self.tile_size
-
-            # open image, get byte information and specify subimage of texture array
-            image = Image.open(image_path)
-            img_data = image.tobytes()
-            gl.glTexSubImage3D(gl.GL_TEXTURE_2D_ARRAY, 0, offset_x, offset_y, 0, self.tile_size, self.tile_size, 1,
-                                gl.GL_RGB, gl.GL_UNSIGNED_BYTE, img_data)
-
-        # Set texture parameters
-        gl.glGenerateMipmap(gl.GL_TEXTURE_2D_ARRAY)
-        gl.glTexParameterf(gl.GL_TEXTURE_2D_ARRAY, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR)
-        gl.glTexParameterf(gl.GL_TEXTURE_2D_ARRAY, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR)
 
     def process_tiles(self):
         # Download tiles in multiple threads
