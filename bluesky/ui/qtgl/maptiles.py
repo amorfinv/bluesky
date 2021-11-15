@@ -1,4 +1,4 @@
-from os import path, makedirs, remove
+from os import path, makedirs, remove, stat
 import numpy as np
 import OpenGL.GL as gl
 from urllib.request import urlopen
@@ -389,7 +389,7 @@ class MapTiles(Entity):
     # Non-drawing functions from here on
     def process_tiles(self):
         # Download tiles in multiple threads. If download fails self.enable_tiles = False
-        with concurrent.futures.ThreadPoolExecutor() as executor:
+        with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
             executor.map(self.download_tile, self.tile_array)
 
         # Image operations
@@ -477,7 +477,7 @@ class MapTiles(Entity):
             raw_local_path = path.join(self.tile_dir, img_path + self.tile_format)
 
             # Download tile if it has not been downloaded
-            if not path.exists(raw_local_path):
+            if not path.exists(raw_local_path) or not stat(raw_local_path).st_size:
                 # create new paths, first create directories for zoom level and x
                 img_dirs = path.join(self.tile_dir, str(self.zoom_level), str(x))
 
