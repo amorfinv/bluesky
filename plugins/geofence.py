@@ -124,10 +124,11 @@ class Geofence(areafilter.Poly):
 
     @classmethod
     def delete(cls, name):
+        geo_to_delete = cls.geo_by_name[name]
         cls.geo_by_name.pop(name)
         cls.geo_save_dict.pop(name)
         geo_id = cls.geo_name2id[name]
-        cls.geo_tree.delete(geo_id)
+        cls.geo_tree.delete(geo_id, geo_to_delete.bbox)
         cls.geo_by_id.pop(geo_id)
         cls.geo_name2id.pop(name)
 
