@@ -11,7 +11,7 @@ import numpy as np
 
 import bluesky as bs
 from bluesky.core import Entity, timed_function
-from bluesky.stack import refdata
+from bluesky.stack import refdata, command
 from bluesky.stack.recorder import savecmd
 from bluesky.tools import geo
 from bluesky.tools.misc import latlon2txt
@@ -75,6 +75,8 @@ class Traffic(Entity):
         self.setroot(self)
 
         self.ntraf = 0
+        
+        self.minwindalt = 50.*ft # altitude above which wind is applied
 
         self.cond = Condition()  # Conditional commands list
         self.wind = WindSim()
@@ -256,7 +258,7 @@ class Traffic(Entity):
 
         # Wind
         if self.wind.winddim > 0:
-            applywind         = self.alt[-n:]> 50.*ft
+            applywind         = self.alt[-n:]> self.minwindalt
             self.windnorth[-n:], self.windeast[-n:]  = self.wind.getdata(self.lat[-n:], self.lon[-n:], self.alt[-n:])
             self.gsnorth[-n:] = self.gsnorth[-n:] + self.windnorth[-n:]*applywind
             self.gseast[-n:]  = self.gseast[-n:]  + self.windeast[-n:]*applywind
@@ -482,7 +484,7 @@ class Traffic(Entity):
             self.windnorth[:], self.windeast[:] = 0.0,0.0
 
         else:
-            applywind = self.alt>50.*ft # Only apply wind when airborne
+            applywind = self.alt>self.minwindalt # Only apply wind when airborne
 
             vnwnd,vewnd = self.wind.getdata(self.lat, self.lon, self.alt)
             self.windnorth[:], self.windeast[:] = vnwnd,vewnd
@@ -844,3 +846,8 @@ class Traffic(Entity):
         else:
             self.crecmdlist = []
             return True,str("All",ncrecmd,"crecmd commands deleted.")
+        
+    @command
+    def setminwindalt(self, alt:'alt'):
+        self.minwindalt = alt
+        return
