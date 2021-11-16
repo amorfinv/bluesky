@@ -5,6 +5,7 @@ from bluesky.tools import aero, areafilter, geo
 from rtree import index
 from matplotlib.path import Path
 import json
+import numpy as np
 
 settings.set_variable_defaults(geofence_dtlookahead=30)
 
@@ -87,6 +88,20 @@ class Geofence(areafilter.Poly):
     # "hits" contains the geofences that aircraft are about to hit (or are intruding)
     intrusions = dict()
     hits = dict()
+
+    # add dictionary of nodes in constrained geofence
+    with open('plugins/constrained_node_dict.json') as json_file:
+        constrained_nodes = json.load(json_file)
+
+    # make numpy arrays of osmids and lat lons
+    # osmids are keys and lat,lon tuples are values
+    osmids = np.array([int(key) for key in constrained_nodes.keys()])
+
+    # make lat_lon array that is Nx2
+    lat_lons_nodes = np.array([np.array(node) for node in constrained_nodes.values()])
+
+    # initialize numpy array that will contain all nodes currently in the geofence
+    nodes_in_loiter_geofence = np.array([])
 
     def __init__(self, name, coordinates, top=999999, bottom=-999999):
         super().__init__(name, coordinates, top=top, bottom=bottom)
@@ -174,3 +189,20 @@ class Geofence(areafilter.Poly):
             cls.intrusions[acid] = intrusions
         print(intrusions)
         return
+
+    @classmethod
+    def update_nodes_in_loitering_geofences(cls, name, update='add'):
+        '''Add/Delete the nodes inside a loitering geofence from cls.nodes_in_loiter_geofence.'''
+
+        # get geofence from name
+        geofence = cls.geo_by_name[name]
+
+        # get points inside the geofence path
+        points_inside = cls.osmids[geofence.border.contains_points(cls.lat_lons_nodes)]
+
+        if update == 'add':
+            # concate points inside to class variable nodes_in_geofence but only keep unique values
+            cls.nodes_in_loiter_geofence = np.unique(np.concatenate((cls.nodes_in_loiter_geofence, points_inside))).astype(int)
+        elif update == 'del':
+            # delete the points inside from class variable nodes_in_geofence
+            cls.nodes_in_loiter_geofence = np.setdiff1d(cls.nodes_in_loiter_geofence, points_inside).astype(int)

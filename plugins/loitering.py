@@ -48,9 +48,16 @@ class Loitering(Entity):
     def delloiter(acidx:'acid'):
         '''Delete loitering aircraft, add its geofence.'''
         acid = bs.traf.id[acidx]
-        # First of all, add the geofence 
-        bs.traf.loiter.loitergeofences[acid] = {'geofence':Geofence(f'LOITER{acid}', bs.traf.loiter.futuregeofences[acidx]), 
-                                      'time_left':bs.traf.loiter.geodurations[acidx]}
+
+        # First of all, add the geofence
+        geofence = Geofence(f'LOITER{acid}', bs.traf.loiter.futuregeofences[acidx])
+
+        bs.traf.loiter.loitergeofences[acid] = {'geofence':geofence, 
+                                                'time_left':bs.traf.loiter.geodurations[acidx]}
+        
+        # add constrained nodes inside this geofence to Geofence.nodes_in_loiter_geofence
+        geofence.update_nodes_in_loitering_geofences(f'LOITER{acid}', update='add')
+
         # Then delete the aircraft
         bs.traf.delete(acidx)
         
@@ -67,10 +74,13 @@ class Loitering(Entity):
             bs.traf.loiter.loitergeofences[acid]['time_left'] -= check_dt
             # Check if time is negative
             if bs.traf.loiter.loitergeofences[acid]['time_left'] < 0:
+                # remove nodes from nodes_in_geofence
+                Geofence.update_nodes_in_loitering_geofences(f'LOITER{acid}', update='del')
+
                 # Delete geofence
                 Geofence.delete(f'LOITER{acid}')
                 bs.traf.loiter.loitergeofences.pop(acid)
-            
+                         
             
             
             
