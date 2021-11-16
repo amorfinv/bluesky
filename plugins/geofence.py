@@ -205,4 +205,8 @@ class Geofence(areafilter.Poly):
             cls.nodes_in_loiter_geofence = np.unique(np.concatenate((cls.nodes_in_loiter_geofence, points_inside))).astype(int)
         elif update == 'del':
             # delete the points inside from class variable nodes_in_geofence
+            # TODO: potential issue if we remove a node that is also in another geofence.
+            # TODO: perhaps this is not a problem because loitering geofences don't overlap.
+            # TODO: If yes then we might need to start adding a nodes_in_loiter_geofence attribute 
+            # for each instance of the geofence.
             cls.nodes_in_loiter_geofence = np.setdiff1d(cls.nodes_in_loiter_geofence, points_inside).astype(int)
