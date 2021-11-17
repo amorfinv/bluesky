@@ -36,9 +36,10 @@ class Loitering(Entity):
         # First, create aircraft
         bs.traf.cre(acid, actype, aclat, aclon, achdg, acalt, acspd)
         
+        acidx = bs.traf.id.index(acid)
         # Store the geofence data in the array until it needs to be enacted
-        bs.traf.loiter.futuregeofences[acid] = geocoords
-        bs.traf.loiter.geodurations[acid] = geodur
+        bs.traf.loiter.futuregeofences[acidx] = geocoords
+        bs.traf.loiter.geodurations[acidx] = geodur
     
     @staticmethod
     @stack.command
@@ -77,8 +78,6 @@ class Loitering(Entity):
                 # Delete geofence
                 Geofence.delete(f'LOITER{acid}')
                 bs.traf.loiter.loitergeofences.pop(acid)
-                bs.traf.loiter.futuregeofences.pop(acid)
-                bs.traf.loiter.geodurations.pop(acid)
                          
             
             
