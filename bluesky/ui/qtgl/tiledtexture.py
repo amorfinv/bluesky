@@ -39,7 +39,8 @@ bs.settings.set_variable_defaults(
             'max_tile_zoom': 13,
             'license': 'Satellite images from NASA via ESRI'
         }
-    })
+    },
+    load_from_cache=False)
 
 
 class Tile:
@@ -60,6 +61,11 @@ class Tile:
         fpath = path.join(bs.settings.cache_path, source, str(zoom), str(tilex))
         fname = path.join(fpath, f'{tiley}{self.ext}')
         if path.exists(fname):
+            self.image = QImage(fname).convertToFormat(QImage.Format_ARGB32)
+        elif bs.settings.load_from_cache:
+            # load blank tile if not found
+            # Make sure tile is called and inside source folder blank_tile.png
+            fname = path.join(bs.settings.cache_path, source, 'blank_tile.png')
             self.image = QImage(fname).convertToFormat(QImage.Format_ARGB32)
         else:
             # Make sure cache directory exists
