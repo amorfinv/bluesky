@@ -384,6 +384,9 @@ class Autopilot(Entity, replaceable=True):
 
         # We're in a turn if we use the turn speed or we're in an old turn
         self.inturn = np.logical_or(useturnspd,inoldturn)
+        
+        # Yet another override when not following leg correctly
+        bs.traf.selspd = np.where(np.logical_and(np.logical_not(oncurrentleg),np.logical_not(self.inturn)) , 10, bs.traf.selspd)
 
         #debug if inoldturn[0]:
         #debug     print("inoldturn bs.traf.trk =",bs.traf.trk[0],"qdr =",qdr)
