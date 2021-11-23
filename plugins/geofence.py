@@ -6,6 +6,8 @@ from rtree import index
 from matplotlib.path import Path
 import json
 import numpy as np
+import pandas as pd
+from shapely import wkt
 
 settings.set_variable_defaults(geofence_dtlookahead=30)
 
@@ -89,19 +91,21 @@ class Geofence(areafilter.Poly):
     intrusions = dict()
     hits = dict()
 
-    # add dictionary of nodes in constrained geofence
-    with open('plugins/constrained_node_dict.json') as json_file:
-        constrained_nodes = json.load(json_file)
+    # read edge_geometry.csv as pandas dataframe
+    edges_df = pd.read_csv('plugins/edge_geometry.csv')
 
-    # make numpy arrays of osmids and lat lons
-    # osmids are keys and lat,lon tuples are values
-    osmids = np.array([int(key) for key in constrained_nodes.keys()])
+    # convert geometry text column to shapely geometry
+    edges_df['geometry'] = edges_df['geometry'].apply(wkt.loads)
 
-    # make lat_lon array that is Nx2
-    lat_lons_nodes = np.array([np.array(node) for node in constrained_nodes.values()])
+    # create rtree index for each edge
+    edges_df_rtree = index.Index()
+    edges_df_dict = {}
+    for i, row in edges_df.iterrows():
+        edges_df_rtree.insert(i, row['geometry'].bounds)
+        edges_df_dict[i] = (row['u'], row['v'])
 
     # initialize numpy array that will contain all nodes currently in the geofence
-    nodes_in_loiter_geofence = np.array([])
+    edges_in_loiter_geofence = np.array([], dtype='i,i')
 
     def __init__(self, name, coordinates, top=999999, bottom=-999999):
         super().__init__(name, coordinates, top=top, bottom=bottom)
@@ -187,26 +191,30 @@ class Geofence(areafilter.Poly):
                 if geofence.checkInside(*point):
                     intrusions.append(geofence)
             cls.intrusions[acid] = intrusions
-        print(intrusions)
+        # print(intrusions)
         return
 
     @classmethod
-    def update_nodes_in_loitering_geofences(cls, name, update='add'):
-        '''Add/Delete the nodes inside a loitering geofence from cls.nodes_in_loiter_geofence.'''
+    def update_edges_in_loitering_geofences(cls, name, update='add'):
+        '''Add/Delete the edges inside a loitering geofence from cls.edges_in_loiter_geofence.'''
 
         # get geofence from name
         geofence = cls.geo_by_name[name]
 
-        # get points inside the geofence path
-        points_inside = cls.osmids[geofence.border.contains_points(cls.lat_lons_nodes)]
+        # switch the order odd and even entries of list geofence.bbox for rtree because shapely uses lon,lat
+        poly_bounds = (geofence.bbox[1], geofence.bbox[0], geofence.bbox[3], geofence.bbox[2])
+
+        # check the nearest edges to the polygon
+        intersecting_rtree = list(cls.edges_df_rtree.intersection(poly_bounds))
+        intersecting_edges = np.array([cls.edges_df_dict[i] for i in intersecting_rtree], dtype='i,i')
 
         if update == 'add':
             # concate points inside to class variable nodes_in_geofence but only keep unique values
-            cls.nodes_in_loiter_geofence = np.unique(np.concatenate((cls.nodes_in_loiter_geofence, points_inside))).astype(int)
+            cls.edges_in_loiter_geofence = np.unique(np.concatenate((cls.edges_in_loiter_geofence, intersecting_edges)))
         elif update == 'del':
-            # delete the points inside from class variable nodes_in_geofence
-            # TODO: potential issue if we remove a node that is also in another geofence.
-            # TODO: perhaps this is not a problem because loitering geofences don't overlap.
-            # TODO: If yes then we might need to start adding a nodes_in_loiter_geofence attribute 
+            # delete the edges inside from class variable nodes_in_geofence
+            # TODO: potential issue if we remove an edge that is also in another geofence.
+            # TODO: perhaps this is not a problem because loitering geofences don't overlap and will be rare
+            # TODO: If yes then we might need to start adding an edges_in_loiter_geofence attribute 
             # for each instance of the geofence.
-            cls.nodes_in_loiter_geofence = np.setdiff1d(cls.nodes_in_loiter_geofence, points_inside).astype(int)
+            cls.edges_in_loiter_geofence = np.setdiff1d(cls.edges_in_loiter_geofence, intersecting_edges)

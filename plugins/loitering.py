@@ -24,6 +24,8 @@ class Loitering(Entity):
     def __init__(self):
         super().__init__()
         self.loitergeofences = dict()
+        self.deleted_loiters = []
+
         with self.settrafarrays():
             self.futuregeofences = []
             self.geodurations = []
@@ -54,7 +56,7 @@ class Loitering(Entity):
                                                 'time_left':bs.traf.loiter.geodurations[acidx]}
         
         # add constrained nodes inside this geofence to Geofence.nodes_in_loiter_geofence
-        geofence.update_nodes_in_loitering_geofences(f'LOITER{acid}', update='add')
+        geofence.update_edges_in_loitering_geofences(f'LOITER{acid}', update='add')
 
         # Then delete the aircraft
         bs.traf.delete(acidx)
@@ -65,7 +67,7 @@ class Loitering(Entity):
         '''Keep track of loiter geofences, and delete them when they have expired.'''
         # iterate through dictionary entries
         # This shouldn't take too long, there won't be many entries in this dictionary
-        print(bs.traf.loiter.loitergeofences)
+        # print(bs.traf.loiter.loitergeofences)
         temp = bs.traf.loiter.loitergeofences.copy()
         for acid in temp:
             # Decrement time
@@ -73,7 +75,12 @@ class Loitering(Entity):
             # Check if time is negative
             if bs.traf.loiter.loitergeofences[acid]['time_left'] < 0:
                 # remove nodes from nodes_in_geofence
-                Geofence.update_nodes_in_loitering_geofences(f'LOITER{acid}', update='del')
+                Geofence.update_edges_in_loitering_geofences(f'LOITER{acid}', update='del')
+
+                # keep a list of deleted geofences. Once it appears here concepts know that
+                # they can remove the geofence from their planning.
+                # TODO: Concepts should clear list when processing
+                bs.traf.loiter.deleted_loiters.append(acid)
 
                 # Delete geofence
                 Geofence.delete(f'LOITER{acid}')
