@@ -67,7 +67,7 @@ class Loitering(Entity):
         '''Keep track of loiter geofences, and delete them when they have expired.'''
         # iterate through dictionary entries
         # This shouldn't take too long, there won't be many entries in this dictionary
-        print(bs.traf.loiter.loitergeofences)
+        # print(bs.traf.loiter.loitergeofences)
         temp = bs.traf.loiter.loitergeofences.copy()
         for acid in temp:
             # Decrement time
