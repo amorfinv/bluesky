@@ -191,7 +191,7 @@ class Geofence(areafilter.Poly):
         return
 
     @classmethod
-    def update_nodes_in_loitering_geofences(cls, name, update='add'):
+    def update_edges_in_loitering_geofences(cls, name, update='add'):
         '''Add/Delete the nodes inside a loitering geofence from cls.nodes_in_loiter_geofence.'''
 
         # get geofence from name
