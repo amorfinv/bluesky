@@ -125,7 +125,7 @@ class RadarWidget(glh.RenderWidget):
         # Update pan/zoom
         if 'PANZOOM' in changed_elems:
             self.panzoom(pan=nodedata.pan, zoom=nodedata.zoom, absolute=True)
-            
+
     def initializeGL(self):
         """Initialize OpenGL, VBOs, upload data on the GPU, etc."""
         super().initializeGL()
@@ -326,10 +326,8 @@ class RadarWidget(glh.RenderWidget):
             actdata = bs.net.get_nodedata()
             tostack, tocmdline = radarclick(console.get_cmdline(), lat, lon,
                                             actdata.acdata, actdata.routedata)
-            if '\n' not in tocmdline:
-                console.append_cmdline(tocmdline)
-            if tostack:
-                bs.stack.stack(tostack)
+
+            console.process_cmdline((tostack + '\n' + tocmdline) if tostack else tocmdline)
 
         elif event.type() == QEvent.MouseMove:
             self.mousedragged = True
