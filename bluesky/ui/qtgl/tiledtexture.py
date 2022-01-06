@@ -193,6 +193,7 @@ class TiledTexture(glh.Texture, metaclass=TiledTextureMeta):
 
         idxdata = np.array(itexw * itexh *
                            [(0, 0, 0, -1)], dtype=np.int32)
+        
         glh.gl.glTexImage2D_alt(glh.Texture.Target2D, 0, glh.Texture.RGBA32I,
                                 itexw, itexh, 0, glh.Texture.RGBA_Integer,
                                 glh.Texture.Int32, idxdata.tobytes())
