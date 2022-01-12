@@ -52,4 +52,4 @@ class RogueTraffic(Entity):
         acidx = bs.traf.id2idx(acid)
 
         # Now set rogue bool to true
-        bs.traf.roguetraffic[acidx] = True
+        bs.traf.roguetraffic.rogue_bool[acidx] = True
