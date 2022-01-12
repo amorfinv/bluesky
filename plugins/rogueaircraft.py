@@ -8,6 +8,9 @@ from bluesky.core.simtime import timed_function
 def init_plugin():
     ''' Plugin initialisation function. '''
 
+    # initliaze rogue traffic
+    roguetraffic = RogueTraffic()
+    
     # Configuration parameters
     config = {
         # The name of your plugin
