@@ -29,6 +29,7 @@ class Loitering(Entity):
         with self.settrafarrays():
             self.futuregeofences = []
             self.geodurations = []
+            self.loiterbool = np.array([], dtype = bool)
         bs.traf.loiter = self
     
     @staticmethod
@@ -42,6 +43,7 @@ class Loitering(Entity):
         # Store the geofence data in the array until it needs to be enacted
         bs.traf.loiter.futuregeofences[acidx] = geocoords
         bs.traf.loiter.geodurations[acidx] = geodur
+        bs.traf.loiter.loiterbool[acidx] = True
     
     @staticmethod
     @stack.command
