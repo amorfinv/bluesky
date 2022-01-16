@@ -1,3 +1,5 @@
+import numpy as np
+
 import bluesky as bs
 from bluesky import stack
 from bluesky.core import Entity
@@ -31,6 +33,12 @@ class Loitering(Entity):
             self.geodurations = []
             self.loiterbool = np.array([], dtype = bool)
         bs.traf.loiter = self
+
+    def create(self, n=1):
+        super().create(n)
+        
+        # default value of loiter bool is always False
+        self.loiterbool[-n:] = False
     
     @staticmethod
     @stack.command
