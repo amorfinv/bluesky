@@ -83,9 +83,8 @@ confheader = \
     '#######################################################\n\n' + \
     'Parameters [Units]:\n' + \
     'Simulation time [s], ' + \
-    'Total number of conflicts [-],' + \
-    'Total number of losses of separation[-],' +\
-    'Total number of geofence breaches[-],' + \
+    'ACID1 [-],' + \
+    'ACID2 [-],' + \
     'LAT1 [deg],' + \
     'LON1 [deg],' + \
     'ALT1 [ft],' + \
@@ -95,10 +94,29 @@ confheader = \
     'CPALAT [lat],' + \
     'CPALON [lon]\n'
     
+losheader = \
+    '#######################################################\n' + \
+    'LOS LOG\n' + \
+    'LOS Statistics\n' + \
+    '#######################################################\n\n' + \
+    'Parameters [Units]:\n' + \
+    'LOS exit time [s], ' + \
+    'LOS start time [s],' + \
+    'Time of min distance [s],' + \
+    'ACID1 [-],' + \
+    'ACID2 [-],' + \
+    'LAT1 [deg],' + \
+    'LON1 [deg],' + \
+    'ALT1 [ft],' + \
+    'LAT2 [deg],' + \
+    'LON2 [deg],' + \
+    'ALT2 [ft],' + \
+    'DIST [m]\n'
+    
 regheader = \
     '#######################################################\n' + \
     'REGULAR LOG\n' + \
-    'Statistics recorded once every 10 seconds\n' + \
+    'Statistics recorded regularly at a certain simtime interval.\n' + \
     '#######################################################\n\n' + \
     'Parameters [Units]:\n' + \
     'Simulation time [s], ' + \
@@ -146,15 +164,18 @@ class Traffic(Entity):
         
         self.minwindalt = 50.*ft # altitude above which wind is applied
         
-        # Loggers
+        # Loggers and other vars
         self.flst = datalog.crelog('FLSTLOG', None, flstheader)
         self.conflog = datalog.crelog('CONFLOG', None, confheader)
         self.reglog = datalog.crelog('REGLOG', None, regheader)
         self.geolog = datalog.crelog('GEOLOG', None, geoheader)
+        self.loslog = datalog.crelog('LOSLOG', None, losheader)
         self.geo_intrusions = dict()
         self.prevconfpairs = set()
+        self.prevlospairs = set()
         self.confinside_all = 0
         self.deleted_aircraft = 0
+        self.losmindist = dict()
 
         self.cond = Condition()  # Conditional commands list
         self.wind = WindSim()
@@ -242,7 +263,6 @@ class Traffic(Entity):
             self.distance2D = np.array([])
             self.distance3D = np.array([])
             self.distancealt = np.array([])
-            self.numgeobreaches = np.array([])
             self.create_time = np.array([])
 
         # Default bank angles per flight phase
@@ -580,15 +600,67 @@ class Traffic(Entity):
                 pair_idx = self.cd.confpairs.index(pair)
                 cpalatlon = geo.qdrpos(self.lat[idx1], self.lon[idx1], self.hdg[idx1], self.cd.dcpa[pair_idx]/nm)
                     
-                self.conflog.log(len(self.cd.confpairs_all), 
-                                len(self.cd.lospairs_all), 
-                                int(self.numgeobreaches_all),
+                self.conflog.log(pair[0], pair[1],
                                 self.lat[idx1], self.lon[idx1],self.alt[idx1],
                                 self.lat[idx2], self.lon[idx2],self.alt[idx2],
                                 cpalatlon[0], cpalatlon[1])
                 
         self.prevconfpairs = set(self.cd.confpairs)
-        self.prevnumgeobreaches_all = self.numgeobreaches_all
+        
+        # Losses of separation as well
+        # We want to track the LOS, and log the minimum distance and altitude between these two aircraft.
+        # This gives us the lospairs that were here previously but aren't anymore
+        lospairs_out = list(self.prevlospairs - set(self.cd.lospairs))
+        
+        # Attempt to calculate current distance for all current lospairs, and store it in the dictionary
+        # if entry doesn't exist yet or if calculated distance is smaller.
+        for pair in self.cd.lospairs:
+            idx1 = self.id.index(pair[0])
+            idx2 = self.id.index(pair[1])
+            # Calculate current distance between them [m]
+            losdistance = geo.kwikdist(self.lat[idx1], self.lon[idx1], self.lat[idx2], self.lon[idx2])*nm
+            # To avoid repeats, the dictionary entry is DxDy, where x<y. So D32 and D564 would be D32D564
+            dictkey = pair[0]+pair[1] if int(pair[0][1:]) < int(pair[1][1:]) else pair[1]+pair[0]
+            if dictkey not in self.losmindist:
+                # Set the entry
+                self.losmindist[dictkey] = [losdistance, 
+                                            self.lat[idx1], self.lon[idx1], self.alt[idx1], 
+                                            self.lat[idx2], self.lon[idx2], self.alt[idx2],
+                                            bs.sim.simt, bs.sim.simt]
+                # The last guy over here                    ^ is the LOS start time
+            else:
+                # Entry exists, check if calculated is smaller
+                if self.losmindist[dictkey][0] < losdistance:
+                    # It's smaller. Make sure to keep the LOS start time
+                    self.losmindist[dictkey] = [losdistance, 
+                                            self.lat[idx1], self.lon[idx1], self.alt[idx1], 
+                                            self.lat[idx2], self.lon[idx2], self.alt[idx2],
+                                            bs.sim.simt, self.losmindist[dictkey][8]]
+        
+        # Log data if there are aircraft that are no longer in LOS
+        if lospairs_out:
+            done_pairs = []
+            for pair in set(lospairs_out):
+                # Get the two aircraft
+                idx1 = self.id.index(pair[0])
+                idx2 = self.id.index(pair[1])
+                done_pairs.append((idx1,idx2))
+                if (idx2,idx1) in done_pairs:
+                    continue
+                # Get their dictkey
+                dictkey = pair[0]+pair[1] if int(pair[0][1:]) < int(pair[1][1:]) else pair[1]+pair[0]
+                # Get their distance
+                losdata = self.losmindist[dictkey]
+                # Remove this aircraft pair from losmindist
+                self.losmindist.pop(dictkey)
+                #Log the LOS
+                self.loslog.log(losdata[7], losdata[8], pair[0], pair[1],
+                                losdata[1], losdata[2],losdata[3],
+                                losdata[4], losdata[5],losdata[6],
+                                losdata[0])
+                
+        
+        self.prevconfpairs = set(self.cd.lospairs)
         
     @timed_function(name='reglog', dt=10)
     def thereglog(self):
