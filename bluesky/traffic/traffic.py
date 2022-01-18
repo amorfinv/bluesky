@@ -60,8 +60,9 @@ flstheader = \
     'Call sign [-], ' + \
     'Spawn Time [s], ' + \
     'Flight time [s], ' + \
-    'Actual Distance 2D [nm], ' + \
-    'Actual Distance 3D [nm], ' + \
+    'Distance 2D [m], ' + \
+    'Distance 3D [m], ' + \
+    'Distance ALT [m],' + \
     'Work Done [MJ], ' + \
     'Latitude [deg], ' + \
     'Longitude [deg], ' + \
@@ -69,16 +70,11 @@ flstheader = \
     'TAS [kts], ' + \
     'Vertical Speed [fpm], ' + \
     'Heading [deg], ' + \
-    'Origin Lat [deg], ' + \
-    'Origin Lon [deg], ' + \
-    'Destination Lat [deg], ' + \
-    'Destination Lon [deg], ' + \
     'ASAS Active [bool], ' + \
     'Pilot ALT [ft], ' + \
     'Pilot SPD (TAS) [kts], ' + \
     'Pilot HDG [deg], ' + \
-    'Pilot VS [fpm],' + \
-    'Geofence breaches [-]\n'
+    'Pilot VS [fpm]\n'
 
 confheader = \
     '#######################################################\n' + \
@@ -95,7 +91,9 @@ confheader = \
     'ALT1 [ft],' + \
     'LAT2 [deg],' + \
     'LON2 [deg],' + \
-    'ALT2 [ft]\n'
+    'ALT2 [ft],' + \
+    'CPALAT [lat],' + \
+    'CPALON [lon]\n'
     
 regheader = \
     '#######################################################\n' + \
@@ -106,7 +104,20 @@ regheader = \
     'Simulation time [s], ' + \
     'Aircraft in air[-],' + \
     'Aircraft that reached destination[-]\n'
-
+    
+geoheader = \
+    '#######################################################\n' + \
+    'GEOFENCE LOG\n' + \
+    'Statistics recorded upon deletion\n' + \
+    '#######################################################\n\n' + \
+    'Parameters [Units]:\n' + \
+    'Deletion time [s], ' + \
+    'Call sign[-],' + \
+    'Geofence ID[-],' + \
+    'Max intrusion [m],' + \
+    'Intrusion LAT [deg],' + \
+    'Intrusion LON [deg],' + \
+    'Intrusion time [s]\n'
 
 class Traffic(Entity):
     """
@@ -139,10 +150,10 @@ class Traffic(Entity):
         self.flst = datalog.crelog('FLSTLOG', None, flstheader)
         self.conflog = datalog.crelog('CONFLOG', None, confheader)
         self.reglog = datalog.crelog('REGLOG', None, regheader)
+        self.geolog = datalog.crelog('GEOLOG', None, geoheader)
+        self.geo_intrusions = dict()
         self.prevconfpairs = set()
         self.confinside_all = 0
-        self.numgeobreaches_all = 0
-        self.prevnumgeobreaches_all = 0
         self.deleted_aircraft = 0
 
         self.cond = Condition()  # Conditional commands list
@@ -383,6 +394,8 @@ class Traffic(Entity):
         for j in range(self.ntraf - n, self.ntraf):
             for cmdtxt in self.crecmdlist:
                  bs.stack.stack(self.id[j]+" "+cmdtxt)
+                 
+        self.create_time[-n:] = bs.sim.simt
 
 
     def creconfs(self, acid, actype, targetidx, dpsi, dcpa, tlosh, dH=None, tlosv=None, spd=None):
@@ -461,13 +474,15 @@ class Traffic(Entity):
 
     def delete(self, idx):
         """Delete an aircraft"""
+        acid = self.id[idx]
         # Log everything that there is to log
         self.flst.log(
-            np.array(self.id)[idx],
+            acid,
             self.create_time[idx],
             bs.sim.simt,
-            (self.distance2D[idx])/nm,
-            (self.distance3D[idx])/nm,
+            (self.distance2D[idx]),
+            (self.distance3D[idx]),
+            (self.distancealt[idx]),
             (self.work[idx])*1e-6,
             self.lat[idx],
             self.lon[idx],
@@ -479,8 +494,22 @@ class Traffic(Entity):
             self.aporasas.alt[idx]/ft,
             self.aporasas.tas[idx]/kts,
             self.aporasas.vs[idx]/fpm,
-            self.aporasas.hdg[idx],
-            int(self.numgeobreaches[idx]))
+            self.aporasas.hdg[idx])
+        
+        if acid in self.geo_intrusions:
+            geo_intr = self.geo_intrusions[acid]
+            for geoid in geo_intr:
+                items = geo_intr[geoid]
+                self.geolog.log(
+                    np.array(self.id)[idx],
+                    geoid,
+                    items[0],
+                    items[1],
+                    items[2],
+                    items[3])
+                
+            self.geo_intrusions.pop(acid)
+
         # If this is a multiple delete, sort first for list delete
         # (which will use list in reverse order to avoid index confusion)
         if isinstance(idx, Collection):
@@ -548,17 +577,16 @@ class Traffic(Entity):
                 done_pairs.append((idx1,idx2))
                 if (idx2,idx1) in done_pairs:
                     continue
+                pair_idx = self.cd.confpairs.index(pair)
+                cpalatlon = geo.qdrpos(self.lat[idx1], self.lon[idx1], self.hdg[idx1], self.cd.dcpa[pair_idx]/nm)
                     
                 self.conflog.log(len(self.cd.confpairs_all), 
                                 len(self.cd.lospairs_all), 
                                 int(self.numgeobreaches_all),
                                 self.lat[idx1], self.lon[idx1],self.alt[idx1],
-                                self.lat[idx2], self.lon[idx2],self.alt[idx2])
+                                self.lat[idx2], self.lon[idx2],self.alt[idx2],
+                                cpalatlon[0], cpalatlon[1])
                 
-        if self.numgeobreaches_all != self.prevnumgeobreaches_all:
-            self.conflog.log(len(self.cd.confpairs_all), 
-                             len(self.cd.lospairs_all), 
-                             int(self.numgeobreaches_all), 0, 0, 0, 0, 0, 0)
         self.prevconfpairs = set(self.cd.confpairs)
         self.prevnumgeobreaches_all = self.numgeobreaches_all
         

@@ -8,6 +8,8 @@ import json
 import numpy as np
 import pandas as pd
 from shapely import wkt
+from shapely.geometry import Point
+from shapely.ops import nearest_points
 
 settings.set_variable_defaults(geofence_dtlookahead=30)
 
@@ -63,7 +65,7 @@ def loadgeofences(filename: 'txt'):
         Geofence(geofence['name'], geofence['coordinates'], geofence['top'], geofence['bottom'])
     bs.scr.echo(f'Geofences loaded from {filename}.')
 
-@timed_function(dt = 1)
+@timed_function(dt = 0.5)
 def update_intrusions():
     Geofence.detect_inside(bs.traf)
     return
@@ -184,22 +186,34 @@ class Geofence(areafilter.Poly):
     @classmethod
     def detect_inside(cls, traf):
         # Reset the intrusions dict
-        cls.intrusions.clear()
+        #cls.intrusions.clear()
         for idx, point in enumerate(zip(traf.lat, traf.lon, traf.alt)):
             acid = traf.id[idx]
             # First, a course detection based on geofence bounding boxes
             potential_intrusions, geo_ids = cls.intersecting([point[0], point[1]])
             # Then a fine-grained intrusion detection
-            intrusions = []
+            #intrusions = []
             for i, geofence in enumerate(potential_intrusions):
                 if geofence.checkInside(*point):
-                    intrusions.append(geofence)
+                    #intrusions.append(geofence)
                     # Add geofence ID to unique intrusion dictionary
                     if acid not in cls.unique_intrusions:
-                        cls.unique_intrusions[acid] = set()
-                    # Add to set
-                    cls.unique_intrusions[acid].add(geo_ids[i])
-            cls.intrusions[acid] = intrusions
+                        cls.unique_intrusions[acid] = dict()
+                    # Create shapely polygon
+                    
+                    # Get closest point
+                    p1,p2 = nearest_points(geofence.polybound, Point(traf.lat[idx], traf.lon[idx]))
+                    # Do kwikdist
+                    intrusion = geo.kwikdist(p1.x, p1.y, p2.x, p2.y) * aero.nm
+                    # Check the previous intrusion severity
+                    if geo_ids[i] in cls.unique_intrusions[acid]:
+                        if cls.unique_intrusions[acid][geo_ids[i]][0] < intrusion:
+                            cls.unique_intrusions[acid][geo_ids[i]] = [intrusion, p2.x, p2.y, bs.sim.simt]
+                    else:
+                        cls.unique_intrusions[acid][geo_ids[i]] = [intrusion, p2.x, p2.y,  bs.sim.simt]
+                    
+            #cls.intrusions[acid] = intrusions
+        bs.traf.geo_intrusions = cls.unique_intrusions
         # print(intrusions)
         return
 
