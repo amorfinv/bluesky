@@ -13,7 +13,7 @@ import bluesky as bs
 from bluesky.core import Entity, timed_function
 from bluesky.stack import refdata, command
 from bluesky.stack.recorder import savecmd
-from bluesky.tools import geo
+from bluesky.tools import geo, datalog
 from bluesky.tools.misc import latlon2txt
 from bluesky.tools.aero import cas2tas, casormach2tas, fpm, kts, ft, g0, Rearth, nm, tas2cas,\
                          vatmos,  vtas2cas, vtas2mach, vcasormach
@@ -50,6 +50,63 @@ bs.settings.set_variable_defaults(performance_model='openap', asas_dt=1.0)
 #     print('Using BlueSky legacy performance model')
 #     from .performance.legacy.perfbs import PerfBS as Perf
 
+flstheader = \
+    '#######################################################\n' + \
+    'FLST LOG\n' + \
+    'Flight Statistics\n' + \
+    '#######################################################\n\n' + \
+    'Parameters [Units]:\n' + \
+    'Deletion Time [s], ' + \
+    'Call sign [-], ' + \
+    'Spawn Time [s], ' + \
+    'Flight time [s], ' + \
+    'Actual Distance 2D [nm], ' + \
+    'Actual Distance 3D [nm], ' + \
+    'Work Done [MJ], ' + \
+    'Latitude [deg], ' + \
+    'Longitude [deg], ' + \
+    'Altitude [ft], ' + \
+    'TAS [kts], ' + \
+    'Vertical Speed [fpm], ' + \
+    'Heading [deg], ' + \
+    'Origin Lat [deg], ' + \
+    'Origin Lon [deg], ' + \
+    'Destination Lat [deg], ' + \
+    'Destination Lon [deg], ' + \
+    'ASAS Active [bool], ' + \
+    'Pilot ALT [ft], ' + \
+    'Pilot SPD (TAS) [kts], ' + \
+    'Pilot HDG [deg], ' + \
+    'Pilot VS [fpm],' + \
+    'Geofence breaches [-]\n'
+
+confheader = \
+    '#######################################################\n' + \
+    'CONF LOG\n' + \
+    'Conflict Statistics\n' + \
+    '#######################################################\n\n' + \
+    'Parameters [Units]:\n' + \
+    'Simulation time [s], ' + \
+    'Total number of conflicts [-],' + \
+    'Total number of losses of separation[-],' +\
+    'Total number of geofence breaches[-],' + \
+    'LAT1 [deg],' + \
+    'LON1 [deg],' + \
+    'ALT1 [ft],' + \
+    'LAT2 [deg],' + \
+    'LON2 [deg],' + \
+    'ALT2 [ft]\n'
+    
+regheader = \
+    '#######################################################\n' + \
+    'REGULAR LOG\n' + \
+    'Statistics recorded once every 10 seconds\n' + \
+    '#######################################################\n\n' + \
+    'Parameters [Units]:\n' + \
+    'Simulation time [s], ' + \
+    'Aircraft in air[-],' + \
+    'Aircraft that reached destination[-]\n'
+
 
 class Traffic(Entity):
     """
@@ -77,6 +134,16 @@ class Traffic(Entity):
         self.ntraf = 0
         
         self.minwindalt = 50.*ft # altitude above which wind is applied
+        
+        # Loggers
+        self.flst = datalog.crelog('FLSTLOG', None, flstheader)
+        self.conflog = datalog.crelog('CONFLOG', None, confheader)
+        self.reglog = datalog.crelog('REGLOG', None, regheader)
+        self.prevconfpairs = set()
+        self.confinside_all = 0
+        self.numgeobreaches_all = 0
+        self.prevnumgeobreaches_all = 0
+        self.deleted_aircraft = 0
 
         self.cond = Condition()  # Conditional commands list
         self.wind = WindSim()
@@ -159,6 +226,13 @@ class Traffic(Entity):
             self.coslat = np.array([])  # Cosine of latitude for computations
             self.eps    = np.array([])  # Small nonzero numbers
             self.work   = np.array([])  # Work done throughout the flight
+            
+            # Metrics
+            self.distance2D = np.array([])
+            self.distance3D = np.array([])
+            self.distancealt = np.array([])
+            self.numgeobreaches = np.array([])
+            self.create_time = np.array([])
 
         # Default bank angles per flight phase
         self.bphase = np.deg2rad(np.array([15, 35, 35, 35, 15, 45]))
@@ -185,6 +259,13 @@ class Traffic(Entity):
 
         # Reset transition level to default value
         self.translvl = 5000.*ft
+        
+        #Loggers
+        self.prevconfpairs = set()
+        self.confinside_all = 0
+        self.numgeobreaches_all = 0
+        self.prevnumgeobreaches_all = 0
+        self.deleted_aircraft = 0
 
     def mcre(self, n, actype="B744", acalt=None, acspd=None, dest=None):
         """ Create one or more random aircraft in a specified area """
@@ -380,6 +461,26 @@ class Traffic(Entity):
 
     def delete(self, idx):
         """Delete an aircraft"""
+        # Log everything that there is to log
+        self.flst.log(
+            np.array(self.id)[idx],
+            self.create_time[idx],
+            bs.sim.simt,
+            (self.distance2D[idx])/nm,
+            (self.distance3D[idx])/nm,
+            (self.work[idx])*1e-6,
+            self.lat[idx],
+            self.lon[idx],
+            self.alt[idx]/ft,
+            self.tas[idx]/kts,
+            self.vs[idx]/fpm,
+            self.hdg[idx],
+            self.cr.active[idx],
+            self.aporasas.alt[idx]/ft,
+            self.aporasas.tas[idx]/kts,
+            self.aporasas.vs[idx]/fpm,
+            self.aporasas.hdg[idx],
+            int(self.numgeobreaches[idx]))
         # If this is a multiple delete, sort first for list delete
         # (which will use list in reverse order to avoid index confusion)
         if isinstance(idx, Collection):
@@ -390,6 +491,7 @@ class Traffic(Entity):
 
         # Update number of aircraft
         self.ntraf = len(self.lat)
+        self.deleted_aircraft += 1
         return True
 
     def update(self):
@@ -429,6 +531,41 @@ class Traffic(Entity):
 
         #---------- Aftermath ---------------------------------
         self.trails.update()
+        
+        # Update metrics
+        resultantspd = np.sqrt(self.gs * self.gs + self.vs * self.vs)
+        self.distance2D += bs.sim.simdt * abs(self.gs)
+        self.distance3D += bs.sim.simdt * resultantspd
+        self.distancealt += bs.sim.simdt * abs(self.vs)
+        
+        confpairs_new = list(set(self.cd.confpairs) - self.prevconfpairs)
+        if confpairs_new:
+            done_pairs = []
+            for pair in set(confpairs_new):
+                # Get the two aircraft
+                idx1 = self.id.index(pair[0])
+                idx2 = self.id.index(pair[1])
+                done_pairs.append((idx1,idx2))
+                if (idx2,idx1) in done_pairs:
+                    continue
+                    
+                self.conflog.log(len(self.cd.confpairs_all), 
+                                len(self.cd.lospairs_all), 
+                                int(self.numgeobreaches_all),
+                                self.lat[idx1], self.lon[idx1],self.alt[idx1],
+                                self.lat[idx2], self.lon[idx2],self.alt[idx2])
+                
+        if self.numgeobreaches_all != self.prevnumgeobreaches_all:
+            self.conflog.log(len(self.cd.confpairs_all), 
+                             len(self.cd.lospairs_all), 
+                             int(self.numgeobreaches_all), 0, 0, 0, 0, 0, 0)
+        self.prevconfpairs = set(self.cd.confpairs)
+        self.prevnumgeobreaches_all = self.numgeobreaches_all
+        
+    @timed_function(name='reglog', dt=10)
+    def thereglog(self):
+        self.reglog.log(self.ntraf, self.deleted_aircraft)
+        return
 
     @timed_function(name='asas', dt=bs.settings.asas_dt, manual=True)
     def update_asas(self):
