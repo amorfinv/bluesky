@@ -1,3 +1,5 @@
+import numpy as np
+
 import bluesky as bs
 from bluesky import stack
 from bluesky.core import Entity
@@ -29,7 +31,14 @@ class Loitering(Entity):
         with self.settrafarrays():
             self.futuregeofences = []
             self.geodurations = []
+            self.loiterbool = np.array([], dtype = bool)
         bs.traf.loiter = self
+
+    def create(self, n=1):
+        super().create(n)
+        
+        # default value of loiter bool is always False
+        self.loiterbool[-n:] = False
     
     @staticmethod
     @stack.command
@@ -42,6 +51,7 @@ class Loitering(Entity):
         # Store the geofence data in the array until it needs to be enacted
         bs.traf.loiter.futuregeofences[acidx] = geocoords
         bs.traf.loiter.geodurations[acidx] = geodur
+        bs.traf.loiter.loiterbool[acidx] = True
     
     @staticmethod
     @stack.command
@@ -57,6 +67,9 @@ class Loitering(Entity):
         
         # add constrained nodes inside this geofence to Geofence.nodes_in_loiter_geofence
         geofence.update_edges_in_loitering_geofences(f'LOITER{acid}', update='add')
+
+        # add the geofence to the screen
+        bs.scr.objappend("POLY", f'Loiter {acid}', bs.traf.loiter.futuregeofences[acidx])
 
         # Then delete the aircraft
         bs.traf.delete(acidx)
@@ -76,6 +89,9 @@ class Loitering(Entity):
             if bs.traf.loiter.loitergeofences[acid]['time_left'] < 0:
                 # remove nodes from nodes_in_geofence
                 Geofence.update_edges_in_loitering_geofences(f'LOITER{acid}', update='del')
+
+                # delete from screen
+                bs.scr.objappend("POLY", f'Loiter {acid}', None)
 
                 # keep a list of deleted geofences. Once it appears here concepts know that
                 # they can remove the geofence from their planning.
