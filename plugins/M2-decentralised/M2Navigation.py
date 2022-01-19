@@ -1,0 +1,188 @@
+from bluesky.traffic.turbulence import Turbulence
+from bluesky.core.simtime import timed_function
+import bluesky as bs
+import numpy as np
+from bluesky import core
+from bluesky import stack
+from shapely.geometry import Point, LineString
+from shapely.geometry.polygon import Polygon
+from shapely.ops import cascaded_union, nearest_points
+from shapely.affinity import translate
+from bluesky.tools.geo import kwikdist, kwikqdrdist, latlondist, qdrdist
+from bluesky.tools.aero import nm, ft, kts
+import time
+
+def init_plugin():
+
+    # Addtional initilisation code
+    nav = M2Navigation()
+    # Configuration parameters
+    config = {
+        # The name of your plugin
+        'plugin_name':     'M2NAVIGATION',
+
+        # The type of this plugin. For now, only simulation plugins are possible.
+        'plugin_type':     'sim'
+    }
+
+    return config
+
+class M2Navigation(core.Entity):
+    def __init__(self):
+        super().__init__()  
+        
+    @timed_function(name='navtimedfunction', dt=0.5)
+    def navtimedfunction(self):
+        time1 = time.perf_counter()
+
+        if bs.traf.ntraf == 0:
+            return
+        
+        # Gather some bools
+        in_turn = np.logical_or(bs.traf.ap.inturn, bs.traf.ap.dist2turn < 75)  # Are aircraft in a turn?
+        cr_active = bs.traf.cd.inconf # Are aircraft doing CR?
+        in_vert_man = bs.traf.vs > 0 # Are aircraft performing a vertical maneuver?
+        emergency = bs.traf.priority == 4
+        speed_zero = np.array(bs.traf.selspd) == 0 # The selected speed is 0, so we're at our destination and landing
+        lnav_on = bs.traf.swlnav
+        rogue = bs.traf.roguetraffic.rogue_bool
+        
+        # CRUISE SPEED STUFF -----------------------------------------
+        set_cruise_speed = np.logical_and.reduce((lnav_on))
+        
+        # Set cruise speed to maximum speed, as aircraft will automatically select
+        # a turn speed or CR speed. 
+        bs.traf.selspd = np.where(set_cruise_speed, bs.traf.actedge.speed_limit, bs.traf.selspd)
+        
+        
+        # ALTITUDE STUFF-------------------------------------------------------
+        # If an aircraft is turning, it should be in a turn layer. Thus, for aircraft that
+        # are in a turn, set their selected
+        target_turn_layer = np.where(bs.traf.closest_turn_layer_bottom == 0, 
+                                      bs.traf.closest_turn_layer_top, 
+                                      bs.traf.closest_turn_layer_bottom)*ft
+        
+        in_turn_layer = bs.traf.flight_layer_type == 'T'
+        
+        in_constrained = np.where(bs.traf.actedge.edge_airspace_type == 'open', False, True)
+        
+        give_turn_command = np.logical_and.reduce((in_turn, 
+                                                   np.logical_not(in_vert_man), 
+                                                   np.logical_not(in_turn_layer),
+                                                   in_constrained,
+                                                   target_turn_layer != 0,
+                                                   lnav_on,
+                                                   np.logical_not(rogue)))
+        # if 'D53' in bs.traf.id:
+        #     idx = bs.traf.id.index('D53')
+        #     print('zzz', give_turn_command[idx])
+        #     print(in_turn[idx])
+        #     print(np.logical_not(in_vert_man)[idx])
+        #     print(np.logical_not(in_turn_layer)[idx])
+        #     print(in_constrained[idx])
+        #     print(target_turn_layer[idx])
+        #     print(lnav_on[idx])
+        
+        bs.traf.selalt = np.where(give_turn_command, target_turn_layer, bs.traf.selalt)
+
+        # GET AIRCRAFT BACK IN A CRUISE LAYER -------------------------------------
+        # If an aircraft is not turning, then it should be in a cruise layer
+        # Always aim for the bottom cruise layer. However, if both bottom and top
+        # are 0, then remain at the same altitude.
+        target_cruise_layer = np.where(bs.traf.closest_cruise_layer_bottom == 0, 
+                                       bs.traf.closest_cruise_layer_top,
+                                       bs.traf.closest_cruise_layer_bottom)*ft
+
+        target_unused_layer = np.where(bs.traf.closest_empty_layer_bottom == 0, 
+                                       bs.traf.closest_empty_layer_top,
+                                       bs.traf.closest_empty_layer_bottom)*ft
+        
+        target_cruise_layer = np.where(emergency, target_unused_layer, target_cruise_layer)
+        
+        in_cruise_layer = np.where(emergency, 
+                                   bs.traf.flight_layer_type == 'F',
+                                   bs.traf.flight_layer_type == 'C')
+        
+        give_constrained_cruise_command = np.logical_and.reduce((np.logical_not(in_turn),
+                                                     np.logical_not(in_vert_man),
+                                                     np.logical_not(cr_active),
+                                                     np.logical_not(in_cruise_layer),
+                                                     in_constrained,
+                                                     np.logical_not(speed_zero),
+                                                     lnav_on,
+                                                     np.logical_not(rogue)))
+        
+        bs.traf.selalt = np.where(give_constrained_cruise_command, target_cruise_layer, bs.traf.selalt)
+
+        # Open airspace altitude selection -----------------------------------------
+        give_open_cruise_command = np.logical_and.reduce((np.logical_not(in_constrained),
+                                                         np.logical_not(in_vert_man),
+                                                         np.logical_not(cr_active),
+                                                         np.logical_not(in_turn),
+                                                         np.logical_not(speed_zero),
+                                                         lnav_on,
+                                                         np.logical_not(rogue)))
+
+        bs.traf.selalt = np.where(give_open_cruise_command, 
+                                  bs.traf.open_closest_layer*ft,
+                                  bs.traf.selalt)
+        
+        # Going down a layer if possible -------------------------------------------
+        # First of all we have to do some checks. 
+        # Don't descend to a new cruise layer when a turn is close
+        turn_close = bs.traf.ap.dist2turn < 150 #m
+        
+        # We also don't want descents when there are other aircraft below
+        # First, find the pairs of aircraft that are close to each other
+        ac_pairs = np.argwhere(bs.traf.cd.dist_mat < 150) #m
+        # For these aircraft, check the altitude difference
+        alt_diff = bs.traf.alt[ac_pairs[:,0]]-bs.traf.alt[ac_pairs[:,1]]
+        # Get the aircraft pairs that have a positive altitude difference
+        descend_pairs = ac_pairs[np.argwhere(np.logical_and(1<(alt_diff), (alt_diff)< 100*ft))]
+        ascend_pairs = ac_pairs[np.argwhere(np.logical_and(-100<(alt_diff), (alt_diff)< -1*ft))]
+        # The first aircraft in these pairs cannot descend, as they are above and close other
+        # aircraft
+        ac_cannot_descend = descend_pairs[:,0][:,0]
+        can_descend = np.ones(bs.traf.ntraf, dtype = bool)
+        can_descend[ac_cannot_descend] = np.zeros(len(ac_cannot_descend), dtype = bool)
+        
+        ac_cannot_ascend = ascend_pairs[:,0][:,0]
+        can_ascend = np.ones(bs.traf.ntraf, dtype = bool)
+        can_ascend[ac_cannot_ascend] = np.zeros(len(ac_cannot_ascend), dtype = bool)
+        
+        # Descent command for aircraft that can
+        target_descent_layer = np.where(emergency, bs.traf.closest_empty_layer_bottom,
+                                bs.traf.closest_cruise_layer_bottom)*ft
+
+        give_descent_command = np.logical_and.reduce((in_constrained,
+                                                     np.logical_not(in_vert_man),
+                                                     np.logical_not(cr_active),
+                                                     np.logical_not(in_turn),
+                                                     np.logical_not(turn_close),
+                                                     can_descend,
+                                                     target_descent_layer != 0,
+                                                     np.logical_not(speed_zero),
+                                                     lnav_on,
+                                                     np.logical_not(rogue)))
+        
+        bs.traf.selalt = np.where(give_descent_command, bs.traf.closest_cruise_layer_bottom*ft, bs.traf.selalt)
+        
+        # Ascent command for aircraf that are stuck behind another
+        target_ascent_layer = np.where(emergency, bs.traf.closest_cruise_layer_top,
+                                        bs.traf.closest_empty_layer_top)*ft
+        
+        give_ascent_command = np.logical_and.reduce((in_constrained,
+                                                     np.logical_not(in_vert_man),
+                                                     bs.traf.cr.stuck,
+                                                     np.logical_not(in_turn),
+                                                     np.logical_not(turn_close),
+                                                     can_ascend,
+                                                     target_ascent_layer !=0,
+                                                     np.logical_not(speed_zero),
+                                                     lnav_on,
+                                                     np.logical_not(rogue)))
+
+        bs.traf.selalt = np.where(give_ascent_command, bs.traf.closest_cruise_layer_top*ft, bs.traf.selalt)
+        # Set the aircraft we gave the command to as unstuck
+        bs.traf.cr.stuck = np.where(give_ascent_command, False, bs.traf.cr.stuck)
+        time2 = time.perf_counter()
