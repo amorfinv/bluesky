@@ -494,7 +494,7 @@ class Traffic(Entity):
 
     def delete(self, idx):
         """Delete an aircraft"""
-        acid = self.id[idx]
+        acid = np.array(self.id[idx])
         # Log everything that there is to log
         self.flst.log(
             acid,
