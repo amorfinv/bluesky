@@ -902,10 +902,6 @@ class Route(Replaceable):
         bs.traf.actwp.flyturn[acidx] = acrte.wpflyturn[wpidx]
         bs.traf.actwp.turnrad[acidx] = acrte.wpturnrad[wpidx]
         bs.traf.actwp.turnspd[acidx] = acrte.wpturnspd[wpidx]
-        
-        bs.traf.actwp.nextturnlat[acidx], bs.traf.actwp.nextturnlon[acidx], \
-        bs.traf.actwp.nextturnspd[acidx], bs.traf.actwp.nextturnrad[acidx], \
-        bs.traf.actwp.nextturnidx[acidx] = acrte.getnextturnwp()
 
         bs.traf.actwp.nextturnlat[acidx], bs.traf.actwp.nextturnlon[acidx], \
         bs.traf.actwp.nextturnspd[acidx], bs.traf.actwp.nextturnrad[acidx], \
