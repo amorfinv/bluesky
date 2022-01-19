@@ -170,11 +170,6 @@ class Traffic(Entity):
         self.reglog = datalog.crelog('REGLOG', None, regheader)
         self.geolog = datalog.crelog('GEOLOG', None, geoheader)
         self.loslog = datalog.crelog('LOSLOG', None, losheader)
-        self.flst.start()
-        self.conflog.start()
-        self.reglog.start()
-        self.geolog.start()
-        self.loslog.start()
         self.geo_intrusions = dict()
         self.prevconfpairs = set()
         self.prevlospairs = set()
@@ -1093,3 +1088,11 @@ class Traffic(Entity):
     def setminwindalt(self, alt:'alt'):
         self.minwindalt = alt
         return
+    
+    @command 
+    def STARTM2LOG(self):
+        self.flst.start()
+        self.conflog.start()
+        self.reglog.start()
+        self.geolog.start()
+        self.loslog.start()
