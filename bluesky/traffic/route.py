@@ -1065,24 +1065,6 @@ class Route(Replaceable):
         # Return the next turn waypoint info
         return [self.wplat[trnidx], self.wplon[trnidx], self.wpturnspd[trnidx], self.wpturnrad[trnidx], trnidx]
 
-    def getnextturnwp(self):
-        """Give the next turn waypoint data."""
-        # Starting point
-        wpidx = self.iactwp
-        # Find next turn waypoint index
-        turnidx_all = where(self.wpflyturn)[0]
-        argwhere_arr = argwhere(turnidx_all>=wpidx)
-        if argwhere_arr.size == 0:
-            # No turn waypoints, return default values
-            return [0., 0., -999., -999., -999.]
-
-        trnidx = turnidx_all[argwhere(turnidx_all>=wpidx)[0]][0]
-
-
-
-        # Return the next turn waypoint info
-        return [self.wplat[trnidx], self.wplon[trnidx], self.wpturnspd[trnidx], self.wpturnrad[trnidx], trnidx]
-
     def getnextwp(self):
         """Go to next waypoint and return data"""
 
