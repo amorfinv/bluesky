@@ -91,7 +91,7 @@ class SpeedBasedV3(ConflictResolution):
         #       -check if priority checks out 
         #       -check if aircraft is coming from the back 
         # Lastly, we do conflict resolution
-        print(f'-------- {ownship.id[idx1]} -------')
+        #print(f'-------- {ownship.id[idx1]} -------')
         
         # ------------------- Pre-processing --------------------
         # Extract ownship data
@@ -165,7 +165,7 @@ class SpeedBasedV3(ConflictResolution):
                     if alt_ok:
                         # Ok no LOS yet, just stop ascending or descending and let
                         # the rogue pass.
-                        print('ROGUE, alt_ok.')
+                        #print('ROGUE, alt_ok.')
                         should_speed[i] = 5*kts
                         should_hold_altitude[i] = True
                         should_ascend[i] = False
@@ -190,7 +190,7 @@ class SpeedBasedV3(ConflictResolution):
                     los_list[i] = True
                     # Also create a VO for this guy if he's not in the back
                     if not in_back:
-                        print('Add VO rogue.')
+                        #print('Add VO rogue.')
                         VelocityObstacles.append(self.get_VO(conf, ownship, intruder, idx1, idx2))
                     continue
                         
@@ -207,7 +207,7 @@ class SpeedBasedV3(ConflictResolution):
                         # The intruder is above us, so if we have priority, we just continue our way
                         # However, we stop ascending to let the intruder ascend first
                         if priority_ok:
-                            print('LOS, alt ok, intruder above, priority ok.')
+                            #print('LOS, alt ok, intruder above, priority ok.')
                             # We do the same speed and hold altitude
                             should_hold_altitude[i] = True
                             should_ascend[i] = False
@@ -216,7 +216,7 @@ class SpeedBasedV3(ConflictResolution):
                             continue
                         else:
                             # We slow down and hold altitude
-                            print('LOS, alt ok, intruder above, priority not ok.')
+                            #print('LOS, alt ok, intruder above, priority not ok.')
                             should_speed[i] = 5*kts
                             should_hold_altitude[i] = True
                             should_ascend[i] = False
@@ -227,7 +227,7 @@ class SpeedBasedV3(ConflictResolution):
                         # The intruder is below
                         if priority_ok:
                             # We have priority, continue what we were doing
-                            print('LOS, alt ok, intruder below, priority ok.')
+                            #print('LOS, alt ok, intruder below, priority ok.')
                             # We do the same speed and altitude
                             should_hold_altitude[i] = True
                             should_ascend[i] = False
@@ -238,7 +238,7 @@ class SpeedBasedV3(ConflictResolution):
                         else:
                             #If we can ascend, then we'll do that, unless we're already ascending
                             if can_ascend and ownship.vs[idx1] < 0.1:
-                                print('LOS, alt ok, intruder below, priority not ok.')
+                                #print('LOS, alt ok, intruder below, priority not ok.')
                                 # We can ascend, and slow down.
                                 should_speed[i] = 5*kts
                                 should_hold_altitude[i] = False
@@ -250,7 +250,7 @@ class SpeedBasedV3(ConflictResolution):
                             elif not can_ascend:
                                 # We cannot ascend, stop and let the aircraft pass
                                 # We also maintain current altitude
-                                print('LOS, alt ok, intruder below, priority not ok, cannot ascend.')
+                                #print('LOS, alt ok, intruder below, priority not ok, cannot ascend.')
                                 should_speed[i] = 5*kts
                                 should_hold_altitude[i] = False
                                 should_ascend[i] = False
@@ -259,7 +259,7 @@ class SpeedBasedV3(ConflictResolution):
                                 continue
                             else:
                                 # We're probably already ascending then, so just continue but go slow
-                                print('LOS, alt ok, intruder below, priority not ok, already ascending.')
+                                #print('LOS, alt ok, intruder below, priority not ok, already ascending.')
                                 should_speed[i] = 5*kts
                                 should_hold_altitude[i] = False
                                 should_ascend[i] = True
@@ -271,13 +271,13 @@ class SpeedBasedV3(ConflictResolution):
                     # There is a complete LOS, so if we have higher priority, then we continue
                     # otherwise we stop
                     if priority_ok:
-                        print('Complete LOS, priority ok.')
+                        #print('Complete LOS, priority ok.')
                         # LOS anyway, just continue your way
                         los_list[i] = True
                         continue
                     else:
                         # We have lower priority, we maintain altitude and go slow
-                        print('Complete LOS, no priority.')
+                        #print('Complete LOS, no priority.')
                         should_speed[i] = 5*kts
                         should_hold_altitude[i] = True
                         should_ascend[i] = False
@@ -315,25 +315,25 @@ class SpeedBasedV3(ConflictResolution):
                         stack.stack(f'ALT {ownship.id[idx1]} {alt}')
                         stack.stack(f'LNAV {ownship.id[idx1]} ON') 
                         stack.stack(f'VNAV {ownship.id[idx1]} ON') 
-                        print('In front, head-on, attempt alt change.')
+                        #print('In front, head-on, attempt alt change.')
                         
                     self.in_headon[idx1] = True
                 
                 elif abs(intruder.vs[idx2]) > 0.1:
-                    print('In front, intruder is performing a manoeuver.')
+                    #print('In front, intruder is performing a manoeuver.')
                     should_hold_altitude[i] = True
                     should_ascend[i] = False
                     should_descend[i] = False
                     
                 else:
-                    print('In front, ascend.')
+                    #print('In front, ascend.')
                     should_hold_altitude[i] = False
                     should_ascend[i] = True
                     should_descend[i] = False
                     
             # ------------- What to do if intruder in back --------------       
             elif in_back:
-                print('In back, hold.')
+                #print('In back, hold.')
                 # We're the ones in the front, don't ascend, but also don't do anything else
                 should_hold_altitude[i] = True
                 should_ascend[i] = False
@@ -343,14 +343,14 @@ class SpeedBasedV3(ConflictResolution):
             # If we pass this check ^ , then intruder is not in the back, nor in the front
             # Solve conflicts in the same plane, so don't ascend or descend.
             else:
-                print('Normal conflict.')
+                #print('Normal conflict.')
                 should_hold_altitude[i] = True
                 should_ascend[i] = False
                 should_descend[i] = False
             
             # -------------- Intent check --------------
             if intent_ok:
-                print('Intent ok')
+                #print('Intent ok')
                 # This means that the aircraft paths don't even get close, 
                 # so just continue.
                 continue
@@ -361,7 +361,7 @@ class SpeedBasedV3(ConflictResolution):
                 # We have the greater priority, so if we didn't continue
                 # till now, we do now
                 # Only do this if we're not in the back though
-                print('Prio ok and not in front')
+                #print('Prio ok and not in front')
                 continue
             
             # ------------ CONFLICT RESOLUTION -------------
@@ -370,7 +370,7 @@ class SpeedBasedV3(ConflictResolution):
         
                 
             # Get Velocity Obstacle
-            print('Add VO.')
+            #print('Add VO.')
             VelocityObstacles.append(self.get_VO(conf, ownship, intruder, idx1, idx2))
         
         #------------ FOR LOOP OVER ----------------
@@ -417,7 +417,7 @@ class SpeedBasedV3(ConflictResolution):
             # Means we are most likely stuck behind an aircraft. Mark this aircraft
             # as stuck, and in queue for ascending
             self.stuck[idx1] = True
-            print('STUCK')
+            #print('STUCK')
             
         if ownship.gs[idx1] != 0:
             # Combine all velocity obstacles into one big polygon
@@ -477,7 +477,7 @@ class SpeedBasedV3(ConflictResolution):
             elif VelocityObstacles and not intersection:
                 # Means we need to take gs_new as vmax
                 gs_new = vmax
-                print('HERE')
+                #print('HERE')
                 
             else:
                 # Nothing worked, do nothing
@@ -498,16 +498,16 @@ class SpeedBasedV3(ConflictResolution):
             
         # Select the right altitude
         if True in should_hold_altitude:
-            print('Hold altitude.')
+            #print('Hold altitude.')
             alt_new = ownship.alt[idx1]
             self.altactivearr[idx1] = True
         else:
             alt_new = ownship.ap.alt[idx1]
             self.altactivearr[idx1] = False
-        print(vmax)
-        print(should_speed)
+        #print(vmax)
+        #print(should_speed)
         
-        print(gs_new)
+        #print(gs_new)
         return gs_new, alt_new
     
     ##### Helper functions #####
