@@ -685,7 +685,7 @@ class EdgesAp(Entity):
         # Failed to replace autopilot.py
 
         # See if waypoints have reached their destinations
-        for i in bs.traf.ap.reached:
+        for i in bs.traf.ap.idxreached:
 
             # Skip this if aircraft is rogue aircraft
             if bs.traf.roguetraffic.rogue_bool[i]:
