@@ -120,13 +120,12 @@ regheader = \
     '#######################################################\n\n' + \
     'Parameters [Units]:\n' + \
     'Simulation time [s], ' + \
-    'Aircraft in air[-],' + \
-    'Aircraft that reached destination[-]\n'
+    'ACIDs or ALTs [-][ft]\n'
     
 geoheader = \
     '#######################################################\n' + \
     'GEOFENCE LOG\n' + \
-    'Statistics recorded upon deletion\n' + \
+    'Statistics recorded upon aircraft deletion\n' + \
     '#######################################################\n\n' + \
     'Parameters [Units]:\n' + \
     'Deletion time [s], ' + \
@@ -662,9 +661,10 @@ class Traffic(Entity):
         
         self.prevconfpairs = set(self.cd.lospairs)
         
-    @timed_function(name='reglog', dt=10)
+    @timed_function(name='reglog', dt=60)
     def thereglog(self):
-        self.reglog.log(self.ntraf, self.deleted_aircraft)
+        self.reglog.log(*self.id)
+        self.reglog.log(*self.alt/ft)
         return
 
     @timed_function(name='asas', dt=bs.settings.asas_dt, manual=True)
