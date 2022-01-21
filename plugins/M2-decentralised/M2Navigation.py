@@ -138,8 +138,8 @@ class M2Navigation(core.Entity):
         # For these aircraft, check the altitude difference
         alt_diff = bs.traf.alt[ac_pairs[:,0]]-bs.traf.alt[ac_pairs[:,1]]
         # Get the aircraft pairs that have a positive altitude difference
-        descend_pairs = ac_pairs[np.argwhere(np.logical_and(1<(alt_diff), (alt_diff)< 100*ft))]
-        ascend_pairs = ac_pairs[np.argwhere(np.logical_and(-100<(alt_diff), (alt_diff)< -1*ft))]
+        descend_pairs = ac_pairs[np.argwhere(np.logical_and(1*ft<(alt_diff), (alt_diff)< 200*ft))]
+        ascend_pairs = ac_pairs[np.argwhere(np.logical_and(-100*ft<(alt_diff), (alt_diff)< -1*ft))]
         # The first aircraft in these pairs cannot descend, as they are above and close other
         # aircraft
         ac_cannot_descend = descend_pairs[:,0][:,0]
@@ -173,7 +173,7 @@ class M2Navigation(core.Entity):
         
         give_ascent_command = np.logical_and.reduce((in_constrained,
                                                      np.logical_not(in_vert_man),
-                                                     bs.traf.cr.stuck,
+                                                     np.logical_or(bs.traf.cr.stuck, np.logical_not(can_descend)),
                                                      np.logical_not(in_turn),
                                                      np.logical_not(turn_close),
                                                      can_ascend,
