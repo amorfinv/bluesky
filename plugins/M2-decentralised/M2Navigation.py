@@ -48,7 +48,7 @@ class M2Navigation(core.Entity):
         rogue = bs.traf.roguetraffic.rogue_bool
         
         # CRUISE SPEED STUFF -----------------------------------------
-        set_cruise_speed = np.logical_and.reduce((lnav_on))
+        set_cruise_speed = np.logical_and.reduce((lnav_on, np.logical_not(rogue)))
         
         # Set cruise speed to maximum speed, as aircraft will automatically select
         # a turn speed or CR speed. 

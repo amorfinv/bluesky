@@ -1337,8 +1337,13 @@ class PathPlans(Entity):
             
     def create(self, n = 1):
         super().create(n)
-
+        # Only do path planning for aircraft that are not Rogue aircraft.
+        # Rogue aircraft will have an id that starts with 'R'
         acid = bs.traf.id[-1]
+        if acid[0] == 'R':
+            self.pathplanning[-1] = None
+            return
+                
         path_file = f'plugins/streets/path_plan_dills/{dill_to_load}.dill'
         self.pathplanning[-1] = dill.load(open(path_file, 'rb'),ignore=True)
         self.pathplanning[-1].flow_graph=self.graph
@@ -1370,14 +1375,7 @@ class PathPlans(Entity):
         # Get needed values
         acrte = Route._routes.get(acid)
         #print(turns)
-        route = np.vstack([route,route[-1]])
-        turns = np.append(turns,turns[-1])
-        edges = np.vstack([edges,edges[-1]])
-        next_turn = np.vstack([next_turn,next_turn[-1]])
-        groups = np.append(groups,groups[-1])
-        in_constrained = np.append(in_constrained, in_constrained[-1])
-        turn_speeds = np.append(turn_speeds,turn_speeds[-1])
-                
+        
         for j, rte in enumerate(route):
             lat = rte[1] # deg
             lon = rte[0] # deg
@@ -1396,100 +1394,40 @@ class PathPlans(Entity):
             
             name    = acid
             wptype  = Route.wplatlon
+            
+            wpidx = acrte.addwpt_simple(ridx, name, wptype, lat, lon, alt, spd)
         
-        # Only do path planning for aircraft that are not Rogue aircraft.
-        # Rogue aircraft will have an id that starts with 'R'
-        if acid[0] == 'D':
-                
-            path_file = f'plugins/streets/path_plan_dills/{dill_to_load}.dill'
-            self.pathplanning[-1] = dill.load(open(path_file, 'rb'),ignore=True)
-            self.pathplanning[-1].flow_graph=self.graph
-            ridx = -1
+            # Add the streets stuff
+            # get group number
+            group_number = groups[j]
             
-            edges_changes=[]
-            for key in path_plans.graph.flows_dict.keys():
-                key_str=key
-                key=int(key)
-                
-                if path_plans.graph.modified_group[key]==2 or path_plans.graph.modified_group[key]==1:
-                    for edge in path_plans.graph.flows_dict[key_str]:
-                        k = int(edge.split("-")[0])
-                        kk = int(edge.split("-")[1])
-                        if (k,kk) in path_plans.graph.loiter_nfz_edges:
-                            continue
-                        tmp=[k,kk,path_plans.graph.edges_graph[k][kk].speed]#the keys of the vertices of the edges, followed by the new speed
-                        edges_changes.append(tmp)
-                        
-            for (k,kk) in path_plans.graph.loiter_nfz_edges:
-
-                tmp=[k,kk,path_plans.graph.edges_graph[k][kk].speed]#the keys of the vertices of the edges, followed by the new speed
-                edges_changes.append(tmp)
-
-            route,turns,edges,next_turn,groups,in_constrained,turn_speeds=self.pathplanning[-1].replan_spawned(edges_changes,
-                                                            self.pathplanning[-1].start_index_previous,self.pathplanning[-1].start_index,
-                                                            self.pathplanning[-1].start_point.y,self.pathplanning[-1].start_point.x)
-            #[lat, lon, alt, spd, TURNSPD/FLYBY, turn speed, wpedgeid, group number, action_lat, action_lon, airspace_type]
-            # Get needed values
-            acrte = Route._routes.get(acid)
-            #print(turns)
+            wpedgeid = f'{edges[j][0]}-{edges[j][1]}'
             
-            for j, rte in enumerate(route):
-                lat = rte[1] # deg
-                lon = rte[0] # deg
-                alt = -999
-                spd = -999
-                
-                # Do flyby or flyturn processing
-                if turns[j]:
-                    acrte.turnspd = turn_speeds[j]*kts
-                    acrte.swflyby   = False
-                    acrte.swflyturn = True
-                else:
-                    # Either it's a flyby, or a typo.
-                    acrte.swflyby   = True
-                    acrte.swflyturn = False
-                
-                name    = acid
-                wptype  = Route.wplatlon
-                
-                wpidx = acrte.addwpt_simple(ridx, name, wptype, lat, lon, alt, spd)
+            edge_layer_type = edge_traffic.edge_dict[wpedgeid]['height_allocation']
+            edge_layer_dict = flight_layers.layer_dict["config"][edge_layer_type]['levels']
+            flow_number = edge_traffic.edge_dict[wpedgeid]['flow_group']
+
+            # get the edge_airspace_type
+            if in_constrained[j]:
+                edge_airspace_type = 'constrained'
+            else:
+                edge_airspace_type = 'open'
+
+            turn_lat = next_turn[j][1]
+            turn_lon = next_turn[j][0]
+            edge_traffic.edgeap.edge_rou[ridx].addwpt(ridx, name, wpedgeid, group_number, flow_number, edge_layer_dict, 
+                                        turn_lat, turn_lon, edge_airspace_type)
+
+        # For this aircraft, manually set the first "next_qdr" in actwp
+        # We basically need to find the qdr between the second and the third waypoint, as
+        # the first one is the origin
+        if len(acrte.wplat)>2:
+            bs.traf.actwp.next_qdr[ridx], dummy = geo.qdrdist(acrte.wplat[1], acrte.wplon[1],
+                                                        acrte.wplat[2], acrte.wplon[2])
             
-                # Add the streets stuff
-                # get group number
-                group_number = groups[j]
-                
-                wpedgeid = f'{edges[j][0]}-{edges[j][1]}'
-                
-                edge_layer_type = edge_traffic.edge_dict[wpedgeid]['height_allocation']
-                edge_layer_dict = flight_layers.layer_dict["config"][edge_layer_type]['levels']
-                flow_number = edge_traffic.edge_dict[wpedgeid]['flow_group']
-
-                # get the edge_airspace_type
-                if in_constrained[j]:
-                    edge_airspace_type = 'constrained'
-                else:
-                    edge_airspace_type = 'open'
-
-                turn_lat = next_turn[j][1]
-                turn_lon = next_turn[j][0]
-                edge_traffic.edgeap.edge_rou[ridx].addwpt(ridx, name, wpedgeid, group_number, flow_number, edge_layer_dict, 
-                                            turn_lat, turn_lon, edge_airspace_type)
-
-            # For this aircraft, manually set the first "next_qdr" in actwp
-            # We basically need to find the qdr between the second and the third waypoint, as
-            # the first one is the origin
-            if len(acrte.wplat)>2:
-                bs.traf.actwp.next_qdr[ridx], dummy = geo.qdrdist(acrte.wplat[1], acrte.wplon[1],
-                                                            acrte.wplat[2], acrte.wplon[2])
-                
-            # Calculate flight plan
-            acrte.calcfp()
-            edge_traffic.edgeap.edge_rou[ridx].direct(ridx,edge_traffic.edgeap.edge_rou[ridx].wpname[1])
-
-        # if aircraft is rogue fill in path planning object
-        else:
-            self.pathplanning[-1] = None
-            return
+        # Calculate flight plan
+        acrte.calcfp()
+        edge_traffic.edgeap.edge_rou[ridx].direct(ridx,edge_traffic.edgeap.edge_rou[ridx].wpname[1])
 
 # =============================================================================
 #         bs.traf.swlnav[ridx]    = True
