@@ -680,10 +680,6 @@ class EdgesAp(Entity):
         
         # Main autopilot update loop
 
-        #TODO: This thing is really slow here when dealing with 10000 drones. I think it would be
-        # better to create an autopilot plugin that replaces autopilot.py and do the necessary operations in there. 
-        # Failed to replace autopilot.py
-
         # See if waypoints have reached their destinations
         for i in bs.traf.ap.idxreached:
 
