@@ -115,6 +115,7 @@ class SpeedBasedV3(ConflictResolution):
         head_list = [False] * n_intr
         rogue_list = [False] * n_intr
         landing = ownship.ap.route[idx1].iactwp >= ownship.ap.route[idx1].nwp - 2
+        open_airspace = bs.traf.actedge.edge_airspace_type[idx1] == 0
         
         
         # ------------ Aircraft above or below check --------------
@@ -137,9 +138,15 @@ class SpeedBasedV3(ConflictResolution):
                 
             # -------------- State related checks -----------
             # Determine if intruder is in front
-            in_front = (-self.frnt_tol < qdr_intruder < self.frnt_tol)
-            # Determine if intruder is in the back
-            in_back = (qdr_intruder < -180 + self.frnt_tol or 180 - self.frnt_tol < qdr_intruder)
+            if not open_airspace:
+                in_front = (-self.frnt_tol < qdr_intruder < self.frnt_tol)
+                # Determine if intruder is in the back
+                in_back = (qdr_intruder < -180 + self.frnt_tol or 180 - self.frnt_tol < qdr_intruder)
+            else:
+                # In open airspace, we want to check if aircraft is entirely behind us, and the tolerance applies
+                # to the heading difference.
+                in_front = (-80 < qdr_intruder < 80) and (self.heading_diff(qdr, qdr_intruder) < 30)
+                in_back = (qdr_intruder < -100 or 100 < qdr_intruder) and (self.heading_diff(qdr, qdr_intruder) < 30)
             # Determine if intruder is close in altitude:
             alt_ok = ((abs(ownship.alt[idx1] - intruder.alt[idx2])) > self.hpz)
             # Determine if we have a LOS
@@ -669,6 +676,21 @@ class SpeedBasedV3(ConflictResolution):
             return bs.traf.flight_layer_type[idx1] == 'C'
         else:
             return True
+        
+    def heading_diff(self, init, final):
+        if init > 360 or init < 0 or final > 360 or final < 0:
+            raise Exception("out of range")
+        diff = final - init
+        absDiff = abs(diff)
+
+        if absDiff == 180:
+            return absDiff
+        elif absDiff < 180:
+            return diff
+        elif final > init:
+            return absDiff - 360
+        else:
+            return 360 - absDiff
                 
     def ac_above_below_check(self, conf, ownship, intruder, idx1, dist2others):
         can_ascend = True
