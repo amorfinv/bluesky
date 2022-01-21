@@ -659,7 +659,7 @@ class Traffic(Entity):
                                 losdata[0])
                 
         
-        self.prevconfpairs = set(self.cd.lospairs)
+        self.prevlospairs = set(self.cd.lospairs)
         
     @timed_function(name='reglog', dt=60)
     def thereglog(self):
