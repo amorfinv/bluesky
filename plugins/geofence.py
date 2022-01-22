@@ -1,3 +1,4 @@
+from lib2to3.pgen2 import driver
 import bluesky as bs
 from bluesky import settings, stack
 from bluesky.core.simtime import timed_function
@@ -10,6 +11,7 @@ import pandas as pd
 from shapely import wkt
 from shapely.geometry import Point
 from shapely.ops import nearest_points
+import geopandas as gpd
 
 settings.set_variable_defaults(geofence_dtlookahead=30)
 
@@ -63,6 +65,50 @@ def loadgeofences(filename: 'txt'):
             return
     for geofence in loaded_geo_dict.values():
         Geofence(geofence['name'], geofence['coordinates'], geofence['top'], geofence['bottom'])
+    bs.scr.echo(f'Geofences loaded from {filename}.')
+
+@stack.command()
+def loadgeojson(filename: 'txt', name_col: 'txt', top_col: 'txt', bottom_col: 'txt'=None):
+    '''Load geofences from a GeoJSON file. Must be in EPSG:4326 format.'''
+    if filename[-5:] != '.geojson':
+        filename = filename + '.geojson'
+    try:
+        loaded_gpd = gpd.read_file(f'data/geofences/{filename}', driver='GeoJSON')
+    except:
+        bs.scr.echo(f'File empty or does not exist.')
+        return
+
+    # now try to check if the column exists and put in lower case
+    try:
+        if name_col not in loaded_gpd.columns:
+            name_col = name_col.lower()
+
+        if top_col not in loaded_gpd.columns:
+            top_col = top_col.lower()
+
+        if bottom_col:
+            if bottom_col not in loaded_gpd.columns:
+                bottom_col = bottom_col.lower()
+        else:
+            bottom_col = 'bottom'
+            loaded_gpd[bottom_col] = 0.0
+
+    except:
+        bs.scr.echo(f'Columns not found.')
+        return
+
+    for _, geofence in loaded_gpd.iterrows():
+
+        # extract coordiantes from geofence gdf
+        lons = geofence.geometry.boundary.xy[0]
+        lats = geofence.geometry.boundary.xy[1]
+
+        # convert into a list of lat/lon
+        coordinates = [None]*(len(lons)*2)
+        coordinates[::2] = lats
+        coordinates[1::2] = lons
+        
+        Geofence(geofence[name_col], coordinates, geofence[top_col], geofence[bottom_col])
     bs.scr.echo(f'Geofences loaded from {filename}.')
 
 @timed_function(dt = 0.5)
