@@ -962,6 +962,11 @@ class SpeedBasedV3(ConflictResolution):
                 # triggered again, or a new conflict will be triggered and CR will take over again.
                 if self.tas[idx1] > bs.traf.ap.tas[idx1]:
                     self.tas[idx1] = bs.traf.ap.tas[idx1]
+                    
+                # We also want to check if this aircraft is going down while at low altitude. 
+                # We want to stop its descent.
+                if bs.traf.vs[idx1] < 0 and bs.traf.alt[idx1] < 30*ft:
+                    bs.traf.selvs[idx1] = 0
             else:
                 # Switch ASAS off for ownship if there are no other conflicts
                 # that this aircraft is involved in.
