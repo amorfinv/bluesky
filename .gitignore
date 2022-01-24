@@ -85,6 +85,7 @@ docs/_build/
 # PyBuilder
 target/
 
+data/cache
 data/performance/BADA/*
 !/data/performance/BADA/README
 ssd.obj
