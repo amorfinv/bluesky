@@ -292,6 +292,7 @@ class Traffic(Entity):
         
         #Loggers
         self.prevconfpairs = set()
+        self.prevlospairs = set()
         self.confinside_all = 0
         self.numgeobreaches_all = 0
         self.prevnumgeobreaches_all = 0
