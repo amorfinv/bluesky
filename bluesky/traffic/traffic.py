@@ -630,7 +630,7 @@ class Traffic(Entity):
                 # The last guy over here                    ^ is the LOS start time
             else:
                 # Entry exists, check if calculated is smaller
-                if self.losmindist[dictkey][0] < losdistance:
+                if self.losmindist[dictkey][0] > losdistance:
                     # It's smaller. Make sure to keep the LOS start time
                     self.losmindist[dictkey] = [losdistance, 
                                             self.lat[idx1], self.lon[idx1], self.alt[idx1], 
