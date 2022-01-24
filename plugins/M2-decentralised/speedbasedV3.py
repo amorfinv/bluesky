@@ -306,22 +306,32 @@ class SpeedBasedV3(ConflictResolution):
                         # Basically, the aircraft with the higher flight number ascends, and the one with the lower
                         # flight number descends. This ensures that any encounter of the sort is
                         # solved, regardless of whether one of the drones is a rogue or not.
-                        if self.check_flight_numbers(ownship, intruder, idx1, idx2):
-                            # Means our flight number is smaller, descend
-                            alt = self.get_below_cruise_layer(ownship, idx1)
-                            should_hold_altitude[i] = False
-                            should_ascend[i] = True
-                            should_descend[i] = False
-                        else:
-                            # We ascend
-                            alt = self.get_above_cruise_layer(ownship, idx1)
-                            should_hold_altitude[i] = False
-                            should_ascend[i] = False
-                            should_descend[i] = True
-                            
-                        stack.stack(f'ALT {ownship.id[idx1]} {alt}')
-                        stack.stack(f'LNAV {ownship.id[idx1]} ON') 
-                        stack.stack(f'VNAV {ownship.id[idx1]} ON') 
+                        if self.check_prio(ownship, intruder, idx1, idx2):
+                            # Means our flight number is smaller. See if we can ascend or descend
+                            alt_ascend = self.get_above_cruise_layer(ownship, idx1)
+                            alt_descend = self.get_below_cruise_layer(ownship, idx1)
+                            if alt_ascend > 0 and can_ascend:
+                                alt = alt_ascend
+                                should_hold_altitude[i] = False
+                                should_ascend[i] = True
+                                should_descend[i] = False
+                                
+                            elif alt_descend > 0 and can_descend:
+                                alt = alt_descend
+                                should_hold_altitude[i] = False
+                                should_ascend[i] = False
+                                should_descend[i] = True
+                                
+                            else:
+                                # Go to unused layer
+                                alt = self.get_above_empty_layer(ownship, idx1)
+                                if alt == 0:
+                                    alt = self.get_below_empty_layer(ownship, idx1)
+                                    
+                            # Give stack command
+                            stack.stack(f'ALT {ownship.id[idx1]} {alt}')
+                            stack.stack(f'LNAV {ownship.id[idx1]} ON') 
+                            stack.stack(f'VNAV {ownship.id[idx1]} ON')
                         #print('In front, head-on, attempt alt change.')
                         
                     self.in_headon[idx1] = True
@@ -408,9 +418,10 @@ class SpeedBasedV3(ConflictResolution):
                         
         if ascend and can_ascend and self.in_headon[idx1] != True:
             alt = self.get_above_cruise_layer(ownship, idx1)
-            stack.stack(f'ALT {ownship.id[idx1]} {alt}')
-            stack.stack(f'LNAV {ownship.id[idx1]} ON') 
-            stack.stack(f'VNAV {ownship.id[idx1]} ON')
+            if alt > 0:
+                stack.stack(f'ALT {ownship.id[idx1]} {alt}')
+                stack.stack(f'LNAV {ownship.id[idx1]} ON') 
+                stack.stack(f'VNAV {ownship.id[idx1]} ON')
             
         elif descend and can_descend and self.in_headon[idx1] != True:
             alt = self.get_below_cruise_layer(ownship, idx1)
