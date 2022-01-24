@@ -236,7 +236,7 @@ class Poly(Shape):
         self.border = Path(np.reshape(coordinates, (len(coordinates) // 2, 2)))
         lats = self.coordinates[::2]
         lons = self.coordinates[1::2]
-        self.pointsarr = np.array([lats, lons])
+        self.pointsarr = np.array(list(zip(lats, lons)))
         self.polybound = LineString(self.pointsarr)
 
     def checkInside(self, lat, lon, alt):
