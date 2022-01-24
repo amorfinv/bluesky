@@ -1,7 +1,6 @@
 output
 scenario/ic.scn
 scenario/Nino/*
-data/cache
 data/grib
 data/netcdf
 data/performance/BADA/*
@@ -83,7 +82,6 @@ docs/_build/
 # PyBuilder
 target/
 
-data/cache
 data/performance/BADA/*
 !/data/performance/BADA/README
 ssd.obj
