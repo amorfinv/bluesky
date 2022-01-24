@@ -308,6 +308,19 @@ class SpeedBasedV3(ConflictResolution):
                         # solved, regardless of whether one of the drones is a rogue or not.
                         if self.check_prio(ownship, intruder, idx1, idx2):
                             # Means our flight number is smaller. See if we can ascend or descend
+                            if open_airspace:
+                                # We first see if we can ascend to the layer above.
+                                alt_ascend = self.get_above_cruise_layer(ownship, idx1)
+                                if alt_ascend > 0 and can_ascend:
+                                    alt = alt_ascend
+                                    should_hold_altitude[i] = False
+                                    should_ascend[i] = True
+                                    should_descend[i] = False
+                                else:
+                                    # We try to jump up 30 ft
+                                    alt = ownship.alt[idx1] + 30*ft
+                        else:
+                            #We're in constrained  
                             alt_ascend = self.get_above_cruise_layer(ownship, idx1)
                             alt_descend = self.get_below_cruise_layer(ownship, idx1)
                             if alt_ascend > 0 and can_ascend:
