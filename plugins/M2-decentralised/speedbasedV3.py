@@ -121,7 +121,7 @@ class SpeedBasedV3(ConflictResolution):
         # ------------ Aircraft above or below check --------------
         # We check if we can ascend or descend by checking aircraft above
         # or below
-        can_ascend, can_descend = self.ac_above_below_check(conf, ownship, intruder, idx1, dist2others)
+        can_ascend, can_descend = self.ac_above_below_check(conf, ownship, intruder, idx1, dist2others, open_airspace)
         #print(can_ascend, can_descend)
         
         # ------------ Start of iteration --------------
@@ -406,15 +406,17 @@ class SpeedBasedV3(ConflictResolution):
                 if can_ascend:
                     # Go to cruise layer above
                     alt = self.get_above_cruise_layer(ownship, idx1)
-                    stack.stack(f'ALT {ownship.id[idx1]} {alt}')
-                    stack.stack(f'LNAV {ownship.id[idx1]} ON') 
-                    stack.stack(f'VNAV {ownship.id[idx1]} ON')
+                    if alt > 0:
+                        stack.stack(f'ALT {ownship.id[idx1]} {alt}')
+                        stack.stack(f'LNAV {ownship.id[idx1]} ON') 
+                        stack.stack(f'VNAV {ownship.id[idx1]} ON')
                 else:
                     #Go to unused layer above
                     alt = self.get_above_empty_layer(ownship, idx1)
-                    stack.stack(f'ALT {ownship.id[idx1]} {alt}')
-                    stack.stack(f'LNAV {ownship.id[idx1]} ON') 
-                    stack.stack(f'VNAV {ownship.id[idx1]} ON')
+                    if alt > 0:
+                        stack.stack(f'ALT {ownship.id[idx1]} {alt}')
+                        stack.stack(f'LNAV {ownship.id[idx1]} ON') 
+                        stack.stack(f'VNAV {ownship.id[idx1]} ON')
                         
         if ascend and can_ascend and self.in_headon[idx1] != True:
             alt = self.get_above_cruise_layer(ownship, idx1)
@@ -703,7 +705,7 @@ class SpeedBasedV3(ConflictResolution):
         else:
             return 360 - absDiff
                 
-    def ac_above_below_check(self, conf, ownship, intruder, idx1, dist2others):
+    def ac_above_below_check(self, conf, ownship, intruder, idx1, dist2others, open_airspace):
         can_ascend = True
         can_descend = True
         # Get aircraft that are close
@@ -711,13 +713,18 @@ class SpeedBasedV3(ConflictResolution):
         # Get the vertical distance for these aircraft
         vertical_dist = ownship.alt[idx1] - intruder.alt[is_close]
         # Check if any is smaller than cruise layer difference
-        cruise_diff_ascend = np.logical_and(0 > vertical_dist, vertical_dist > (-self.cruiselayerdiff * 1.1))
-        cruise_diff_descend = np.logical_and(0 < vertical_dist, vertical_dist < (self.cruiselayerdiff * 1.1))
+        if open_airspace:
+            # in open airspace we want to look waay above.
+            cruise_diff_ascend = np.logical_and(0 > vertical_dist, vertical_dist > (-self.cruiselayerdiff * 3))
+            cruise_diff_descend = np.logical_and(0 < vertical_dist, vertical_dist < (self.cruiselayerdiff * 3))
+        else:
+            cruise_diff_ascend = np.logical_and(0 > vertical_dist, vertical_dist > (-self.cruiselayerdiff * 1.1))
+            cruise_diff_descend = np.logical_and(0 < vertical_dist, vertical_dist < (self.cruiselayerdiff * 1.1))
         # Check also if any is smaller than conf.hpz
         conf_diff = np.abs(vertical_dist) > conf.hpz[idx1]
-        # Do the and operation on these two
-        dealbreaker_ascend = np.logical_and(cruise_diff_ascend, conf_diff) 
-        dealbreaker_descend = np.logical_and(cruise_diff_descend, conf_diff)
+        # Do the or operation on these two
+        dealbreaker_ascend = np.logical_or(cruise_diff_ascend, conf_diff) 
+        dealbreaker_descend = np.logical_or(cruise_diff_descend, conf_diff)
         
         # Also check if we're at the bottom or top
         if self.get_above_cruise_layer == 0 or np.any(dealbreaker_ascend):
