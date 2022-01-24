@@ -6,6 +6,9 @@ data/grib
 data/netcdf
 data/performance/BADA/*
 !/data/performance/BADA/README.md
+data/cache/py3/m2_hybrid/
+data/cache/py3/m2/
+data/cache/py3/m2_dark/
 
 # Sphinx documentation
 docs/_build/
