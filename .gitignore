@@ -1,6 +1,7 @@
 output
 scenario/ic.scn
 scenario/Nino/*
+data/cache
 data/grib
 data/netcdf
 data/performance/BADA/*
