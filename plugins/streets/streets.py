@@ -180,7 +180,7 @@ def do_flowcontrol():
                     path_plans.graph.edges_current_speed[k][kk]=0.1 # not zero because it could trap an aircraft
                     tmp=[k,kk,path_plans.graph.edges_current_speed[k][kk]]#the keys of the vertices of the edges, followed by the new speed
                     edges_changes.append(tmp)
-                    print('Applying a high traffic speed limit!!!!!!!!!!!!!')
+                    #print('Applying a high traffic speed limit!!!!!!!!!!!!!')
                     edge_traffic.edge_dict[edge]['speed_limit'] = 15
                     
             elif dens >0.005:#medium traffic
@@ -229,7 +229,7 @@ def do_flowcontrol():
 def apply_loitering_flowcontrol(loitering_edges):
 
     if use_path_plan and use_flow_control:
-        print("loitering_flow_control")
+        #print("loitering_flow_control")
         edges_changes=[]
         path_plans.graph.edges_previous_speed=copy.deepcopy(path_plans.graph.edges_current_speed)
         ##Loitering missions changes
@@ -251,7 +251,7 @@ def apply_loitering_flowcontrol(loitering_edges):
 ## Call function when loitering geofence is lifted
 def delete_loitering_flowcontrol(lifted_loitering_edges):
     if use_path_plan and use_flow_control:
-        print("delete loitering_flow_control")
+        #print("delete loitering_flow_control")
         edges_changes=[]
         path_plans.graph.edges_previous_speed=copy.deepcopy(path_plans.graph.edges_current_speed)
         ##Loitering missions changes
@@ -274,7 +274,7 @@ def delete_loitering_flowcontrol(lifted_loitering_edges):
 def handle_replan(edges_changes):
     for idx,path in enumerate(path_plans.pathplanning):
         #print("index")
-        print(idx)
+        #print(idx)
         
 
         
