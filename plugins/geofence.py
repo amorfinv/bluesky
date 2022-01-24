@@ -34,7 +34,7 @@ def geofence(name: 'txt', top: float, bottom: float, *coordinates: float):
         - bottom: The bottom of the geofence in feet.
         - coordinates: three or more lat/lon coordinates in degrees.
     '''
-    Geofence(name, top, bottom, coordinates)
+    Geofence(name, coordinates, top, bottom)
     return True, f'Created geofence {name}'
 
 
