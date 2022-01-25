@@ -986,10 +986,23 @@ class SpeedBasedV3(ConflictResolution):
                     
                 # What if we want to land?
                 if dist2dest < 5:
-                    #Attempt to land, let CR handle stuff.
-                    self.alt[idx1] = 0
+                    #Attempt to land if nobody below. Otherwise, hold altitude and speed 0.
                     self.tas[idx1] = 0
-                    stack.stack(f'{acid} ATALT 0 DEL {acid}')
+                    # Turn LNAV off
+                    stack.stack(f'LNAV {acid} OFF')
+                    # Check if any aircraft below
+                    dist2others = conf.dist_mat[idx1]
+                    is_close = np.where(dist2others < 64)[0]
+                    # Get the vertical distance for these aircraft
+                    vertical_dist = ownship.alt[idx1] - intruder.alt[is_close]
+                    
+                    # If any of these altitudes is greater than 0, hold altitude and wait.
+                    if np.any(vertical_dist > 0):
+                        self.alt[idx1] = bs.traf.alt[idx1]
+                    else:
+                        # We can attempt landing
+                        self.alt[idx1] = 0
+                        stack.stack(f'{acid} ATALT 0 DEL {acid}')
                 
             else:
                 # Switch ASAS off for ownship if there are no other conflicts
@@ -1014,11 +1027,11 @@ class SpeedBasedV3(ConflictResolution):
                 if not bs.traf.swlnav[idx1] or dist2dest < 5:
                     # We have already gone past the landing point. Simply give the commands without distance.
                     if bs.traf.loiter.loiterbool[idx1]:
-                        # Give the loitering commands
+                        # Give the loitering command
                         stack.stack(f'DELLOITER {acid}')
                     else:
                         stack.stack(f'LNAV {acid} OFF')
-                        stack.stack(f'{acid} 0')
+                        stack.stack(f'SPD {acid} 0')
                         stack.stack(f'ALT {acid} 0')
                         stack.stack(f'{acid} ATALT 0 DEL {acid}')
                     
