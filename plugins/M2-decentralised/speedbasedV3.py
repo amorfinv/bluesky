@@ -988,7 +988,7 @@ class SpeedBasedV3(ConflictResolution):
                 if dist2dest < 5:
                     #Attempt to land, let CR handle stuff.
                     self.alt[idx1] = 0
-                    self.spd[idx1] = 0
+                    self.tas[idx1] = 0
                 
             else:
                 # Switch ASAS off for ownship if there are no other conflicts
