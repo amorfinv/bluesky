@@ -1012,6 +1012,18 @@ class SpeedBasedV3(ConflictResolution):
                         stack.stack(f'{acid} ATDIST {destlat} {destlon} {1/nm} SPD {acid} 0')
                         stack.stack(f'{acid} ATDIST {destlat} {destlon} {5/nm} ALT {acid} 0')
                         stack.stack(f'{acid} ATDIST {destlat} {destlon} {5/nm} {acid} ATALT 0 DEL {acid}')
+                        
+                if not bs.traf.swlnav[idx1]:
+                    # We have already gone past the landing point. Simply give the commands without distance.
+                    if bs.traf.loiter.loiterbool[idx1]:
+                        # Give the loitering commands
+                        stack.stack(f'DELLOITER {acid}')
+                    else:
+                        stack.stack(f'LNAV {acid} OFF')
+                        stack.stack(f'{acid} 0')
+                        stack.stack(f'ALT {acid} 0')
+                        stack.stack(f'ATALT 0 DEL {acid}')
+                    
                     
                 
         for idx, active in changeactive.items():
