@@ -989,6 +989,7 @@ class SpeedBasedV3(ConflictResolution):
                     #Attempt to land, let CR handle stuff.
                     self.alt[idx1] = 0
                     self.tas[idx1] = 0
+                    stack.stack(f'{acid} ATALT 0 DEL {acid}')
                 
             else:
                 # Switch ASAS off for ownship if there are no other conflicts
@@ -1019,7 +1020,7 @@ class SpeedBasedV3(ConflictResolution):
                         stack.stack(f'LNAV {acid} OFF')
                         stack.stack(f'{acid} 0')
                         stack.stack(f'ALT {acid} 0')
-                        stack.stack(f'ATALT 0 DEL {acid}')
+                        stack.stack(f'{acid} ATALT 0 DEL {acid}')
                     
                     
                 
