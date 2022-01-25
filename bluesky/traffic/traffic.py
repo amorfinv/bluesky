@@ -643,15 +643,12 @@ class Traffic(Entity):
         if lospairs_out:
             done_pairs = []
             for pair in set(lospairs_out):
-                # Get the two aircraft
-                idx1 = self.id.index(pair[0])
-                idx2 = self.id.index(pair[1])
-                done_pairs.append((idx1,idx2))
-                if (idx2,idx1) in done_pairs:
-                    continue
                 # Get their dictkey
                 dictkey = pair[0]+pair[1] if int(pair[0][1:]) < int(pair[1][1:]) else pair[1]+pair[0]
-                # Get their distance
+                # Is this pair in the dictionary?
+                if dictkey not in self.losmindist:
+                    # Pair was already logged, continue
+                    continue
                 losdata = self.losmindist[dictkey]
                 # Remove this aircraft pair from losmindist
                 self.losmindist.pop(dictkey)

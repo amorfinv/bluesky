@@ -208,7 +208,6 @@ class Geofence(areafilter.Poly):
     def intersecting(cls, coordinates):
         '''Get the geofences that intersect coordinates (either bbox or point).'''
         poly_ids = list(cls.geo_tree.intersection(coordinates))
-
         return [cls.geo_by_id[id] for id in poly_ids], poly_ids
 
     @classmethod
@@ -252,7 +251,6 @@ class Geofence(areafilter.Poly):
                         cls.unique_intrusions[acid] = dict()
                     # get geo_name
                     geo_name = cls.geo_by_id[geo_ids[i]].name
-                    # print(acid, cls.geo_by_id[geo_ids[i]].name)
                     # Get closest point
                     p1,p2 = nearest_points(geofence.polybound, Point(traf.lat[idx], traf.lon[idx]))
                     # Do kwikdist
