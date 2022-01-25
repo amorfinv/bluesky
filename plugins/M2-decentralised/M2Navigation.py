@@ -33,8 +33,6 @@ class M2Navigation(core.Entity):
         
     @timed_function(name='navtimedfunction', dt=0.5)
     def navtimedfunction(self):
-        time1 = time.perf_counter()
-
         if bs.traf.ntraf == 0:
             return
         
@@ -104,7 +102,7 @@ class M2Navigation(core.Entity):
                                    bs.traf.flight_layer_type == 'C')
         
         give_constrained_cruise_command = np.logical_and.reduce((np.logical_not(in_turn),
-                                                     np.logical_and(np.logical_not(in_vert_man),np.logical_not(bs.traf.alt<30*ft)),
+                                                     np.logical_not(in_vert_man),
                                                      np.logical_not(cr_active),
                                                      np.logical_not(in_cruise_layer),
                                                      in_constrained,
@@ -185,4 +183,11 @@ class M2Navigation(core.Entity):
         bs.traf.selalt = np.where(give_ascent_command, bs.traf.closest_cruise_layer_top*ft, bs.traf.selalt)
         # Set the aircraft we gave the command to as unstuck
         bs.traf.cr.stuck = np.where(give_ascent_command, False, bs.traf.cr.stuck)
-        time2 = time.perf_counter()
+        
+        # If anyone is below 30 ft altitude and going down, make them hold altitude.
+        prevent_negative_altitude = np.logical_and.reduce((bs.traf.vs<0,
+                                                           bs.traf.alt<30*ft))
+        # Make em go to 30 ft
+        bs.traf.selalt = np.where(prevent_negative_altitude, 30*ft, bs.traf.selalt)
+        # Stop their negative VS
+        bs.traf.selvs = np.where(prevent_negative_altitude, 0, bs.traf.selvs)
