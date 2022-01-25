@@ -965,6 +965,12 @@ class SpeedBasedV3(ConflictResolution):
                 # - The autopilot vertical speed is ok
                 nav_ok = (alt_ok or dist_ok) or ap_spd_ok
                 conf_ok = (past_cpa and not hor_los and not is_bouncing) or alt_ok
+                
+                # Get distance to destination
+                destlat = ownship.ap.route[idx1].wplat[-1]
+                destlon = ownship.ap.route[idx1].wplon[-1]
+                acid = ownship.id[idx1]
+                dist2dest = kwikdist(ownship.lat[idx1], ownship.lon[idx1], destlat , destlon) * nm
 
             # Start recovery for ownship if intruder is deleted, or if past CPA
             # and not in horizontal LOS or a bouncing conflict
@@ -994,11 +1000,6 @@ class SpeedBasedV3(ConflictResolution):
                 self.in_headon[idx1] = False
                 # Re-give the destination commands for the aircraft if we're close,
                 # just in case they got overwritten
-                # Get distance to destination
-                destlat = ownship.ap.route[idx1].wplat[-1]
-                destlon = ownship.ap.route[idx1].wplon[-1]
-                acid = ownship.id[idx1]
-                dist2dest = kwikdist(ownship.lat[idx1], ownship.lon[idx1], destlat , destlon) * nm
                 if dist2dest < 100: #[m]
                     if bs.traf.loiter.loiterbool[idx1]:
                         # Give the loitering commands
