@@ -104,7 +104,7 @@ class M2Navigation(core.Entity):
                                    bs.traf.flight_layer_type == 'C')
         
         give_constrained_cruise_command = np.logical_and.reduce((np.logical_not(in_turn),
-                                                     np.logical_not(in_vert_man),
+                                                     np.logical_and(np.logical_not(in_vert_man),np.logical_not(bs.traf.alt<30*ft))
                                                      np.logical_not(cr_active),
                                                      np.logical_not(in_cruise_layer),
                                                      in_constrained,
