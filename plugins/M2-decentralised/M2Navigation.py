@@ -39,7 +39,7 @@ class M2Navigation(core.Entity):
         # Gather some bools
         in_turn = np.logical_or(bs.traf.ap.inturn, bs.traf.ap.dist2turn < 75)  # Are aircraft in a turn?
         cr_active = bs.traf.cd.inconf # Are aircraft doing CR?
-        in_vert_man = bs.traf.vs > 0 # Are aircraft performing a vertical maneuver?
+        in_vert_man = np.abs(bs.traf.vs) > 0 # Are aircraft performing a vertical maneuver?
         emergency = bs.traf.priority == 4
         speed_zero = np.array(bs.traf.selspd) == 0 # The selected speed is 0, so we're at our destination and landing
         lnav_on = bs.traf.swlnav

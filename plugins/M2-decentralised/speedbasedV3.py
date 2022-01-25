@@ -464,7 +464,7 @@ class SpeedBasedV3(ConflictResolution):
                 vmax = ownship.perf.vmax[idx1]
             
             if landing:
-                vmax = 0.01
+                vmax = 1
             
             # Create velocity line
             v_dir = self.normalized(v1)
@@ -540,7 +540,9 @@ class SpeedBasedV3(ConflictResolution):
         #print(vmax)
         #print(should_speed)
         
-        #print(gs_new)
+        if landing:
+            # Altitude 0
+            alt_new = 0
         return gs_new, alt_new
     
     ##### Helper functions #####
@@ -1004,7 +1006,7 @@ class SpeedBasedV3(ConflictResolution):
                 if dist2dest < 100: #[m]
                     if bs.traf.loiter.loiterbool[idx1]:
                         # Give the loitering commands
-                        stack.stack(f'{acid} ATDIST {destlat} {destlon} {5/nm} DEL {acid}')
+                        stack.stack(f'{acid} ATDIST {destlat} {destlon} {5/nm} DELLOITER {acid}')
                     else:
                         stack.stack(f'{acid} ATDIST {destlat} {destlon} {6/nm} LNAV {acid} OFF')
                         stack.stack(f'{acid} ATDIST {destlat} {destlon} {1/nm} SPD {acid} 0')

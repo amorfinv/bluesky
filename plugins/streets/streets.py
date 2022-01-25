@@ -523,7 +523,7 @@ def queue_attempt_create(acid, actype, path_file, aclat, aclon, destlat, destlon
         stack.stack(f'LNAV {acid} ON')
         stack.stack(f'VNAV {acid} ON')
         if geodur!= 0:
-            stack.stack(f'{acid} ATDIST {destlat} {destlon} {5/nm} DEL {acid}')
+            stack.stack(f'{acid} ATDIST {destlat} {destlon} {5/nm} DELLOITER {acid}')
         else:
             stack.stack(f'{acid} ATDIST {destlat} {destlon} {6/nm} LNAV {acid} OFF')
             stack.stack(f'{acid} ATDIST {destlat} {destlon} {1/nm} SPD {acid} 0')
@@ -564,7 +564,7 @@ def queue_attempt_create(acid, actype, path_file, aclat, aclon, destlat, destlon
         stack.stack(f'LNAV {acid} ON')
         stack.stack(f'VNAV {acid} ON')
         if geodur!= 0:
-            stack.stack(f'{acid} ATDIST {destlat} {destlon} {5/nm} DEL {acid}')
+            stack.stack(f'{acid} ATDIST {destlat} {destlon} {5/nm} DELLOITER {acid}')
         else:
             stack.stack(f'{acid} ATDIST {destlat} {destlon} {6/nm} LNAV {acid} OFF')
             stack.stack(f'{acid} ATDIST {destlat} {destlon} {1/nm} SPD {acid} 0')
