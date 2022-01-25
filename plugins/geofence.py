@@ -238,8 +238,6 @@ class Geofence(areafilter.Poly):
             acid = traf.id[idx]
             # First, a course detection based on geofence bounding boxes
             potential_intrusions, geo_ids = cls.intersecting([point[0], point[1]])
-            geo_name = [cls.geo_by_id[id].name for id in geo_ids]
-
             # Then a fine-grained intrusion detection
             #intrusions = []
             # print(geo_ids)
