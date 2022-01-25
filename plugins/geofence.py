@@ -72,6 +72,7 @@ def loadgeojson(filename: 'txt', name_col: 'txt', top_col: 'txt', bottom_col: 't
     '''Load geofences from a GeoJSON file. Must be in EPSG:4326 format.'''
     if filename[-5:] != '.geojson':
         filename = filename + '.geojson'
+        filename = filename.lower()
     try:
         loaded_gpd = gpd.read_file(f'data/geofences/{filename}', driver='GeoJSON')
     except:
