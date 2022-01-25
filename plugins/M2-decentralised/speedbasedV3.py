@@ -983,8 +983,8 @@ class SpeedBasedV3(ConflictResolution):
                 
                 # Also, if altitude is below 30, hold altitude.
                 if bs.traf.alt[idx1] < 30*ft:
-                    self.alt = bs.traf.alt[idx1] 
-                    bs.traf.selalt = bs.traf.alt[idx1]
+                    self.alt[idx1] = bs.traf.alt[idx1] 
+                    bs.traf.selalt[idx1] = bs.traf.alt[idx1]
                 
             else:
                 # Switch ASAS off for ownship if there are no other conflicts
