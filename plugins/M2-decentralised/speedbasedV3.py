@@ -661,9 +661,11 @@ class SpeedBasedV3(ConflictResolution):
             intent1, target_alt1 = ownship.intent[idx1]
             intent2, target_alt2 = intruder.intent[idx2]
             # Find closest points between the two intent paths
-            pown, pint = nearest_points(intent1, intent2)
+            #pown, pint = nearest_points(intent1, intent2)
+            
             # Find the distance between the points
-            point_distance = kwikdist(pown.y, pown.x, pint.y, pint.x) * nm #[m]
+            #point_distance = kwikdist(pown.y, pown.x, pint.y, pint.x) * nm #[m]
+            
             # Also do vertical intent
             # Difference between own altitude and intruder target
             diff = ownship.alt[idx1] - target_alt2
@@ -675,8 +677,13 @@ class SpeedBasedV3(ConflictResolution):
             # 3. The altitude difference and vertical velocity of the intruder have the same sign.
             # This means that if the aircraft is coming from above (negative), and the altitude difference
             # is positive (thus target altitude is below ownship), then their paths will intersect. 
-            if ((point_distance > self.rpz) or ((abs(diff) >= self.hpz)) and \
-                (abs(intruder.vs[idx2]) < 0.1) and np.sign(diff) == np.sign(intruder.vs[idx2])):
+            
+            # Disconsidered distance-based intent
+            # if ((point_distance > self.rpz) or ((abs(diff) >= self.hpz)) and \
+            #     (abs(intruder.vs[idx2]) < 0.1) and np.sign(diff) == np.sign(intruder.vs[idx2])):
+            
+            # Altitude intent
+            if ((abs(diff) >= self.hpz)) and (abs(intruder.vs[idx2]) < 0.1) and np.sign(diff) == np.sign(intruder.vs[idx2]):
                     # Intent is ok
                 return True
             else:
