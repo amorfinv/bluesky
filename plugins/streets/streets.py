@@ -163,7 +163,7 @@ def do_flowcontrol():
             
             #key=str(key)
             ## assume that allowed density is 1 drone every 20 meters, maybe 40 meters?
-            if dens >0.05:# high traffic
+            if dens >0.025:# high traffic
 
                 if path_plans.graph.modified_group[key]==2:
                     continue
@@ -183,7 +183,7 @@ def do_flowcontrol():
                     #print('Applying a high traffic speed limit!!!!!!!!!!!!!')
                     edge_traffic.edge_dict[edge]['speed_limit'] = 15
                     
-            elif dens >0.01:#medium traffic
+            elif dens >0.005:#medium traffic
 
                 if path_plans.graph.modified_group[key]==1:
                     continue
