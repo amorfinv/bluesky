@@ -186,8 +186,22 @@ class M2Navigation(core.Entity):
         
         # If anyone is below 30 ft altitude and going down, make them hold altitude.
         prevent_negative_altitude = np.logical_and.reduce((bs.traf.vs<0,
-                                                           bs.traf.alt<30*ft))
+                                                           bs.traf.alt<30*ft,
+                                                           lnav_on,
+                                                           np.logical_not(rogue),
+                                                           np.logical_not(speed_zero)))
         # Make em go to 30 ft
         bs.traf.selalt = np.where(prevent_negative_altitude, 30*ft, bs.traf.selalt)
         # Stop their negative VS
         bs.traf.selvs = np.where(prevent_negative_altitude, 0, bs.traf.selvs)
+        
+        # Same prevention in the positive direction.
+        prevent_positive_altitude = np.logical_and.reduce((bs.traf.vs>0,
+                                                           bs.traf.alt>480*ft,
+                                                           lnav_on,
+                                                           np.logical_not(rogue),
+                                                           np.logical_not(speed_zero)))
+        # Make em go to 30 ft
+        bs.traf.selalt = np.where(prevent_positive_altitude, 470*ft, bs.traf.selalt)
+        # Stop their negative VS
+        bs.traf.selvs = np.where(prevent_positive_altitude, 0, bs.traf.selvs)
