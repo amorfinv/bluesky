@@ -464,7 +464,7 @@ class SpeedBasedV3(ConflictResolution):
                 vmax = ownship.perf.vmax[idx1]
             
             if landing:
-                vmax = 1
+                vmax = 5*kts
             
             # Create velocity line
             v_dir = self.normalized(v1)
@@ -978,15 +978,11 @@ class SpeedBasedV3(ConflictResolution):
                 if self.tas[idx1] > bs.traf.ap.tas[idx1]:
                     self.tas[idx1] = bs.traf.ap.tas[idx1]
                     
-                # We also want to check if this aircraft is going down while at low altitude, or up while at high altitude. 
-                # We want to stop its descent.
-                if (bs.traf.vs[idx1] < 0 and bs.traf.alt[idx1] < 30*ft) or (bs.traf.vs[idx1] > 0 and bs.traf.alt[idx1] > 480*ft):
-                    bs.traf.selvs[idx1] = 0
-                
-                # Also, if altitude is below 30, hold altitude.
-                if bs.traf.alt[idx1] < 30*ft:
-                    self.alt[idx1] = bs.traf.alt[idx1] 
-                    bs.traf.selalt[idx1] = bs.traf.alt[idx1]
+                # What if we want to land?
+                if dist2dest < 5:
+                    #Attempt to land, let CR handle stuff.
+                    self.alt[idx1] = 0
+                    self.spd[idx1] = 0
                 
             else:
                 # Switch ASAS off for ownship if there are no other conflicts
@@ -1013,7 +1009,7 @@ class SpeedBasedV3(ConflictResolution):
                         stack.stack(f'{acid} ATDIST {destlat} {destlon} {5/nm} ALT {acid} 0')
                         stack.stack(f'{acid} ATDIST {destlat} {destlon} {5/nm} {acid} ATALT 0 DEL {acid}')
                         
-                if not bs.traf.swlnav[idx1]:
+                if not bs.traf.swlnav[idx1] or dist2dest < 5:
                     # We have already gone past the landing point. Simply give the commands without distance.
                     if bs.traf.loiter.loiterbool[idx1]:
                         # Give the loitering commands
