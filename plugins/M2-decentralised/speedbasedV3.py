@@ -157,7 +157,7 @@ class SpeedBasedV3(ConflictResolution):
             # Determine if intruder is coming towards us
             head_on = (abs((np.degrees(self.angle(v1, v2)))) > (180-self.frnt_tol))
             # Does the intent check out? If true, then the paths won't intersect
-            intent_ok = False #self.check_intent(conf, ownship, intruder, idx1, idx2)
+            intent_ok = self.check_intent(conf, ownship, intruder, idx1, idx2)
             # Does the priority check out? If true, then ownship has greater priority
             priority_ok = self.check_prio(ownship, intruder, idx1, idx2)
             # Rogue
@@ -658,8 +658,11 @@ class SpeedBasedV3(ConflictResolution):
             
     def check_intent(self, conf, ownship, intruder, idx1, idx2):
         if (intruder.intent[idx2] is not None) and (ownship.intent[idx1] is not None):
-            intent1, target_alt1 = ownship.intent[idx1]
-            intent2, target_alt2 = intruder.intent[idx2]
+            # intent1, target_alt1 = ownship.intent[idx1]
+            # intent2, target_alt2 = intruder.intent[idx2]
+            
+            target_alt2 = intruder.intent[idx2]
+            
             # Find closest points between the two intent paths
             #pown, pint = nearest_points(intent1, intent2)
             

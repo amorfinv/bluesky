@@ -62,6 +62,8 @@ class Intent(Entity):
             else:
                 # No maneuver going on
                 intentAlt = ownship.alt[idx]
+                
+            self.intent[idx] = intentAlt
 
 
             # First, get route
