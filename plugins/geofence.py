@@ -206,7 +206,8 @@ class Geofence(areafilter.Poly):
     @classmethod
     def intersecting(cls, coordinates):
         '''Get the geofences that intersect coordinates (either bbox or point).'''
-        poly_ids = cls.geo_tree.intersection(coordinates)
+        poly_ids = list(cls.geo_tree.intersection(coordinates))
+
         return [cls.geo_by_id[id] for id in poly_ids], poly_ids
 
     @classmethod
@@ -237,26 +238,32 @@ class Geofence(areafilter.Poly):
             acid = traf.id[idx]
             # First, a course detection based on geofence bounding boxes
             potential_intrusions, geo_ids = cls.intersecting([point[0], point[1]])
+            geo_name = [cls.geo_by_id[id].name for id in geo_ids]
+
             # Then a fine-grained intrusion detection
             #intrusions = []
+            # print(geo_ids)
             for i, geofence in enumerate(potential_intrusions):
                 if geofence.checkInside(*point):
                     #intrusions.append(geofence)
                     # Add geofence ID to unique intrusion dictionary
                     if acid not in cls.unique_intrusions:
                         cls.unique_intrusions[acid] = dict()
-                    # Create shapely polygon
-                    
+                    # get geo_name
+                    geo_name = cls.geo_by_id[geo_ids[i]].name
+                    print(acid, cls.geo_by_id[geo_ids[i]].name)
                     # Get closest point
                     p1,p2 = nearest_points(geofence.polybound, Point(traf.lat[idx], traf.lon[idx]))
                     # Do kwikdist
                     intrusion = geo.kwikdist(p1.x, p1.y, p2.x, p2.y) * aero.nm
+                    print(intrusion)
+                    print('---------------------')
                     # Check the previous intrusion severity
                     if geo_ids[i] in cls.unique_intrusions[acid]:
-                        if cls.unique_intrusions[acid][geo_ids[i]][0] < intrusion:
-                            cls.unique_intrusions[acid][geo_ids[i]] = [intrusion, p2.x, p2.y, bs.sim.simt]
+                        if cls.unique_intrusions[acid][geo_ids[i]][1] < intrusion:
+                            cls.unique_intrusions[acid][geo_ids[i]] = [geo_name, intrusion, p2.x, p2.y, bs.sim.simt]
                     else:
-                        cls.unique_intrusions[acid][geo_ids[i]] = [intrusion, p2.x, p2.y,  bs.sim.simt]
+                        cls.unique_intrusions[acid][geo_ids[i]] = [geo_name, intrusion, p2.x, p2.y,  bs.sim.simt]
                     
             #cls.intrusions[acid] = intrusions
         bs.traf.geo_intrusions = cls.unique_intrusions

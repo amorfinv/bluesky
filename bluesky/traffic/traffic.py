@@ -131,6 +131,7 @@ geoheader = \
     'Deletion time [s], ' + \
     'Call sign[-],' + \
     'Geofence ID[-],' + \
+    'Geofence name [-],' + \
     'Max intrusion [m],' + \
     'Intrusion LAT [deg],' + \
     'Intrusion LON [deg],' + \
@@ -515,7 +516,7 @@ class Traffic(Entity):
             self.aporasas.tas[idx]/kts,
             self.aporasas.vs[idx]/fpm,
             self.aporasas.hdg[idx])
-        
+
         if acid in self.geo_intrusions:
             geo_intr = self.geo_intrusions[acid]
             for geoid in geo_intr:
@@ -526,8 +527,9 @@ class Traffic(Entity):
                     items[0],
                     items[1],
                     items[2],
-                    items[3])
-                
+                    items[3],
+                    items[4])
+
             self.geo_intrusions.pop(acid)
 
         # If this is a multiple delete, sort first for list delete
