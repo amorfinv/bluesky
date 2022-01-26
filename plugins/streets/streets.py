@@ -524,13 +524,13 @@ def queue_attempt_create(acid, actype, path_file, aclat, aclon, destlat, destlon
         # Add the necessary stack commands for this aircraft
         stack.stack(f'LNAV {acid} ON')
         stack.stack(f'VNAV {acid} ON')
-        if geodur!= 0:
-            stack.stack(f'{acid} ATDIST {destlat} {destlon} {5/nm} DELLOITER {acid}')
-        else:
-            stack.stack(f'{acid} ATDIST {destlat} {destlon} {6/nm} LNAV {acid} OFF')
-            stack.stack(f'{acid} ATDIST {destlat} {destlon} {1/nm} SPD {acid} 0')
-            stack.stack(f'{acid} ATDIST {destlat} {destlon} {5/nm} ALT {acid} 0')
-            stack.stack(f'{acid} ATDIST {destlat} {destlon} {5/nm} {acid} ATALT 0 DEL {acid}')
+        # if geodur!= 0:
+        #     stack.stack(f'{acid} ATDIST {destlat} {destlon} {5/nm} DELLOITER {acid}')
+        # else:
+        #     stack.stack(f'{acid} ATDIST {destlat} {destlon} {6/nm} LNAV {acid} OFF')
+        #     stack.stack(f'{acid} ATDIST {destlat} {destlon} {1/nm} SPD {acid} 0')
+        #     stack.stack(f'{acid} ATDIST {destlat} {destlon} {5/nm} ALT {acid} 0')
+        #     stack.stack(f'{acid} ATDIST {destlat} {destlon} {5/nm} {acid} ATALT 0 DEL {acid}')
         return True
         
     #We reach this point if there are aircraft below 30 ft. There can't be THAT many, so we
@@ -565,13 +565,13 @@ def queue_attempt_create(acid, actype, path_file, aclat, aclon, destlat, destlon
         # Add the necessary stack commands for this aircraft
         stack.stack(f'LNAV {acid} ON')
         stack.stack(f'VNAV {acid} ON')
-        if geodur!= 0:
-            stack.stack(f'{acid} ATDIST {destlat} {destlon} {5/nm} DELLOITER {acid}')
-        else:
-            stack.stack(f'{acid} ATDIST {destlat} {destlon} {6/nm} LNAV {acid} OFF')
-            stack.stack(f'{acid} ATDIST {destlat} {destlon} {1/nm} SPD {acid} 0')
-            stack.stack(f'{acid} ATDIST {destlat} {destlon} {5/nm} ALT {acid} 0')
-            stack.stack(f'{acid} ATDIST {destlat} {destlon} {5/nm} {acid} ATALT 0 DEL {acid}')
+        # if geodur!= 0:
+        #     stack.stack(f'{acid} ATDIST {destlat} {destlon} {5/nm} DELLOITER {acid}')
+        # else:
+        #     stack.stack(f'{acid} ATDIST {destlat} {destlon} {6/nm} LNAV {acid} OFF')
+        #     stack.stack(f'{acid} ATDIST {destlat} {destlon} {1/nm} SPD {acid} 0')
+        #     stack.stack(f'{acid} ATDIST {destlat} {destlon} {5/nm} ALT {acid} 0')
+        #     stack.stack(f'{acid} ATDIST {destlat} {destlon} {5/nm} {acid} ATALT 0 DEL {acid}')
         return True
         
     # All attempts to create failed, so we add to queue

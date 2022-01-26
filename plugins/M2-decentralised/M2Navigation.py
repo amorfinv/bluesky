@@ -44,6 +44,7 @@ class M2Navigation(core.Entity):
         speed_zero = np.array(bs.traf.selspd) == 0 # The selected speed is 0, so we're at our destination and landing
         lnav_on = bs.traf.swlnav
         rogue = bs.traf.roguetraffic.rogue_bool
+        landing = np.logical_and(np.logical_not(lnav_on), bs.traf.actwp.swlastwp)
         
         # CRUISE SPEED STUFF -----------------------------------------
         set_cruise_speed = np.logical_and.reduce((lnav_on, np.logical_not(rogue)))
@@ -210,7 +211,8 @@ class M2Navigation(core.Entity):
         
         # Finally, if anyone has lnav off and is not a rogue, make them go to altitude 0 and give them speed 0
         give_0_command = np.logical_and.reduce((np.logical_not(lnav_on),
-                                                np.logical_not(rogue)))
+                                                np.logical_not(rogue),
+                                                landing))
         
         bs.traf.selalt = np.where(give_0_command, 0, bs.traf.selalt)
         bs.traf.selspd = np.where(give_0_command, 0, bs.traf.selspd)

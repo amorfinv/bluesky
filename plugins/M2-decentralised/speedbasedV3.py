@@ -1011,7 +1011,7 @@ class SpeedBasedV3(ConflictResolution):
                     else:
                         # We can attempt landing
                         self.alt[idx1] = 0
-                        stack.stack(f'{acid} ATALT 0 DEL {acid}')
+                        # stack.stack(f'{acid} ATALT 0 DEL {acid}')
                 
             else:
                 # Switch ASAS off for ownship if there are no other conflicts
@@ -1024,30 +1024,30 @@ class SpeedBasedV3(ConflictResolution):
                 # Re-give the destination commands for the aircraft if we're close,
                 # just in case they got overwritten
                 # Get distance to destination
-                destlat = ownship.ap.route[idx1].wplat[-1]
-                destlon = ownship.ap.route[idx1].wplon[-1]
-                acid = ownship.id[idx1]
-                dist2dest = kwikdist(ownship.lat[idx1], ownship.lon[idx1], destlat , destlon) * nm
-                if dist2dest < 100: #[m]
-                    if bs.traf.loiter.loiterbool[idx1]:
-                        # Give the loitering commands
-                        stack.stack(f'{acid} ATDIST {destlat} {destlon} {5/nm} DELLOITER {acid}')
-                    else:
-                        stack.stack(f'{acid} ATDIST {destlat} {destlon} {6/nm} LNAV {acid} OFF')
-                        stack.stack(f'{acid} ATDIST {destlat} {destlon} {1/nm} SPD {acid} 0')
-                        stack.stack(f'{acid} ATDIST {destlat} {destlon} {5/nm} ALT {acid} 0')
-                        stack.stack(f'{acid} ATDIST {destlat} {destlon} {5/nm} {acid} ATALT 0 DEL {acid}')
+                # destlat = ownship.ap.route[idx1].wplat[-1]
+                # destlon = ownship.ap.route[idx1].wplon[-1]
+                # acid = ownship.id[idx1]
+                # dist2dest = kwikdist(ownship.lat[idx1], ownship.lon[idx1], destlat , destlon) * nm
+                # if dist2dest < 100: #[m]
+                #     if bs.traf.loiter.loiterbool[idx1]:
+                #         # Give the loitering commands
+                #         stack.stack(f'{acid} ATDIST {destlat} {destlon} {5/nm} DELLOITER {acid}')
+                #     else:
+                #         stack.stack(f'{acid} ATDIST {destlat} {destlon} {6/nm} LNAV {acid} OFF')
+                #         stack.stack(f'{acid} ATDIST {destlat} {destlon} {1/nm} SPD {acid} 0')
+                #         stack.stack(f'{acid} ATDIST {destlat} {destlon} {5/nm} ALT {acid} 0')
+                #         stack.stack(f'{acid} ATDIST {destlat} {destlon} {5/nm} {acid} ATALT 0 DEL {acid}')
                         
-                if not bs.traf.swlnav[idx1] or dist2dest < 5:
-                    # We have already gone past the landing point. Simply give the commands without distance.
-                    if bs.traf.loiter.loiterbool[idx1]:
-                        # Give the loitering command
-                        stack.stack(f'DELLOITER {acid}')
-                    else:
-                        stack.stack(f'LNAV {acid} OFF')
-                        stack.stack(f'SPD {acid} 0')
-                        stack.stack(f'ALT {acid} 0')
-                        stack.stack(f'{acid} ATALT 0 DEL {acid}')
+                # if not bs.traf.swlnav[idx1] or dist2dest < 5:
+                #     # We have already gone past the landing point. Simply give the commands without distance.
+                #     if bs.traf.loiter.loiterbool[idx1]:
+                #         # Give the loitering command
+                #         stack.stack(f'DELLOITER {acid}')
+                #     else:
+                #         stack.stack(f'LNAV {acid} OFF')
+                #         stack.stack(f'SPD {acid} 0')
+                #         stack.stack(f'ALT {acid} 0')
+                #         stack.stack(f'{acid} ATALT 0 DEL {acid}')
                     
                     
                 
