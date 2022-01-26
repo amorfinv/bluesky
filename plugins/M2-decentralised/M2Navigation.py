@@ -87,9 +87,27 @@ class M2Navigation(core.Entity):
         # If an aircraft is not turning, then it should be in a cruise layer
         # Always aim for the bottom cruise layer. However, if both bottom and top
         # are 0, then remain at the same altitude.
-        target_cruise_layer = np.where(bs.traf.closest_cruise_layer_bottom == 0, 
-                                       bs.traf.closest_cruise_layer_top,
-                                       bs.traf.closest_cruise_layer_bottom)*ft
+        # First, check if we can go up or down
+        can_ascend_cruise, can_descend_cruise = self.ascent_descent(64, 70, -70)
+        
+        # This array is true for aircraft that can simply go down
+        can_go_down = np.logical_and(bs.traf.closest_cruise_layer_bottom != 0, can_descend_cruise)
+        
+        # This array is true for aircraft that can go up
+        can_go_up = np.logical_and(bs.traf.closest_cruise_layer_top != 0,can_ascend_cruise)
+        
+        target_cruise_layer = np.where(can_go_down, bs.traf.closest_cruise_layer_bottom, 
+                                       # Now we determine the backup option. Can we go up?
+                                       np.where(can_go_up,bs.traf.closest_cruise_layer_top, 
+                                        # If we cannot go up either, then we check which layer
+                                        # is == 0, and we avoid it
+                                        np.where(bs.traf.closest_cruise_layer_bottom == 0, 
+                                                 bs.traf.closest_cruise_layer_top,
+                                                 bs.traf.closest_cruise_layer_bottom)))*ft
+        
+        # target_cruise_layer = np.where(bs.traf.closest_cruise_layer_bottom == 0, 
+        #                                bs.traf.closest_cruise_layer_top,
+        #                                bs.traf.closest_cruise_layer_bottom)*ft
 
         target_unused_layer = np.where(bs.traf.closest_empty_layer_bottom == 0, 
                                        bs.traf.closest_empty_layer_top,
@@ -130,23 +148,7 @@ class M2Navigation(core.Entity):
         # Don't descend to a new cruise layer when a turn is close
         turn_close = bs.traf.ap.dist2turn < 150 #m
         
-        # We also don't want descents when there are other aircraft below
-        # First, find the pairs of aircraft that are close to each other
-        ac_pairs = np.argwhere(bs.traf.cd.dist_mat < 150) #m
-        # For these aircraft, check the altitude difference
-        alt_diff = bs.traf.alt[ac_pairs[:,0]]-bs.traf.alt[ac_pairs[:,1]]
-        # Get the aircraft pairs that have a positive altitude difference
-        descend_pairs = ac_pairs[np.argwhere(np.logical_and(1*ft<(alt_diff), (alt_diff)< 200*ft))]
-        ascend_pairs = ac_pairs[np.argwhere(np.logical_and(-100*ft<(alt_diff), (alt_diff)< -1*ft))]
-        # The first aircraft in these pairs cannot descend, as they are above and close other
-        # aircraft
-        ac_cannot_descend = descend_pairs[:,0][:,0]
-        can_descend = np.ones(bs.traf.ntraf, dtype = bool)
-        can_descend[ac_cannot_descend] = np.zeros(len(ac_cannot_descend), dtype = bool)
-        
-        ac_cannot_ascend = ascend_pairs[:,0][:,0]
-        can_ascend = np.ones(bs.traf.ntraf, dtype = bool)
-        can_ascend[ac_cannot_ascend] = np.zeros(len(ac_cannot_ascend), dtype = bool)
+        can_ascend, can_descend = self.ascent_descent(150, 200, -100)
         
         # Descent command for aircraft that can
         target_descent_layer = np.where(emergency, bs.traf.closest_empty_layer_bottom,
@@ -202,6 +204,34 @@ class M2Navigation(core.Entity):
                                                            np.logical_not(rogue),
                                                            np.logical_not(speed_zero)))
         # Make em go to 30 ft
-        bs.traf.selalt = np.where(prevent_positive_altitude, 470*ft, bs.traf.selalt)
+        bs.traf.selalt = np.where(prevent_positive_altitude, 480*ft, bs.traf.selalt)
         # Stop their negative VS
         bs.traf.selvs = np.where(prevent_positive_altitude, 0, bs.traf.selvs)
+        
+        # Finally, if anyone has lnav off and is not a rogue, make them go to altitude 0 and give them speed 0
+        give_0_command = np.logical_and.reduce((np.logical_not(lnav_on),
+                                                np.logical_not(rogue)))
+        
+        bs.traf.selalt = np.where(give_0_command, 0, bs.traf.selalt)
+        bs.traf.selspd = np.where(give_0_command, 0, bs.traf.selspd)
+        
+    def ascent_descent(self, distance, above_alt, below_alt):
+        # We also don't want descents when there are other aircraft below
+        # First, find the pairs of aircraft that are close to each other
+        ac_pairs = np.argwhere(bs.traf.cd.dist_mat < distance) #m
+        # For these aircraft, check the altitude difference
+        alt_diff = bs.traf.alt[ac_pairs[:,0]]-bs.traf.alt[ac_pairs[:,1]]
+        # Get the aircraft pairs that have a positive altitude difference
+        descend_pairs = ac_pairs[np.argwhere(np.logical_and(1*ft<(alt_diff), (alt_diff)< above_alt*ft))]
+        ascend_pairs = ac_pairs[np.argwhere(np.logical_and(below_alt*ft<(alt_diff), (alt_diff)< -1*ft))]
+        # The first aircraft in these pairs cannot descend, as they are above and close other
+        # aircraft
+        ac_cannot_descend = descend_pairs[:,0][:,0]
+        can_descend = np.ones(bs.traf.ntraf, dtype = bool)
+        can_descend[ac_cannot_descend] = np.zeros(len(ac_cannot_descend), dtype = bool)
+        
+        ac_cannot_ascend = ascend_pairs[:,0][:,0]
+        can_ascend = np.ones(bs.traf.ntraf, dtype = bool)
+        can_ascend[ac_cannot_ascend] = np.zeros(len(ac_cannot_ascend), dtype = bool)
+        
+        return can_ascend, can_descend
