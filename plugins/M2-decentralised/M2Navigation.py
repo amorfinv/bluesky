@@ -101,9 +101,9 @@ class M2Navigation(core.Entity):
                                        np.where(can_go_up,bs.traf.closest_cruise_layer_top, 
                                         # If we cannot go up either, then we check which layer
                                         # is == 0, and we avoid it
-                                        np.where(bs.traf.closest_cruise_layer_bottom == 0, 
-                                                 bs.traf.closest_cruise_layer_top,
-                                                 bs.traf.closest_cruise_layer_bottom)))*ft
+                                        np.where(bs.traf.closest_cruise_layer_bottom != 0, 
+                                                 bs.traf.closest_cruise_layer_bottom,
+                                                 bs.traf.closest_cruise_layer_top)))*ft
         
         # target_cruise_layer = np.where(bs.traf.closest_cruise_layer_bottom == 0, 
         #                                bs.traf.closest_cruise_layer_top,
