@@ -76,7 +76,9 @@ def update():
         time3 = time.perf_counter()
         #print(f'Edges took {round((time2 - time1)*1000, 4)} ms.')
         #print(f'Layers took {round((time3 - time2)*1000, 4)} ms.')
-
+        # print(edge_traffic.actedge.wpedgeid[1])
+        # print(edge_traffic.edgeap.edge_rou[0].iactwp)
+        # print('-----------------------------------')
         # try:
         #     print(edge_traffic.edgeap.edge_rou[3].iactwp)
         #     print(bs.traf.ap.route[3].iactwp)
@@ -977,6 +979,7 @@ class Route_edge(Replaceable):
         return idx
 
     def direct(self, idx, wpnam):
+        # print(idx)
         # print("Hello from direct")
         """Set active point to a waypoint by name"""
         name = wpnam.upper().strip()
@@ -1012,8 +1015,11 @@ class Route_edge(Replaceable):
             return False, "Waypoint " + wpnam + " not found"
 
     def getnextwp(self):
-        if self.iactwp < len(self.wpedgeid) - 1:
-           self.iactwp += 1
+        # if self.iactwp < len(self.wpedgeid) - 1:
+        #    self.iactwp += 1
+
+        idx = bs.traf.id2idx(self.acid)
+        self.iactwp = bs.traf.ap.route[idx].iactwp
 
         # get airspace type
         edge_airspace_type = self.edge_airspace_type[self.iactwp]
