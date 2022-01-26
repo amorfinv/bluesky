@@ -1,3 +1,4 @@
+from matplotlib import offsetbox
 from bluesky.traffic.turbulence import Turbulence
 from bluesky.core.simtime import timed_function
 import bluesky as bs
@@ -210,12 +211,28 @@ class M2Navigation(core.Entity):
         bs.traf.selvs = np.where(prevent_positive_altitude, 0, bs.traf.selvs)
         
         # Finally, if anyone has lnav off and is not a rogue, make them go to altitude 0 and give them speed 0
-        give_0_command = np.logical_and.reduce((np.logical_not(lnav_on),
-                                                np.logical_not(rogue),
+        give_0_command = np.logical_and.reduce((np.logical_not(rogue),
                                                 landing))
         
         bs.traf.selalt = np.where(give_0_command, 0, bs.traf.selalt)
         bs.traf.selspd = np.where(give_0_command, 0, bs.traf.selspd)
+        
+        # Aircraft to delete
+        # We delete aircraft if:
+        # 1. They are at alt 0 with lnav off
+        # 2. They are a loitering aircraft with lnav off
+        # 3. Above two only if the last waypoint flag is active
+        
+        delete_array = np.logical_and.reduce((np.logical_not(rogue),
+                                              landing,
+                                              np.logical_or(bs.traf.alt <0.1, bs.traf.loiter.loiterbool)
+                                              ))
+        
+        if np.any(delete_array):
+            # Get the ACIDs of the aircraft to delete
+            acids_to_delete = np.array(bs.traf.id)[delete_array]
+            for acid in acids_to_delete:
+                stack.stack(f'DEL {acid}')
         
     def ascent_descent(self, distance, above_alt, below_alt):
         # We also don't want descents when there are other aircraft below

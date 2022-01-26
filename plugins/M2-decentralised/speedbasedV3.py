@@ -114,7 +114,6 @@ class SpeedBasedV3(ConflictResolution):
         los_list = [False] * n_intr
         head_list = [False] * n_intr
         rogue_list = [False] * n_intr
-        landing = ownship.ap.route[idx1].iactwp >= ownship.ap.route[idx1].nwp - 2
         open_airspace = bs.traf.actedge.edge_airspace_type[idx1] == 0
         
         
@@ -463,9 +462,6 @@ class SpeedBasedV3(ConflictResolution):
             else:
                 vmax = ownship.perf.vmax[idx1]
             
-            if landing:
-                vmax = 5*kts
-            
             # Create velocity line
             v_dir = self.normalized(v1)
             v_line_min = v_dir * vmin
@@ -537,12 +533,7 @@ class SpeedBasedV3(ConflictResolution):
         else:
             alt_new = ownship.ap.alt[idx1]
             self.altactivearr[idx1] = False
-        #print(vmax)
-        #print(should_speed)
-        
-        if landing:
-            # Altitude 0
-            alt_new = 0
+            
         return gs_new, alt_new
     
     ##### Helper functions #####
@@ -979,11 +970,8 @@ class SpeedBasedV3(ConflictResolution):
             # Start recovery for ownship if intruder is deleted, or if past CPA
             # and not in horizontal LOS or a bouncing conflict
             if idx2 >= 0 and (not (nav_ok and conf_ok)):
-                # Get distance to destination
-                destlat = ownship.ap.route[idx1].wplat[-1]
-                destlon = ownship.ap.route[idx1].wplon[-1]
-                acid = ownship.id[idx1]
-                dist2dest = kwikdist(ownship.lat[idx1], ownship.lon[idx1], destlat , destlon) * nm
+                # Are we trying to land?
+                landing = (not bs.traf.swlnav[idx1]) and bs.traf.actwp.swlastwp[idx1]
                 # Enable ASAS for this aircraft
                 changeactive[idx1] = True
                 # We also need to check if this aircraft needs to be doing a turn, aka, if the
@@ -994,11 +982,9 @@ class SpeedBasedV3(ConflictResolution):
                     self.tas[idx1] = bs.traf.ap.tas[idx1]
                     
                 # What if we want to land?
-                if dist2dest < 5:
+                if landing:
                     #Attempt to land if nobody below. Otherwise, hold altitude and speed 0.
                     self.tas[idx1] = 0
-                    # Turn LNAV off
-                    stack.stack(f'LNAV {acid} OFF')
                     # Check if any aircraft below
                     dist2others = conf.dist_mat[idx1]
                     is_close = np.where(dist2others < 64)[0]
@@ -1011,7 +997,6 @@ class SpeedBasedV3(ConflictResolution):
                     else:
                         # We can attempt landing
                         self.alt[idx1] = 0
-                        # stack.stack(f'{acid} ATALT 0 DEL {acid}')
                 
             else:
                 # Switch ASAS off for ownship if there are no other conflicts
@@ -1021,36 +1006,7 @@ class SpeedBasedV3(ConflictResolution):
                 delpairs.add(conflict)
                 # In case it was a head-on conflict
                 self.in_headon[idx1] = False
-                # Re-give the destination commands for the aircraft if we're close,
-                # just in case they got overwritten
-                # Get distance to destination
-                # destlat = ownship.ap.route[idx1].wplat[-1]
-                # destlon = ownship.ap.route[idx1].wplon[-1]
-                # acid = ownship.id[idx1]
-                # dist2dest = kwikdist(ownship.lat[idx1], ownship.lon[idx1], destlat , destlon) * nm
-                # if dist2dest < 100: #[m]
-                #     if bs.traf.loiter.loiterbool[idx1]:
-                #         # Give the loitering commands
-                #         stack.stack(f'{acid} ATDIST {destlat} {destlon} {5/nm} DELLOITER {acid}')
-                #     else:
-                #         stack.stack(f'{acid} ATDIST {destlat} {destlon} {6/nm} LNAV {acid} OFF')
-                #         stack.stack(f'{acid} ATDIST {destlat} {destlon} {1/nm} SPD {acid} 0')
-                #         stack.stack(f'{acid} ATDIST {destlat} {destlon} {5/nm} ALT {acid} 0')
-                #         stack.stack(f'{acid} ATDIST {destlat} {destlon} {5/nm} {acid} ATALT 0 DEL {acid}')
-                        
-                # if not bs.traf.swlnav[idx1] or dist2dest < 5:
-                #     # We have already gone past the landing point. Simply give the commands without distance.
-                #     if bs.traf.loiter.loiterbool[idx1]:
-                #         # Give the loitering command
-                #         stack.stack(f'DELLOITER {acid}')
-                #     else:
-                #         stack.stack(f'LNAV {acid} OFF')
-                #         stack.stack(f'SPD {acid} 0')
-                #         stack.stack(f'ALT {acid} 0')
-                #         stack.stack(f'{acid} ATALT 0 DEL {acid}')
                     
-                    
-                
         for idx, active in changeactive.items():
             # Loop a second time: this is to avoid that ASAS resolution is
             # turned off for an aircraft that is involved simultaneously in
