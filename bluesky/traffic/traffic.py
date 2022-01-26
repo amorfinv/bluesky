@@ -657,7 +657,7 @@ class Traffic(Entity):
                 # Remove this aircraft pair from losmindist
                 self.losmindist.pop(dictkey)
                 #Log the LOS
-                self.loslog.log(losdata[7], losdata[8], pair[0], pair[1],
+                self.loslog.log(losdata[8], losdata[7], pair[0], pair[1],
                                 losdata[1], losdata[2],losdata[3],
                                 losdata[4], losdata[5],losdata[6],
                                 losdata[0])
