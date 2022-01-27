@@ -1109,3 +1109,11 @@ class Traffic(Entity):
         self.reglog.start()
         self.geolog.start()
         self.loslog.start()
+        return
+        
+    @command
+    def DELETEALL(self):
+        '''Deletes all aircraft.'''
+        for idx in range(self.ntraf):
+            self.delete(idx)
+        return
