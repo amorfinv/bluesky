@@ -657,7 +657,7 @@ class Traffic(Entity):
                 # Remove this aircraft pair from losmindist
                 self.losmindist.pop(dictkey)
                 #Log the LOS
-                self.loslog.log(losdata[7], losdata[8], pair[0], pair[1],
+                self.loslog.log(losdata[8], losdata[7], pair[0], pair[1],
                                 losdata[1], losdata[2],losdata[3],
                                 losdata[4], losdata[5],losdata[6],
                                 losdata[0])
@@ -748,6 +748,10 @@ class Traffic(Entity):
         # Set hard limits for alt for the Metropolis 2 project.
         self.alt = np.where(self.alt < 0, 0, self.alt)
         self.alt = np.where(self.alt > 500*ft, 500*ft, self.alt)
+        
+        # Also update vertical speed in case aircraft is hitting the ceiling in M2
+        self.vs = np.where(np.logical_and(self.vs < 0, self.alt == 0), 0, self.vs)
+        self.vs = np.where(np.logical_and(self.vs > 0, self.alt == 500*ft), 0, self.vs)
         
         self.lat = self.lat + np.degrees(bs.sim.simdt * self.gsnorth / Rearth)
         self.coslat = np.cos(np.deg2rad(self.lat))
