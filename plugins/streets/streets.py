@@ -1176,6 +1176,9 @@ class FlightLayers(Entity):
         
         # update flight levels
         self.flight_levels = np.array((np.round((bs.traf.alt/ft) / self.layer_spacing))*self.layer_spacing, dtype=int)
+        
+        self.flight_levels = np.where(self.flight_levels < 0, 0, self.flight_levels)
+        self.flight_levels = np.where(self.flight_levels > 480, 480, self.flight_levels)
 
         # get ccw headin of aircraft and get middle angle level
         ccw_ac = bs.traf.hdg % 360
