@@ -120,7 +120,7 @@ regheader = \
     '#######################################################\n\n' + \
     'Parameters [Units]:\n' + \
     'Simulation time [s], ' + \
-    'ACIDs or ALTs [-][ft]\n'
+    'ACIDs [-], ALTs [ft], LATs [deg], LONs [deg]\n'
     
 geoheader = \
     '#######################################################\n' + \
@@ -665,10 +665,12 @@ class Traffic(Entity):
         
         self.prevlospairs = set(self.cd.lospairs)
         
-    @timed_function(name='reglog', dt=60)
+    @timed_function(name='reglog', dt=30)
     def thereglog(self):
         self.reglog.log(*self.id)
         self.reglog.log(*self.alt/ft)
+        self.reglog.log(*self.lat)
+        self.reglog.log(*self.lon)
         return
 
     @timed_function(name='asas', dt=bs.settings.asas_dt, manual=True)
