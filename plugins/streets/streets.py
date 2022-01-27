@@ -277,9 +277,6 @@ def handle_replan(edges_changes):
     for idx,path in enumerate(path_plans.pathplanning):
         #print("index")
         #print(idx)
-        
-
-        
         acid = bs.traf.id[idx]
 
         if acid[0] == 'R':
@@ -292,11 +289,9 @@ def handle_replan(edges_changes):
         
         ##Get the index of the next node
         current_edge=edge_traffic.actedge.wpedgeid[idx]
-
-
+        
         next_node_osmnx_id=int(current_edge.split("-")[1])
         prev_node_osmnx_id=int(current_edge.split("-")[0])
-        
         
         if next_node_osmnx_id==path.goal_index or next_node_osmnx_id==path.goal_index_next: 
             continue
@@ -307,6 +302,9 @@ def handle_replan(edges_changes):
             if len(route)>0:
 
                 acrte = Route._routes.get(acid)
+                # If the next waypoint is a turn waypoint, then remember the turnrad
+                nextqdr_to_remember = bs.traf.actwp.next_qdr[idx]
+                    
                 edge_traffic.edgeap.update_route(idx)
 
                 for j, rte in enumerate(route):
@@ -355,6 +353,11 @@ def handle_replan(edges_changes):
                 edge_traffic.edgeap.edge_rou[idx].direct(idx,edge_traffic.edgeap.edge_rou[idx].wpname[1])
                 stack.stack(f'LNAV {acid} ON')
                 stack.stack(f'VNAV {acid} ON')
+                
+                # # Add the turndist back
+                if not bs.traf.actwp.flyby[idx] and bs.traf.actwp.flyturn[idx]:
+                    bs.traf.actwp.next_qdr[idx] = nextqdr_to_remember
+
 
 
 ######################## STACK COMMANDS ##########################  
