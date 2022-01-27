@@ -751,6 +751,10 @@ class Traffic(Entity):
         self.alt = np.where(self.alt < 0, 0, self.alt)
         self.alt = np.where(self.alt > 500*ft, 500*ft, self.alt)
         
+        # Also update vertical speed in case aircraft is hitting the ceiling in M2
+        self.vs = np.where(np.logical_and(self.vs < 0, self.alt == 0), 0, self.vs)
+        self.vs = np.where(np.logical_and(self.vs > 0, self.alt == 500*ft), 0, self.vs)
+        
         self.lat = self.lat + np.degrees(bs.sim.simdt * self.gsnorth / Rearth)
         self.coslat = np.cos(np.deg2rad(self.lat))
         self.lon = self.lon + np.degrees(bs.sim.simdt * self.gseast / self.coslat / Rearth)
@@ -1107,3 +1111,11 @@ class Traffic(Entity):
         self.reglog.start()
         self.geolog.start()
         self.loslog.start()
+        return
+        
+    @command
+    def DELETEALL(self):
+        '''Deletes all aircraft.'''
+        while self.ntraf>0:
+            self.delete(0)
+        return
