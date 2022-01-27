@@ -253,7 +253,8 @@ class Geofence(areafilter.Poly):
                     p1,p2 = nearest_points(geofence.polybound, Point(traf.lat[idx], traf.lon[idx]))
                     # Do kwikdist
                     intrusion = geo.kwikdist(p1.x, p1.y, p2.x, p2.y) * aero.nm
-                    # print(intrusion)
+                    # print(acid, geo_name)
+                    # stack.stack("HOLD")
                     # print('---------------------')
                     # Check the previous intrusion severity
                     if geo_ids[i] in cls.unique_intrusions[acid]:
