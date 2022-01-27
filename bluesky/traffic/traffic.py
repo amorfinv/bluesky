@@ -1114,6 +1114,6 @@ class Traffic(Entity):
     @command
     def DELETEALL(self):
         '''Deletes all aircraft.'''
-        for idx in range(self.ntraf):
-            self.delete(idx)
+        while self.ntraf>0:
+            self.delete(0)
         return
