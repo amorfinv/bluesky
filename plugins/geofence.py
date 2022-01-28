@@ -242,7 +242,9 @@ class Geofence(areafilter.Poly):
             #intrusions = []
             # print(geo_ids)
             for i, geofence in enumerate(potential_intrusions):
+                print(geofence.name)
                 if geofence.checkInside(*point):
+                    # now check if the altitudes are ok
                     #intrusions.append(geofence)
                     # Add geofence ID to unique intrusion dictionary
                     if acid not in cls.unique_intrusions:
