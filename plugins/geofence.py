@@ -238,12 +238,12 @@ class Geofence(areafilter.Poly):
             acid = traf.id[idx]
             # First, a course detection based on geofence bounding boxes
             potential_intrusions, geo_ids = cls.intersecting([point[0], point[1]])
+            ac_alt = point[2]/aero.ft
             # Then a fine-grained intrusion detection
             #intrusions = []
             # print(geo_ids)
             for i, geofence in enumerate(potential_intrusions):
-                print(geofence.name)
-                if geofence.checkInside(*point):
+                if geofence.checkInside(*point) and ac_alt < geofence.top:
                     # now check if the altitudes are ok
                     #intrusions.append(geofence)
                     # Add geofence ID to unique intrusion dictionary
