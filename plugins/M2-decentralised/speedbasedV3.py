@@ -1016,7 +1016,7 @@ class SpeedBasedV3(ConflictResolution):
             if not active:
                 # Waypoint recovery after conflict: Find the next active waypoint
                 # and send the aircraft to that waypoint.
-                iwpid = bs.traf.ap.route[idx].findact(idx)
+                iwpid = bs.traf.ap.route[idx].iactwp
                 if iwpid != -1:  # To avoid problems if there are no waypoints
                     bs.traf.ap.route[idx].direct(
                         idx, bs.traf.ap.route[idx].wpname[iwpid])
