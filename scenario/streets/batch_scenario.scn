@@ -1,0 +1,11 @@
+00:00:00>SCEN Flight_intention_ultra_40_0
+00:00:00>PCALL streets/Flight_intention_ultra_40_0.scn
+00:00:00>FF
+00:00:00>SCHEDULE 00:40:00 HOLD
+00:00:00>SCHEDULE 00:40:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_ultra_40_1
+00:00:00>PCALL streets/Flight_intention_ultra_40_1.scn
+00:00:00>FF
+00:00:00>SCHEDULE 00:40:00 HOLD
+00:00:00>SCHEDULE 00:40:00 DELETEALL
