@@ -65,15 +65,13 @@ def update():
     global streets_bool
 
     if streets_bool:
-        time1 = time.perf_counter()
         # Main update function for streets plugin. updates edge and flight layer tracking
         # Update edege autopilot
         edge_traffic.edgeap.update()
-        time2 = time.perf_counter()
 
         # update layer tracking
         flight_layers.layer_tracking()
-        time3 = time.perf_counter()
+
         #print(f'Edges took {round((time2 - time1)*1000, 4)} ms.')
         #print(f'Layers took {round((time3 - time2)*1000, 4)} ms.')
         # print(edge_traffic.actedge.wpedgeid[1])
@@ -230,6 +228,9 @@ def do_flowcontrol():
 ## Call function when new loitering geofence is applied
 def apply_loitering_flowcontrol(loitering_edges):
 
+    if bs.traf.ntraf == 0:
+        return
+    
     if use_path_plan and use_flow_control:
         #print("loitering_flow_control")
         edges_changes=[]
@@ -686,7 +687,7 @@ class EdgesAp(Entity):
         # Main autopilot update loop
 
         # See if waypoints have reached their destinations
-        for i in bs.traf.ap.idxreached:
+        for i in np.where(bs.traf.ap.reached)[0]:
 
             # Skip this if aircraft is rogue aircraft
             if bs.traf.roguetraffic.rogue_bool[i]:
