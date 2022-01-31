@@ -189,10 +189,12 @@ class Geofence(areafilter.Poly):
         ''' Reset geofence database when simulation is reset. '''
         cls.geo_by_name.clear()
         cls.geo_by_id.clear()
+        cls.geo_name2id.clear()
         cls.geo_save_dict.clear()
         cls.geo_tree = index.Index()
         cls.hits.clear()
         cls.intrusions.clear()
+        cls.unique_intrusions.clear()
 
     @classmethod
     def delete(cls, name):
@@ -241,10 +243,8 @@ class Geofence(areafilter.Poly):
             ac_alt = point[2]/aero.ft
             # Then a fine-grained intrusion detection
             #intrusions = []
-            # print(geo_ids)
             for i, geofence in enumerate(potential_intrusions):
                 if geofence.checkInside(*point) and ac_alt < geofence.top:
-                    # now check if the altitudes are ok
                     #intrusions.append(geofence)
                     # Add geofence ID to unique intrusion dictionary
                     if acid not in cls.unique_intrusions:
