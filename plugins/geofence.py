@@ -244,7 +244,7 @@ class Geofence(areafilter.Poly):
             # Then a fine-grained intrusion detection
             #intrusions = []
             for i, geofence in enumerate(potential_intrusions):
-                if geofence.checkInside(*point) and ac_alt < geofence.top:
+                if ac_alt < geofence.top and geofence.checkInside(*point):
                     #intrusions.append(geofence)
                     # Add geofence ID to unique intrusion dictionary
                     if acid not in cls.unique_intrusions:
