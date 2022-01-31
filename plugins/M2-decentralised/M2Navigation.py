@@ -36,6 +36,13 @@ class M2Navigation(core.Entity):
     def navtimedfunction(self):
         if bs.traf.ntraf == 0:
             return
+            
+        idx = 0
+        if 'D92' in bs.traf.id:
+            idx = bs.traf.id.index('D92')
+            print('-')
+            print(bs.traf.selalt[idx])
+
         
         # Gather some bools
         in_turn = np.logical_or(bs.traf.ap.inturn, bs.traf.ap.dist2turn < 75)  # Are aircraft in a turn?
@@ -106,6 +113,7 @@ class M2Navigation(core.Entity):
                                         np.where(bs.traf.closest_cruise_layer_bottom != 0, 
                                                  bs.traf.closest_cruise_layer_bottom,
                                                  bs.traf.closest_cruise_layer_top)))*ft
+
         
         # target_cruise_layer = np.where(bs.traf.closest_cruise_layer_bottom == 0, 
         #                                bs.traf.closest_cruise_layer_top,
@@ -131,7 +139,7 @@ class M2Navigation(core.Entity):
                                                      np.logical_not(rogue)))
         
         bs.traf.selalt = np.where(give_constrained_cruise_command, target_cruise_layer, bs.traf.selalt)
-
+        
         # Open airspace altitude selection -----------------------------------------
         give_open_cruise_command = np.logical_and.reduce((np.logical_not(in_constrained),
                                                          np.logical_not(in_vert_man),
@@ -167,7 +175,7 @@ class M2Navigation(core.Entity):
                                                      lnav_on,
                                                      np.logical_not(rogue)))
         
-        bs.traf.selalt = np.where(give_descent_command, bs.traf.closest_cruise_layer_bottom*ft, bs.traf.selalt)
+        bs.traf.selalt = np.where(give_descent_command,  target_descent_layer, bs.traf.selalt)
         
         # Ascent command for aircraf that are stuck behind another
         target_ascent_layer = np.where(emergency, bs.traf.closest_cruise_layer_top,
