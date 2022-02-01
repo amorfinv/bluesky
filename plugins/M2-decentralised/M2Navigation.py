@@ -37,13 +37,6 @@ class M2Navigation(core.Entity):
         if bs.traf.ntraf == 0:
             return
             
-        idx = 0
-        if 'D92' in bs.traf.id:
-            idx = bs.traf.id.index('D92')
-            print('-')
-            print(bs.traf.selalt[idx])
-
-        
         # Gather some bools
         in_turn = np.logical_or(bs.traf.ap.inturn, bs.traf.ap.dist2turn < 75)  # Are aircraft in a turn?
         cr_active = bs.traf.cd.inconf # Are aircraft doing CR?
