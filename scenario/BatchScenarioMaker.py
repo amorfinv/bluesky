@@ -1,4 +1,3 @@
-
 # %%
 # -*- coding: utf-8 -*-
 """
@@ -14,9 +13,10 @@ n_rogues = [1, 2, 3] # number of rogue aircrafts
 
 
 # only select the files that contain _40_
-scenario_folder = 'scenarios/'
+scenario_folder = 'DecentralisedM2/'
 scenario_folder_files = os.listdir(scenario_folder)
-scenario_files = [file for file in scenario_folder_files if '_40_' in file]
+scenario_folder_files = [file for file in scenario_folder_files if not 'R1' in file and not 'R2' in file and not 'R3' in file and not 'W1' in file and not 'W2' in file and not 'W3' in file and not 'batch' in file]
+scenario_files = [file for file in scenario_folder_files if '_40_' in file and not 'R1' in file and not 'R2' in file and not 'R3' in file and not 'W1' in file and not 'W2' in file and not 'W3' in file and not 'batch' in file]
 
 # open the scenario files, copy the lines and add the rogue aircrafts
 for scenario_file in scenario_files:
@@ -39,7 +39,7 @@ for scenario_file in scenario_files:
             rogue_lines[9:9] = rogue_line
 
             # write the lines to a new file
-            scenario_file_path_new = 'rogue_scenarios/' + scenario_file.replace('.scn', f'_R{n_rogue}.scn')
+            scenario_file_path_new = scenario_folder + scenario_file.replace('.scn', f'_R{n_rogue}.scn')
 
             with open(scenario_file_path_new, 'w') as file:
                 file.writelines(rogue_lines)
@@ -59,7 +59,7 @@ for scenario_file in scenario_files:
             wind_lines[9:9] = wind_line
             
             # write the lines to a new file
-            scenario_file_path_new = 'wind_scenarios/' + scenario_file.replace('.scn', f'_W{wind_speed}.scn')
+            scenario_file_path_new = scenario_folder + scenario_file.replace('.scn', f'_W{wind_speed}.scn')
             with open(scenario_file_path_new, 'w') as file:
                 file.writelines(wind_lines)
 
@@ -68,27 +68,30 @@ for scenario_file in scenario_files:
 # %%
 
 # make a list of all regular scenario files
-scenario_files = scenario_folder_files
+scenario_folder_files = os.listdir(scenario_folder) # Update
+scenario_folder_files = [file for file in scenario_folder_files if 'batch' not in file]
+print(len(scenario_folder_files))
 
 # list of rogue scenarios
-rogue_scenario_folder = 'rogue_scenarios/'
-rogue_scenario_files = os.listdir(rogue_scenario_folder)
+rogue_scenario_files = [file for file in scenario_folder_files if 'R1' in file or 'R2' in file or 'R3' in file]
+print(len(rogue_scenario_files))
 
 # list of wind scenarios
-wind_scenario_folder = 'wind_scenarios/'
-wind_scenario_files = os.listdir(wind_scenario_folder)
+wind_scenario_files = [file for file in scenario_folder_files if 'W1' in file or 'W2' in file or 'W3' in file]
+print(len(wind_scenario_files))
+
+original_scenarios = [file for file in scenario_folder_files if not 'R1' in file and not 'R2' in file and not 'R3' in file and not 'W1' in file and not 'W2' in file and not 'W3' in file and not 'batch' in file]
 
 # combine all the lists
-scenario_files = scenario_files + rogue_scenario_files + wind_scenario_files
+scenario_files = original_scenarios + rogue_scenario_files + wind_scenario_files
 
 # %%
 
 very_low_scenarios = [file for file in scenario_files if 'very_low' in file]
-low_scenarios = [file for file in scenario_files if 'low' in file and 'very' not in file]
+low_scenarios = [file for file in scenario_files if 'low' in file and not 'very' in file]
 medium_scenarios = [file for file in scenario_files if 'medium' in file]
 high_scenarios = [file for file in scenario_files if 'high' in file]
 ultra_scenarios = [file for file in scenario_files if 'ultra' in file]
-
 # get number of files that have the word ultra, very_low, low, medium, high, very_high
 middle_very_low = len(very_low_scenarios) // 2
 middle_low = len(low_scenarios) // 2
@@ -124,7 +127,7 @@ batch_1_scenario = []
 for scenario in batch_1:
     # remove last 4 characters
     line1 = f'00:00:00>SCEN {scenario[:-4]}\n'
-    line2 = f'00:00:00>PCALL m2/{scenario}\n'
+    line2 = f'00:00:00>PCALL DecentralisedM2/{scenario}\n'
     line3 = '00:00:00>FF\n'
     line4 = '00:00:00>SCHEDULE 01:30:00 HOLD\n'
     line5 = '00:00:00>SCHEDULE 01:30:00 DELETEALL\n\n'
@@ -136,7 +139,7 @@ for scenario in batch_1:
     batch_1_scenario.append(line5)
 
 # write to a file
-with open('batch_scenarios/batch_1.scn', 'w') as file:
+with open(scenario_folder + 'batch_1.scn', 'w') as file:
     file.writelines(batch_1_scenario)
 
 # now do batch scenario 2
@@ -144,7 +147,7 @@ batch_2_scenario = []
 for scenario in batch_2:
     # remove last 4 characters
     line1 = f'00:00:00>SCEN {scenario[:-4]}\n'
-    line2 = f'00:00:00>PCALL m2/{scenario}\n'
+    line2 = f'00:00:00>PCALL DecentralisedM2/{scenario}\n'
     line3 = '00:00:00>FF\n'
     line4 = '00:00:00>SCHEDULE 01:30:00 HOLD\n'
     line5 = '00:00:00>SCHEDULE 01:30:00 DELETEALL\n\n'
@@ -156,6 +159,6 @@ for scenario in batch_2:
     batch_2_scenario.append(line5)
 
 # write to a file
-with open('batch_scenarios/batch_2.scn', 'w') as file:
+with open(scenario_folder + 'batch_2.scn', 'w') as file:
     file.writelines(batch_2_scenario)
 # %%
