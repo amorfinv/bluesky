@@ -565,6 +565,8 @@ def queue_attempt_create(acid, actype, path_file, aclat, aclon, destlat, destlon
             bs.traf.loiter.geodurations[acidx] = geodur
 
             # send to flow contorl
+            print('---------In queue attempt create---------------')
+            print(path_plans.loitering_edges_dict)
             apply_loitering_flowcontrol(path_plans.loitering_edges_dict[acid])
             
         # print(prio)
@@ -1525,6 +1527,7 @@ def loadloiteringdill(fpath: str):
 
     loitering_edges_dict = dill.load(open(loitering_fpath, 'rb'))
 
+    print('--------------------IN StACK COMMAND----------------------------------')
     print(loitering_fpath)
     print(loitering_edges_dict)
     global path_plans
