@@ -571,8 +571,6 @@ def queue_attempt_create(acid, actype, path_file, aclat, aclon, destlat, destlon
             bs.traf.loiter.geodurations[acidx] = geodur
 
             # send to flow contorl
-            print('---------In queue attempt create---------------')
-            print(path_plans.loitering_edges_dict)
             apply_loitering_flowcontrol(path_plans.loitering_edges_dict[acid])
             
         # print(prio)
@@ -1358,7 +1356,6 @@ class PathPlans(Entity):
     def load(self, loitering_fpath):
         # load loitering aircraft 
         self.loitering_edges_dict = dill.load(open(loitering_fpath, 'rb'))
-        print(f'I LOADED {loitering_fpath}.')
         
         # initialize flow control graph
         self.update_path_plans()
@@ -1531,11 +1528,5 @@ def loadloiteringdill(fpath: str):
     Load loitering edges dictionary from a dill file.
     """
     loitering_fpath = f'plugins/streets/scenario_loitering_dills/{fpath}'  
-
-    loitering_edges_dict = dill.load(open(loitering_fpath, 'rb'))
-
-    print('--------------------IN StACK COMMAND----------------------------------')
-    print(loitering_fpath)
-    print(loitering_edges_dict)
     
     path_plans.load(loitering_fpath)
