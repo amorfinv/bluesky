@@ -1346,7 +1346,7 @@ class PathPlans(Entity):
         
         # load loitering aircraft 
         self.loitering_edges_dict = dill.load(open(loitering_fpath, 'rb'))
-        print(self.loitering_edges_dict)
+
         with self.settrafarrays():
             self.pathplanning = []
         
@@ -1521,9 +1521,12 @@ def loadloiteringdill(fpath: str):
     """
     Load loitering edges dictionary from a dill file.
     """
-    
-    loitering_fpath = f'plugins/streets/scenario_loitering_dills/{fpath}'
+    loitering_fpath = f'plugins/streets/scenario_loitering_dills/{fpath}'  
 
+    loitering_edges_dict = dill.load(open(loitering_fpath, 'rb'))
+
+    print(loitering_fpath)
+    print(loitering_edges_dict)
     global path_plans
     
     path_plans = PathPlans(loitering_fpath)
