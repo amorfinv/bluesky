@@ -512,7 +512,7 @@ def streetsenable():
 ######################## QUEUE ###############################
 def queue_attempt_create(acid, actype, path_file, aclat, aclon, destlat, destlon, achdg, acalt, acspd, prio, geodur, geocoords = None):
     # Easiest check, if any aircraft is below 30 ft
-    alt_not_ok = np.any(bs.traf.alt<45*ft)
+    alt_not_ok = np.any(bs.traf.alt<40*ft)
     
     global dill_to_load
 

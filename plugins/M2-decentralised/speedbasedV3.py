@@ -115,6 +115,7 @@ class SpeedBasedV3(ConflictResolution):
         head_list = [False] * n_intr
         rogue_list = [False] * n_intr
         open_airspace = bs.traf.actedge.edge_airspace_type[idx1] == 0
+        landing = (not bs.traf.swlnav[idx1]) and bs.traf.actwp.swlastwp[idx1]
         
         
         # ------------ Aircraft above or below check --------------
@@ -522,8 +523,11 @@ class SpeedBasedV3(ConflictResolution):
                 #Speeding up
                 gs_new = gs_new + 0.01
         else:
-            # We are landing, maintain gs_new = 0
-            gs_new = 0
+            if landing:
+                # We are landing, maintain gs_new = 0
+                gs_new = 0
+            else:
+                gs_new = 5*kts
             
         # Select the right altitude
         if True in should_hold_altitude:
