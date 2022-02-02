@@ -32,8 +32,12 @@ from plugins.streets.agent_path_planning import *
 from plugins.streets.open_airspace_grid import *
 import time
 
+path_plans = None
 
 def init_plugin():
+    
+    global path_plans
+    path_plans = PathPlans()
 
     config = {
         # The name of your plugin
@@ -51,6 +55,8 @@ use_flow_control = True
 
 # initialise queue
 queue_dict = dict()
+
+#path_plans = PathPlans()
 
 # initialise dill loading
 dill_to_load = -1
@@ -1343,19 +1349,19 @@ flight_layers = FlightLayers(dict_file_path)
 ######################### FLOW CONTROL #######################
 
 class PathPlans(Entity):
-    def __init__(self, loitering_fpath):
+    def __init__(self):
         super().__init__()
         
+        with self.settrafarrays():
+            self.pathplanning = []
+
+    def load(self, loitering_fpath):
         # load loitering aircraft 
         self.loitering_edges_dict = dill.load(open(loitering_fpath, 'rb'))
         print(f'I LOADED {loitering_fpath}.')
-
-        with self.settrafarrays():
-            self.pathplanning = []
         
         # initialize flow control graph
         self.update_path_plans()
-
             
     def create(self, n = 1):
         super().create(n)
@@ -1531,6 +1537,5 @@ def loadloiteringdill(fpath: str):
     print('--------------------IN StACK COMMAND----------------------------------')
     print(loitering_fpath)
     print(loitering_edges_dict)
-    global path_plans
     
-    path_plans = PathPlans(loitering_fpath)
+    path_plans.load(loitering_fpath)
