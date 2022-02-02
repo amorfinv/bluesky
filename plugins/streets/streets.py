@@ -1534,4 +1534,3 @@ def loadloiteringdill(fpath: str):
     global path_plans
     
     path_plans = PathPlans(loitering_fpath)
-    path_plans.__init__(loitering_fpath)
