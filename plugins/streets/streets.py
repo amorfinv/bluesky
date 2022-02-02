@@ -107,6 +107,9 @@ def reset():
     global queue_dict
     queue_dict = dict()
 
+    global path_plans
+    del path_plans
+
 ######################## FLOW CONTROL FUNCTIONS #########################
 @core.timed_function(dt=10)
 def do_flowcontrol():
