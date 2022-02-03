@@ -383,7 +383,7 @@ def queuem2(acid, actype: str="B744", path_file: str="", aclat: float=52., aclon
     acalt *= ft
     
     # Attempt to create
-    queue_attempt_create(acid, actype, path_file, aclat, aclon, destlat, destlon, achdg, acalt, acspd, prio, geodur, geocoords)
+    queue_attempt_create(bs.sim.simt, acid, actype, path_file, aclat, aclon, destlat, destlon, achdg, acalt, acspd, prio, geodur, geocoords)
 
     # add path plan for specific aircraft
     #bs.traf.path_plans[-1] = path_plan_dict[ACID]
@@ -510,7 +510,7 @@ def streetsenable():
     streets_bool = True
 
 ######################## QUEUE ###############################
-def queue_attempt_create(acid, actype, path_file, aclat, aclon, destlat, destlon, achdg, acalt, acspd, prio, geodur, geocoords = None):
+def queue_attempt_create(first_time, acid, actype, path_file, aclat, aclon, destlat, destlon, achdg, acalt, acspd, prio, geodur, geocoords = None):
     # Easiest check, if any aircraft is below 30 ft
     alt_not_ok = np.any(bs.traf.alt<40*ft)
     
@@ -540,13 +540,6 @@ def queue_attempt_create(acid, actype, path_file, aclat, aclon, destlat, destlon
         # Add the necessary stack commands for this aircraft
         stack.stack(f'LNAV {acid} ON')
         stack.stack(f'VNAV {acid} ON')
-        # if geodur!= 0:
-        #     stack.stack(f'{acid} ATDIST {destlat} {destlon} {5/nm} DELLOITER {acid}')
-        # else:
-        #     stack.stack(f'{acid} ATDIST {destlat} {destlon} {6/nm} LNAV {acid} OFF')
-        #     stack.stack(f'{acid} ATDIST {destlat} {destlon} {1/nm} SPD {acid} 0')
-        #     stack.stack(f'{acid} ATDIST {destlat} {destlon} {5/nm} ALT {acid} 0')
-        #     stack.stack(f'{acid} ATDIST {destlat} {destlon} {5/nm} {acid} ATALT 0 DEL {acid}')
         return True
         
     #We reach this point if there are aircraft below 30 ft. There can't be THAT many, so we
@@ -581,19 +574,38 @@ def queue_attempt_create(acid, actype, path_file, aclat, aclon, destlat, destlon
         # Add the necessary stack commands for this aircraft
         stack.stack(f'LNAV {acid} ON')
         stack.stack(f'VNAV {acid} ON')
-        # if geodur!= 0:
-        #     stack.stack(f'{acid} ATDIST {destlat} {destlon} {5/nm} DELLOITER {acid}')
-        # else:
-        #     stack.stack(f'{acid} ATDIST {destlat} {destlon} {6/nm} LNAV {acid} OFF')
-        #     stack.stack(f'{acid} ATDIST {destlat} {destlon} {1/nm} SPD {acid} 0')
-        #     stack.stack(f'{acid} ATDIST {destlat} {destlon} {5/nm} ALT {acid} 0')
-        #     stack.stack(f'{acid} ATDIST {destlat} {destlon} {5/nm} {acid} ATALT 0 DEL {acid}')
         return True
+    
+    # Spawn aircraft if first time is greater than 5 minutes 300 seconds
+    if bs.sim.simt - first_time > 300:
+        # First create the aircraft
+        dill_to_load = path_file
+        bs.traf.cre(acid, actype, aclat, aclon, achdg, acalt, acspd)
+
+        acidx = bs.traf.id.index(acid)
+        if geodur!=0:
+            # It's a loitering mission, so add the loitering stuff
+            bs.traf.loiter.futuregeofences[acidx] = geocoords
+            bs.traf.loiter.geodurations[acidx] = geodur
+
+            # send to flow contorl
+            apply_loitering_flowcontrol(path_plans.loitering_edges_dict[acid])
+            
+        # print(prio)
+        # Then assign its priority
+        idx = bs.traf.id.index(acid)
+        bs.traf.priority[idx] = prio
+        
+        # Add the necessary stack commands for this aircraft
+        stack.stack(f'LNAV {acid} ON')
+        stack.stack(f'VNAV {acid} ON')
+        return True
+        
         
     # All attempts to create failed, so we add to queue
 
     # Add all the arguements
-    queue_dict[acid] = [acid,actype,path_file,aclat, aclon, destlat, destlon, achdg, acalt, acspd, prio, geodur, geocoords]
+    queue_dict[acid] = [first_time, acid,actype,path_file,aclat, aclon, destlat, destlon, achdg, acalt, acspd, prio, geodur, geocoords]
     return False
 
 # Attempt to spawn queued aircraft once every 5 seconds
