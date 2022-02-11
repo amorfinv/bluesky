@@ -7,6 +7,18 @@ from subprocess import Popen
 import zmq
 import msgpack
 
+# progress bar
+from rich.console import Group
+from rich.panel import Panel
+from rich.live import Live
+from rich.progress import (
+    BarColumn,
+    Progress,
+    SpinnerColumn,
+    TextColumn,
+    TimeElapsedColumn,
+)
+
 # Local imports
 import bluesky as bs
 from .discovery import Discovery
@@ -19,7 +31,8 @@ childargs = [a for a in sys.argv[1:] if 'headless' not in a]
 bs.settings.set_variable_defaults(max_nnodes=cpu_count(),
                                   event_port=9000, stream_port=9001,
                                   simevent_port=10000, simstream_port=10001,
-                                  enable_discovery=False)
+                                  enable_discovery=False,
+                                  simdt=0.05)
 
 def split_scenarios(scentime, scencmd):
     ''' Split the contents of a batch file into individual scenarios. '''
@@ -98,146 +111,182 @@ class Server(Thread):
         # Start the first simulation node
         self.addnodes()
 
-        while self.running:
-            try:
-                events = dict(poller.poll(None))
-            except zmq.ZMQError:
-                print('ERROR while polling')
-                break  # interrupted
+        # create node progress
+        node_progress = Progress()
+        overall_progress = Progress()
+        progress_group = Group(node_progress)
 
-            # The socket with incoming data
-            for sock, event in events.items():
-                if event != zmq.POLLIN:
-                    # The event does not refer to incoming data: skip for now
-                    continue
+        with Live(progress_group):
 
-                # First check if the poller was triggered by the discovery socket
-                if self.discovery and sock == self.discovery.handle.fileno():
-                    # This is a discovery message
-                    dmsg = self.discovery.recv_reqreply()
-                    # print('Received', dmsg)
-                    if dmsg.conn_id != self.host_id and dmsg.is_request:
-                        # This is a request from someone else: send a reply
-                        # print('Sending reply')
-                        self.discovery.send_reply(bs.settings.event_port,
-                            bs.settings.stream_port)
-                    continue
-                # Receive the message
-                msg = sock.recv_multipart()
-                if not msg:
-                    # In the rare case that a message is empty, skip remaning processing
-                    continue
+            while self.running:
+                try:
+                    events = dict(poller.poll(None))
+                except zmq.ZMQError:
+                    print('ERROR while polling')
+                    break  # interrupted
 
-                # Check if this is a stream message: these should be forwarded unprocessed.
-                if sock == self.be_stream:
-                    self.fe_stream.send_multipart(msg)
-                elif sock == self.fe_stream:
-                    self.be_stream.send_multipart(msg)
-                else:
-                    # Select the correct source and destination
-                    srcisclient = (sock == self.fe_event)
-                    src, dest = (self.fe_event, self.be_event) if srcisclient else (self.be_event, self.fe_event)
-
-                    # Message format: [route0, ..., routen, name, data]
-                    route, eventname, data = msg[:-2], msg[-2], msg[-1]
-                    sender_id = route[0]
-
-                    if eventname == b'REGISTER':
-                        # This is a registration message for a new connection
-                        # Reply with our host ID
-                        src.send_multipart([sender_id, self.host_id, b'REGISTER', b''])
-                        # Notify clients of this change
-                        if srcisclient:
-                            self.clients.append(sender_id)
-                            # If the new connection is a client, send it our server list
-                            data = msgpack.packb(self.servers, use_bin_type=True)
-                            src.send_multipart([sender_id, self.host_id, b'NODESCHANGED', data])
-                        else:
-                            self.workers.append(sender_id)
-                            data = msgpack.packb({self.host_id : self.servers[self.host_id]}, use_bin_type=True)
-                            for client_id in self.clients:
-                                dest.send_multipart([client_id, self.host_id, b'NODESCHANGED', data])
-                        continue # No message needs to be forwarded
-
-                    elif eventname == b'NODESCHANGED':
-                        servers_upd = msgpack.unpackb(data, raw=False)
-                        # Update the route with a hop to the originating server
-                        for server in servers_upd.values():
-                            server['route'].insert(0, sender_id)
-                        self.servers.update(servers_upd)
-                        # Notify own clients of this change
-                        data = msgpack.packb(servers_upd, use_bin_type=True)
-                        for client_id in self.clients:
-                            # Skip sender to avoid infinite message loop
-                            if client_id != sender_id:
-                                self.fe_event.send_multipart([client_id, self.host_id, b'NODESCHANGED', data])
-
-                    elif eventname == b'ADDNODES':
-                        # This is a request to start new nodes.
-                        count = msgpack.unpackb(data)
-                        self.addnodes(count)
-                        continue # No message needs to be forwarded
-
-                    elif eventname == b'STATECHANGE':
-                        state = msgpack.unpackb(data)
-                        if state < bs.OP:
-                            # If we have batch scenarios waiting, send
-                            # the worker a new scenario, otherwise store it in
-                            # the available worker list
-                            if self.scenarios:
-                                self.sendscenario(sender_id)
-                            else:
-                                self.avail_workers[sender_id] = route
-                        else:
-                            self.avail_workers.pop(route[0], None)
+                # The socket with incoming data
+                for sock, event in events.items():
+                    if event != zmq.POLLIN:
+                        # The event does not refer to incoming data: skip for now
                         continue
 
-                    elif eventname == b'QUIT':
-                        self.running = False
-                        # Send quit to all nodes and clients
-                        msg = [self.host_id, eventname, data]
-                        for connid in self.workers:
-                            self.be_event.send_multipart([connid] + msg)
-                        for connid in self.clients:
-                            self.fe_event.send_multipart([connid] + msg)
+                    # First check if the poller was triggered by the discovery socket
+                    if self.discovery and sock == self.discovery.handle.fileno():
+                        # This is a discovery message
+                        dmsg = self.discovery.recv_reqreply()
+                        # print('Received', dmsg)
+                        if dmsg.conn_id != self.host_id and dmsg.is_request:
+                            # This is a request from someone else: send a reply
+                            # print('Sending reply')
+                            self.discovery.send_reply(bs.settings.event_port,
+                                bs.settings.stream_port)
+                        continue
+                    # Receive the message
+                    msg = sock.recv_multipart()
+                    if not msg:
+                        # In the rare case that a message is empty, skip remaning processing
                         continue
 
-                    elif eventname == b'BATCH':
-                        scentime, scencmd = msgpack.unpackb(data, raw=False)
-                        self.scenarios = [scen for scen in split_scenarios(scentime, scencmd)]
-                        # Check if the batch list contains scenarios
-                        if not self.scenarios:
-                            echomsg = 'No scenarios defined in batch file!'
-                        else:
-                            echomsg = f'Found {len(self.scenarios)} scenarios in batch'
-                            # Send scenario to available nodes (nodes that are in init or hold mode):
-                            while self.avail_workers and self.scenarios:
-                                worker_id = next(iter(self.avail_workers))
-                                self.sendscenario(worker_id)
-                                self.avail_workers.pop(worker_id)
-
-                            # If there are still scenarios left, determine and
-                            # start the required number of local nodes
-                            reqd_nnodes = min(len(self.scenarios), max(0, self.max_nnodes - len(self.workers)))
-                            self.addnodes(reqd_nnodes)
-                        # ECHO the results to the calling client
-                        eventname = b'ECHO'
-                        data = msgpack.packb(dict(text=echomsg, flags=0), use_bin_type=True)
-
-                    # ============================================================
-                    # If we get here there is a message that needs to be forwarded
-                    # Cycle the route by one step to get the next hop in the route
-                    # (or the destination)
-                    route.append(route.pop(0))
-                    msg = route + [eventname, data]
-                    if route[0] == b'*':
-                        # This is a send-to-all message
-                        msg.insert(0, b'')
-                        for connid in self.workers if srcisclient else self.clients:
-                            msg[0] = connid
-                            dest.send_multipart(msg)
+                    # Check if this is a stream message: these should be forwarded unprocessed.
+                    if sock == self.be_stream:
+                        self.fe_stream.send_multipart(msg)
+                    elif sock == self.fe_stream:
+                        self.be_stream.send_multipart(msg)
                     else:
-                        dest.send_multipart(msg)
+                        # Select the correct source and destination
+                        srcisclient = (sock == self.fe_event)
+                        src, dest = (self.fe_event, self.be_event) if srcisclient else (self.be_event, self.fe_event)
+
+                        # Message format: [route0, ..., routen, name, data]
+                        route, eventname, data = msg[:-2], msg[-2], msg[-1]
+                        sender_id = route[0]
+
+                        if eventname == b'REGISTER':
+                            # This is a registration message for a new connection
+                            # Reply with our host ID
+                            src.send_multipart([sender_id, self.host_id, b'REGISTER', b''])
+                            # Notify clients of this change
+                            if srcisclient:
+                                self.clients.append(sender_id)
+                                # If the new connection is a client, send it our server list
+                                data = msgpack.packb(self.servers, use_bin_type=True)
+                                src.send_multipart([sender_id, self.host_id, b'NODESCHANGED', data])
+                            else:
+                                self.workers.append(sender_id)
+                                data = msgpack.packb({self.host_id : self.servers[self.host_id]}, use_bin_type=True)
+                                for client_id in self.clients:
+                                    dest.send_multipart([client_id, self.host_id, b'NODESCHANGED', data])
+                            continue # No message needs to be forwarded
+
+                        elif eventname == b'NODESCHANGED':
+                            servers_upd = msgpack.unpackb(data, raw=False)
+                            # Update the route with a hop to the originating server
+                            for server in servers_upd.values():
+                                server['route'].insert(0, sender_id)
+                            self.servers.update(servers_upd)
+                            # Notify own clients of this change
+                            data = msgpack.packb(servers_upd, use_bin_type=True)
+                            for client_id in self.clients:
+                                # Skip sender to avoid infinite message loop
+                                if client_id != sender_id:
+                                    self.fe_event.send_multipart([client_id, self.host_id, b'NODESCHANGED', data])
+
+                        elif eventname == b'ADDNODES':
+                            # This is a request to start new nodes.
+                            count = msgpack.unpackb(data)
+                            self.addnodes(count)
+                            continue # No message needs to be forwarded
+
+                        elif eventname == b'STATECHANGE':
+                            state = msgpack.unpackb(data)
+                            if state < bs.OP:
+                                # If we have batch scenarios waiting, send
+                                # the worker a new scenario, otherwise store it in
+                                # the available worker list
+                                if self.scenarios:
+                                    self.sendscenario(sender_id)
+                                else:
+                                    self.avail_workers[sender_id] = route
+                            else:
+                                self.avail_workers.pop(route[0], None)
+                            continue
+
+                        elif eventname == b'QUIT':
+                            self.running = False
+                            # Send quit to all nodes and clients
+                            msg = [self.host_id, eventname, data]
+                            for connid in self.workers:
+                                self.be_event.send_multipart([connid] + msg)
+                            for connid in self.clients:
+                                self.fe_event.send_multipart([connid] + msg)
+                            continue
+
+                        elif eventname == b'BATCH':
+                            scentime, scencmd = msgpack.unpackb(data, raw=False)
+                            self.scenarios = [scen for scen in split_scenarios(scentime, scencmd)]
+                            # create overall_task_id when batch is created
+
+                            task_ids = []
+                            scenario_names = []
+                            for scenario in self.scenarios:
+                                scenario_name = scenario['name']
+                                scenario_names.append(scenario_name)
+                                scenario_commands = scenario['scencmd']
+                                string_match = [s for s in scenario_commands if "HOLD" in s][0]
+                                # get last seven characters of string_match
+                                stop_time = string_match[-7]
+
+                                stop_time = string_match.lstrip("SCHEDULE ").rstrip(" HOLD")
+                                stop_time = sum(x * float(t) for x, t in zip([1, 60, 3600], reversed(stop_time.split(":")))) 
+                                task_ids.append(node_progress.add_task(scenario_name, total=stop_time/bs.settings.simdt, visible=False))
+
+                            # Check if the batch list contains scenarios
+                            if not self.scenarios:
+                                echomsg = 'No scenarios defined in batch file!'
+                            else:
+                                echomsg = f'Found {len(self.scenarios)} scenarios in batch'
+                                # Send scenario to available nodes (nodes that are in init or hold mode):
+                                while self.avail_workers and self.scenarios:
+                                    worker_id = next(iter(self.avail_workers))
+                                    self.sendscenario(worker_id)
+                                    self.avail_workers.pop(worker_id)
+
+                                # If there are still scenarios left, determine and
+                                # start the required number of local nodes
+                                reqd_nnodes = min(len(self.scenarios), max(0, self.max_nnodes - len(self.workers)))
+                                self.addnodes(reqd_nnodes)
+                            # ECHO the results to the calling client
+                            eventname = b'ECHO'
+                            data = msgpack.packb(dict(text=echomsg, flags=0), use_bin_type=True)
+
+                        elif eventname == b'PROGRESS':
+                            scen_name, scen_time = msgpack.unpackb(data, raw=False)
+
+                            # find the index of this scenario in the batch
+                            index = scenario_names.index(scen_name)
+                            
+                            # update the progress bar
+                            task_id = task_ids[index]
+                            node_progress.update(task_id, advance=10/bs.settings.simdt, visible=True)
+
+                            # scn_name = data['scenario_name']
+                            # time = data['scenario_time']
+                            # update overall progress
+                        # ============================================================
+                        # If we get here there is a message that needs to be forwarded
+                        # Cycle the route by one step to get the next hop in the route
+                        # (or the destination)
+                        route.append(route.pop(0))
+                        msg = route + [eventname, data]
+                        if route[0] == b'*':
+                            # This is a send-to-all message
+                            msg.insert(0, b'')
+                            for connid in self.workers if srcisclient else self.clients:
+                                msg[0] = connid
+                                dest.send_multipart(msg)
+                        else:
+                            dest.send_multipart(msg)
 
         # Wait for all nodes to finish
         for n in self.spawned_processes:

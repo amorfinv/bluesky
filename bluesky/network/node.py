@@ -62,29 +62,13 @@ class Node:
 
     def run(self):
         ''' Start the main loop of this node. '''
-        with Progress() as progress:
-            define_task = True
 
-            while self.running:
-                # Perform a simulation step
-                previous_t = bs.sim.simt
-                self.step()
-                bs.sim.step()
-                # Update screen logic
-                bs.scr.step()
-
-                if bs.sim.simt > previous_t:
-                    if define_task:
-
-                        scentime, scencmd =bs.stack.get_scendata()
-                        # find command HOLD in stack
-                        stop_index = scencmd.index('HOLD')
-                        total_steps = scentime[stop_index]/bs.sim.simdt
-                        scenario_name = bs.stack.get_scenname()
-                        task1 = progress.add_task(f"[red]Simulating {scenario_name}", total=total_steps)
-                        
-                        define_task = False
-                    progress.update(task1, advance=1)
+        while self.running:
+            # Perform a simulation step
+            self.step()
+            bs.sim.step()
+            # Update screen logic
+            bs.scr.step()
 
     def addnodes(self, count=1):
         self.send_event(b'ADDNODES', count)
