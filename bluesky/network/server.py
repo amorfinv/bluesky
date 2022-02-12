@@ -3,7 +3,7 @@ import os
 from multiprocessing import cpu_count
 from threading import Thread
 import sys
-from subprocess import Popen
+from subprocess import Popen, DEVNULL
 import zmq
 import msgpack
 
@@ -26,6 +26,15 @@ from .discovery import Discovery
 
 # Keep subset of commandline args to pass on to child processes
 childargs = [a for a in sys.argv[1:] if 'headless' not in a]
+
+# if progress in child args extend to surpress output from child nodes
+#  because it messes with progress bar
+if '--progress' not in childargs:
+    DEVNULL = None
+    progress = False
+else:
+    childargs.remove('--progress')
+    progress = True
 
 # Register settings defaults
 bs.settings.set_variable_defaults(max_nnodes=cpu_count(),
@@ -73,7 +82,7 @@ class Server(Thread):
     def addnodes(self, count=1):
         ''' Add [count] nodes to this server. '''
         for _ in range(count):
-            p = Popen([sys.executable, 'BlueSky.py', '--sim', *childargs])
+            p = Popen([sys.executable, 'BlueSky.py', '--sim', *childargs], stdout=DEVNULL)
             self.spawned_processes.append(p)
 
     def run(self):
@@ -111,6 +120,20 @@ class Server(Thread):
         # Start the first simulation node
         self.addnodes()
 
+        # run the server
+        if not progress:
+            self.runner(poller)
+        else:
+            # create node progress
+            node_progress = Progress()
+            overall_progress = Progress()
+            progress_group = Group(node_progress, overall_progress)
+
+            with Live(progress_group):
+                self.runner(poller, overall_progress, node_progress)
+
+    def runner(self, poller, overall_progress=None, node_progress=None):
+        ''' The while loop of this server. '''
         while self.running:
             try:
                 events = dict(poller.poll(None))
@@ -218,6 +241,24 @@ class Server(Thread):
                     elif eventname == b'BATCH':
                         scentime, scencmd = msgpack.unpackb(data, raw=False)
                         self.scenarios = [scen for scen in split_scenarios(scentime, scencmd)]
+
+                        if progress:
+                            # create overall_task_id when batch is created
+                            overall_id = overall_progress.add_task('[green]Overall...', total=len(self.scenarios))
+                            task_ids = []
+                            scenario_names = []
+                            for scenario in self.scenarios:
+                                scenario_name = scenario['name']
+                                scenario_names.append(scenario_name)
+                                scenario_commands = scenario['scencmd']
+                                string_match = [s for s in scenario_commands if "HOLD" in s][0]
+                                # get last seven characters of string_match
+                                stop_time = string_match[-7]
+
+                                stop_time = string_match.lstrip("SCHEDULE ").rstrip(" HOLD")
+                                stop_time = sum(x * float(t) for x, t in zip([1, 60, 3600], reversed(stop_time.split(":")))) 
+                                task_ids.append(node_progress.add_task(scenario_name, total=stop_time/bs.settings.simdt, visible=False))
+
                         # Check if the batch list contains scenarios
                         if not self.scenarios:
                             echomsg = 'No scenarios defined in batch file!'
@@ -237,6 +278,19 @@ class Server(Thread):
                         eventname = b'ECHO'
                         data = msgpack.packb(dict(text=echomsg, flags=0), use_bin_type=True)
 
+                    elif eventname == b'PROGRESS':
+                        scen_name, scen_time = msgpack.unpackb(data, raw=False)
+
+                        # find the index of this scenario in the batch
+                        index = scenario_names.index(scen_name)
+                        
+                        # update the progress bar
+                        task_id = task_ids[index]
+                        node_progress.update(task_id, advance=10/bs.settings.simdt, visible=True)
+
+                        # update overall progress
+                        if node_progress._tasks[task_id].finished:
+                            overall_progress.update(overall_id, advance=1, visible=True)
                     # ============================================================
                     # If we get here there is a message that needs to be forwarded
                     # Cycle the route by one step to get the next hop in the route
@@ -251,10 +305,6 @@ class Server(Thread):
                             dest.send_multipart(msg)
                     else:
                         dest.send_multipart(msg)
-
-        # Wait for all nodes to finish
-        for n in self.spawned_processes:
-            n.wait()
 
     def prun(self):
         ''' The main loop of this server with a progress bar '''
