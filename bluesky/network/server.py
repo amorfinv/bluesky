@@ -114,7 +114,7 @@ class Server(Thread):
         # create node progress
         node_progress = Progress()
         overall_progress = Progress()
-        progress_group = Group(node_progress)
+        progress_group = Group(node_progress, overall_progress)
 
         with Live(progress_group):
 
@@ -226,7 +226,7 @@ class Server(Thread):
                             scentime, scencmd = msgpack.unpackb(data, raw=False)
                             self.scenarios = [scen for scen in split_scenarios(scentime, scencmd)]
                             # create overall_task_id when batch is created
-
+                            overall_id = overall_progress.add_task('[green]Overall...', total=len(self.scenarios))
                             task_ids = []
                             scenario_names = []
                             for scenario in self.scenarios:
@@ -270,9 +270,9 @@ class Server(Thread):
                             task_id = task_ids[index]
                             node_progress.update(task_id, advance=10/bs.settings.simdt, visible=True)
 
-                            # scn_name = data['scenario_name']
-                            # time = data['scenario_time']
                             # update overall progress
+                            if node_progress._tasks[task_id].finished:
+                                overall_progress.update(overall_id, advance=1, visible=True)
                         # ============================================================
                         # If we get here there is a message that needs to be forwarded
                         # Cycle the route by one step to get the next hop in the route
