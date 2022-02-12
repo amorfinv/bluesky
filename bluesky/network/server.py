@@ -31,10 +31,10 @@ childargs = [a for a in sys.argv[1:] if 'headless' not in a]
 #  because it messes with progress bar
 if '--progress' not in childargs:
     DEVNULL = None
-    progress = False
+    progressbar = False
 else:
     childargs.remove('--progress')
-    progress = True
+    progressbar = True
 
 # Register settings defaults
 bs.settings.set_variable_defaults(max_nnodes=cpu_count(),
@@ -121,7 +121,7 @@ class Server(Thread):
         self.addnodes()
 
         # run the server
-        if not progress:
+        if not progressbar:
             self.runner(poller)
         else:
             # create node progress
