@@ -242,7 +242,7 @@ class Server(Thread):
                         scentime, scencmd = msgpack.unpackb(data, raw=False)
                         self.scenarios = [scen for scen in split_scenarios(scentime, scencmd)]
 
-                        if progress:
+                        if progressbar:
                             # create overall_task_id when batch is created
                             overall_id = overall_progress.add_task('[green]Overall...', total=len(self.scenarios))
                             task_ids = []
