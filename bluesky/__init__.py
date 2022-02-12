@@ -37,7 +37,7 @@ def init(mode='sim', pygame=False, discovery=False, cfgfile='', scnfile=''):
         - discovery: Enable network discovery
     '''
     # Is this a server running headless?
-    headless = (mode[-8:] == 'headless')
+    headless = (mode[-8:] in ['headless', 'progress'])
 
     # Keep track of the gui type.
     global gui_type

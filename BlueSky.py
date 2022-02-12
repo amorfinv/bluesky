@@ -54,6 +54,8 @@ def main():
         print("Options:")
         print("--help               Display this information.")
         print("--headless           Start simulation server only, without GUI.")
+        print("--progress           Start simulation server only, without GUI and with a progress \n\
+                                    bar in the terminal. Must load progressbar plugin.")
         print("--client             Start client only, which can connect to an already running server.")
         print("--sim                Start only one simulation node.")  
         print("--detached           Start only one simulation node, without networking.")
@@ -69,10 +71,12 @@ def main():
         mode = 'client'
     elif '--headless' in sys.argv:
         mode = 'server-headless'
+    elif '--progress' in sys.argv:
+        mode = 'server-progress'
     else:
         mode = 'server-gui'
 
-    discovery = ('--discoverable' in sys.argv or mode[-8:] == 'headless')
+    discovery = ('--discoverable' in sys.argv or mode[-8:] in ['headless', 'progress'])
 
     # Check if alternate config file is passed or a default scenfile
     cfgfile = ''
@@ -104,6 +108,8 @@ def main():
         if mode[:6] == 'server':
             if mode[-8:] == 'headless':
                 bs.server.run()
+            elif mode[-8:] == 'progress':
+                bs.server.prun()
             else:
                 bs.server.start()
 
