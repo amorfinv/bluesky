@@ -11,6 +11,7 @@ import msgpack
 import datetime
 from rich.console import Group
 from rich.panel import Panel
+from rich.table import Table
 from rich.live import Live
 from rich.progress import (
     BarColumn,
@@ -124,23 +125,36 @@ class Server(Thread):
         if not progressbar:
             self.runner(poller)
         else:
-            # create node progress
-            node_progress = Progress(
-                                        TextColumn("[cyan]Simulating {task.description}.scn"),
-                                        BarColumn(),
-                                        TextColumn("[blue]sim time: {task.fields[scen_time]}")
-                                        )
 
+            node_progress = Progress(
+                                        SpinnerColumn(),
+                                        TextColumn("[cyan]{task.description}.scn")
+                                        )
+            node_progress_time = Progress(
+                                        TextColumn("[blue]{task.fields[scen_time]}")
+                                        )
+            node_progress_bar = Progress(
+                                        TextColumn("[magenta]{task.percentage:>3.0f}%"),
+                                        BarColumn(),
+                                        transient=True
+                                        )
             overall_progress = Progress(
                                         TextColumn("[green]Overall Progress"),
                                         SpinnerColumn("simpleDots"),
                                         TextColumn("[red]{task.completed} of {task.total} simulations done!"),
-                                            )
-            progress_group = Group(Panel(node_progress), overall_progress)
-            with Live(progress_group):
-                self.runner(poller, overall_progress, node_progress)
+                                        )
+            progress_table = Table()
 
-    def runner(self, poller, overall_progress=None, node_progress=None):
+            progress_table.add_column("[cyan]Scenario")
+            progress_table.add_column("[blue]Simulation Time")
+            progress_table.add_column("[magenta]Progress")
+
+            progress_table.add_row(node_progress, node_progress_time, node_progress_bar)
+            progress_group = Group(progress_table, overall_progress)
+            with Live(progress_group):
+                self.runner(poller, overall_progress, node_progress, node_progress_time, node_progress_bar)
+
+    def runner(self, poller, overall_progress=None, node_progress=None, node_progress_time=None, node_progress_bar=None):
         ''' The while loop of this server. '''
         while self.running:
             try:
@@ -266,6 +280,9 @@ class Server(Thread):
                                 stop_time = string_match.lstrip("SCHEDULE ").rstrip(" HOLD")
                                 stop_time = sum(x * float(t) for x, t in zip([1, 60, 3600], reversed(stop_time.split(":")))) 
                                 task_ids.append(node_progress.add_task(scenario_name, total=stop_time/bs.settings.simdt, visible=False))
+                                node_progress_time.add_task(scenario_name, total=stop_time/bs.settings.simdt, visible=False)
+                                node_progress_bar.add_task(scenario_name, total=stop_time/bs.settings.simdt, visible=False)
+
 
                         # Check if the batch list contains scenarios
                         if not self.scenarios:
@@ -296,6 +313,8 @@ class Server(Thread):
                         # update the progress bar
                         task_id = task_ids[index]
                         node_progress.update(task_id, advance=10/bs.settings.simdt, visible=True, scen_time=scen_time)
+                        node_progress_time.update(task_id, advance=10/bs.settings.simdt, visible=True, scen_time=scen_time)
+                        node_progress_bar.update(task_id, advance=10/bs.settings.simdt, visible=True, scen_time=scen_time)
 
                         # update overall progress
                         if node_progress._tasks[task_id].finished:
