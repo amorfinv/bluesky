@@ -8,7 +8,7 @@ Created on Thu Jun  3 11:47:30 2021
 import os
 
 # configurations
-wind_speeds = [1,2,3] # knots
+wind_speeds = [1,3,5] # knots
 n_rogues = [1, 2, 3] # number of rogue aircrafts
 
 
