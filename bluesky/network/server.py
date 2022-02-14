@@ -10,7 +10,6 @@ import msgpack
 # progress bar
 import datetime
 from rich.console import Group
-from rich.panel import Panel
 from rich.table import Table
 from rich.live import Live
 from rich.progress import (
