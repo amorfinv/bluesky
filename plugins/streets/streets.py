@@ -51,7 +51,7 @@ def init_plugin():
 
 # defaults
 use_path_plan = True
-use_flow_control = False
+use_flow_control = True
 
 # initialise queue
 queue_dict = dict()
