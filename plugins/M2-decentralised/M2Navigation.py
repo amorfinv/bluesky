@@ -151,7 +151,7 @@ class M2Navigation(core.Entity):
         # Don't descend to a new cruise layer when a turn is close
         turn_close = bs.traf.ap.dist2turn < 150 #m
         
-        can_ascend, can_descend = self.ascent_descent(200, 200, -200)
+        can_ascend, can_descend = self.ascent_descent(150, 200, -100)
         
         # Descent command for aircraft that can
         target_descent_layer = np.where(emergency, bs.traf.closest_empty_layer_bottom,
