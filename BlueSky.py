@@ -113,6 +113,9 @@ def main():
         if mode in ('client', 'server-gui'):
             from bluesky.ui import qtgl
             qtgl.start(mode)
+        
+        if mode == 'terminal':
+            from bluesky.ui import txtual
 
     # Give info on missing module
     except ImportError as error:

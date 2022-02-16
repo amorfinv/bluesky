@@ -7,8 +7,6 @@ from bluesky import stack
 from bluesky.core.walltime import Timer
 from bluesky.network.npcodec import encode_ndarray, decode_ndarray
 
-from rich.progress import Progress
-
 class Node:
     def __init__(self, event_port, stream_port):
         self.node_id = b'\x00' + os.urandom(4)
