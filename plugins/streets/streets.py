@@ -5,11 +5,10 @@ Also includes layering information.
 
 import json
 import numpy as np
-# from numpy import *
 from collections import Counter
 import pandas as pd
 from scipy.sparse import csr_matrix
-
+import networkx as nx
 
 import bluesky as bs
 from bluesky import core, stack, traf, scr, sim
@@ -19,7 +18,7 @@ from bluesky.core import Entity, Replaceable
 from bluesky.traffic import Route
 from bluesky.tools.misc import degto180, txt2tim, txt2alt, txt2spd, lat2txt
 
-import networkx as nx
+import plugins.streets.helpers as helpers
 
 bs.settings.set_variable_defaults(
     graph_dir=f'plugins/streets/graphs/fullm2/')
@@ -120,7 +119,7 @@ def dis2int(acid: 'txt'):
 
     node_id = int(current_edge.split("-",1)[1])
 
-    node_lat, node_lon = osmid_to_latlon(current_edge, 1)
+    node_lat, node_lon = helpers.osmid_to_latlon(current_edge, 1)
 
     _, d = geo.qdrdist(traf.lat[idx], traf.lon[idx], node_lat, node_lon)
     
@@ -725,7 +724,6 @@ class PathPlans(Entity):
         # Get needed values
         acrte = Route._routes.get(acid)
 
-
         for j, rte in enumerate(route):
             lat = rte[1] # deg
             lon = rte[0] # deg
@@ -779,21 +777,13 @@ class PathPlans(Entity):
 
 
     def plan_path(self) -> None:
-        pass
+        orig = 303933494
+        dest = 32637455
+        route = nx.shortest_path(self.graph, orig, dest, method='dijkstra')
 
-######################### HELPERS #######################
+        # get lat and lon from route and turninfo
+        lats, lons = helpers.get_lat_lon_from_osm_route(self.graph, route)
+        turn_bool, turn_speed, turn_coords = helpers.get_turn_arrays(lats, lons)
 
-def osmid_to_latlon(osmid , i=2):
-
-    if not i == 2:
-        # if given an edge
-        node_id = int(osmid.split("-",1)[i])
-    else:
-        # if given a node
-        node_id = int(osmid)
-
-    node_latlon = edge_traffic.node_dict[node_id]
-    node_lat = float(node_latlon.split("-",1)[0])
-    node_lon = float(node_latlon.split("-",1)[1])
-
-    return node_lat, node_lon
+        # get initial bearing
+        qdr = geo.qdrdist(lats[0], lons[0], lats[1], lons[1])
