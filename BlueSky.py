@@ -9,12 +9,12 @@ import bluesky as bs
 # default traceback message. This was added to counter a new PyQt5.5 feature
 # where unhandled exceptions would result in a qFatal with a very uninformative
 # message.
-def exception_handler(exc_type, exc_value, exc_traceback):
-    traceback.print_exception(exc_type, exc_value, exc_traceback)
-    sys.exit()
+# def exception_handler(exc_type, exc_value, exc_traceback):
+#     traceback.print_exception(exc_type, exc_value, exc_traceback)
+#     sys.exit()
 
 
-sys.excepthook = exception_handler
+# sys.excepthook = exception_handler
 
 
 def main():
