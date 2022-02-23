@@ -8,6 +8,7 @@ import numpy as np
 from collections import Counter
 import pandas as pd
 from scipy.sparse import csr_matrix
+from scipy.spatial import KDTree
 import networkx as nx
 
 import bluesky as bs
@@ -18,7 +19,7 @@ from bluesky.core import Entity, Replaceable
 from bluesky.traffic import Route
 from bluesky.tools.misc import degto180, txt2tim, txt2alt, txt2spd, lat2txt
 
-import plugins.streets.helpers as helpers
+import plugins.streets.sutils as sutils
 
 bs.settings.set_variable_defaults(
     graph_dir=f'plugins/streets/graphs/fullm2/')
@@ -88,12 +89,14 @@ def do_flowcontrol():
 ######################## STACK COMMANDS ##########################
 
 @stack.command
-def queuem2(acid, actype: str="B744", origlat: float=52., origlon: float=4., 
+def CREM2(acid, actype: str="B744", origlat: float=52., origlon: float=4., 
         destlat: float = 51., destlon: float = 3., achdg: float=None, acalt: float=0,  
         acspd: float = 0, prio: int = 1):
-    """QUEUEM2 acid,actype,origlat,origlon,[destlat],[destlat],[achdg],[acalt,[acspd],
+    """CREM2 acid,actype,origlat,origlon,[destlat],[destlat],[achdg],[acalt,[acspd],
        [prio]"""    
-    # Queues up an aircraft, and checks if it can be spawned without provoking a conflict.
+    
+    # TODO: CREM2 with start and end nodes instead of lat lon
+    
     # First, correct some values.
     acspd *= kts
     acalt *= ft
@@ -119,7 +122,7 @@ def dis2int(acid: 'txt'):
 
     node_id = int(current_edge.split("-",1)[1])
 
-    node_lat, node_lon = helpers.osmid_to_latlon(current_edge, 1)
+    node_lat, node_lon = osmid_to_latlon(current_edge, 1)
 
     _, d = geo.qdrdist(traf.lat[idx], traf.lon[idx], node_lat, node_lon)
     
@@ -231,7 +234,7 @@ class EdgesAp(Entity):
         # Main autopilot update loop
 
         # See if waypoints have reached their destinations
-        for i in np.where(bs.traf.ap.reached)[0]:
+        for i in np.where(bs.traf.ap.idxreached)[0]:
 
             edge_traffic.actedge.wpedgeid[i], \
             edge_traffic.actedge.intersection_lat[i] , edge_traffic.actedge.intersection_lon[i], \
@@ -244,20 +247,17 @@ class EdgesAp(Entity):
 
         # TODO: only calculate for drones that are in constrained airspace
         # get distance of drones to next intersection/turn intersection
-        dis_to_int = np.where(bs.traf.roguetraffic.rogue_bool, 9999.9, 
-                                geo.kwikdist_matrix(traf.lat, traf.lon, 
+        dis_to_int = geo.kwikdist_matrix(traf.lat, traf.lon, 
                                                     edge_traffic.actedge.intersection_lat, 
-                                                    edge_traffic.actedge.intersection_lon))
-        dis_to_turn = np.where(bs.traf.roguetraffic.rogue_bool, 9999.9, 
-                                geo.kwikdist_matrix(traf.lat, traf.lon, 
+                                                    edge_traffic.actedge.intersection_lon)
+        dis_to_turn = geo.kwikdist_matrix(traf.lat, traf.lon, 
                                                     edge_traffic.actedge.turn_lat, 
-                                                    edge_traffic.actedge.turn_lon))
+                                                    edge_traffic.actedge.turn_lon)
         
         # # check for speed limit changes
         if bs.traf.ntraf > 0:
             edge_traffic.actedge.speed_limit = self.update_speed_limits(edge_traffic.actedge.wpedgeid, 
-                                                                        bs.traf.type, 
-                                                                        bs.traf.roguetraffic.rogue_bool)
+                                                                        bs.traf.type)
 
         # flatten numpy arrays
         edge_traffic.actedge.dis_to_int = np.asarray(dis_to_int).flatten()
@@ -266,11 +266,7 @@ class EdgesAp(Entity):
         return
 
     @staticmethod
-    def check_speed_limits(wpedgeid, ac_type, rogue_bool):
-
-        # check if aircraft is rogue, if yes just give it a 30 knot speed limit
-        if rogue_bool:
-            return 30*kts
+    def check_speed_limits(wpedgeid, ac_type):
 
         # check for speed limit changes
         speed_limit = int(edge_traffic.edge_dict[wpedgeid]['speed_limit'])
@@ -461,8 +457,6 @@ class Route_edge(Replaceable):
             self.edge_airspace_type.insert(wpidx, edge_airspace_type)
 
     def direct(self, idx, wpnam):
-        # print(idx)
-        # print("Hello from direct")
         """Set active point to a waypoint by name"""
         name = wpnam.upper().strip()
         if name != "" and self.wpname.count(name) > 0:
@@ -509,13 +503,8 @@ class Route_edge(Replaceable):
         wpedgeid = self.wpedgeid[self.iactwp]
 
         # get lat/lon of next intersection or distnace to constrained airspace
-        if edge_airspace_type == "constrained" or edge_airspace_type == 1:
-            intersection_lat ,intersection_lon = osmid_to_latlon(wpedgeid, 1)
-            const_lat, const_lon = 48.1351, 11.582
-
-        elif edge_airspace_type == "open" or edge_airspace_type == 0:
-            intersection_lat ,intersection_lon = 48.1351, 11.582
-            const_lat, const_lon = osmid_to_latlon(wpedgeid, 1)
+        intersection_lat ,intersection_lon = osmid_to_latlon(wpedgeid, 1)
+        const_lat, const_lon = 48.1351, 11.582
 
         # update turn lat and lon
         turn_lat = self.turn_lat[self.iactwp]
@@ -551,7 +540,25 @@ class Route_edge(Replaceable):
             appi += 1
             name_ = name_[:-len_]+fmt_.format(appi)
         return name_
+    
+def osmid_to_latlon(osmid , i=2):
 
+    # input an edge and get the lat lon of one of the nodes
+    # i = 0 gets nodeid of first node of edges
+    # i = 1 gets nodeid of second node of edge
+
+    if not i == 2:
+        # if given an edge
+        node_id = int(osmid.split("-",1)[i])
+    else:
+        # if given a node
+        node_id = int(osmid)
+
+    node_latlon = edge_traffic.node_dict[node_id]
+    node_lat = float(node_latlon.split("-",1)[0])
+    node_lon = float(node_latlon.split("-",1)[1])
+
+    return node_lat, node_lon
 ######################## FLIGHT LAYER TRACKING ############################
 
 class FlightLayers(Entity):
@@ -612,7 +619,7 @@ class FlightLayers(Entity):
 
         self.lowest_cruise_layer[-n:]           = 0
         self.highest_cruise_layer[-n:]          = 0
-
+        
     def layer_tracking(self):
         
         # update flight levels
@@ -621,7 +628,7 @@ class FlightLayers(Entity):
         self.flight_levels = np.where(self.flight_levels < 0, 30, self.flight_levels)
         self.flight_levels = np.where(self.flight_levels > 480, 480, self.flight_levels)
         # update flight layer type
-        edge_layer_dicts = bs.traf.actedge.edge_layer_dict
+        edge_layer_dicts = edge_traffic.actedge.edge_layer_dict
 
         # only go into vectorized function if there is traffic
         if bs.traf.ntraf > 0:
@@ -706,7 +713,15 @@ class PathPlans(Entity):
             self.pathplanning = []
 
         # read in graph with networkx from graphml
-        self.graph = nx.read_graphml(f'{graph_dir}graph.graphml')
+        self.graph = sutils.load_graphml(f'{graph_dir}graph.graphml')
+        self.node_gdf, self.edge_gdf = sutils.graph_to_gdfs(self.graph)
+        
+        # get a projected dataframe of the graph
+        self.node_gdf_proj = self.node_gdf.to_crs(epsg=32633)
+        self.edge_gdf_proj = self.edge_gdf.to_crs(epsg=32633)
+        
+        # make a KDtree for the nodes
+        self.kdtree = KDTree(self.node_gdf_proj[["x", "y"]])
 
         # create the variables for origin and destination
         self.origin = (0.0, 0.0)
@@ -719,14 +734,18 @@ class PathPlans(Entity):
         acid = bs.traf.id[-1]
         ridx = -1
         
-        route, turns, edges, next_turn, turn_speeds = self.plan_path()
+        route, turns, edges, next_turn, turn_speeds, qdr = self.plan_path()
 
+        # set initial bearing
+        bs.traf.hdg[-1] = qdr
+        bs.traf.trk[-1] = qdr
+        
         # Get needed values
         acrte = Route._routes.get(acid)
 
         for j, rte in enumerate(route):
-            lat = rte[1] # deg
-            lon = rte[0] # deg
+            lat = rte[0] # deg
+            lon = rte[1] # deg
             alt = -999
             spd = -999
             
@@ -746,7 +765,7 @@ class PathPlans(Entity):
             acrte.addwpt_simple(ridx, name, wptype, lat, lon, alt, spd)
         
             # Add the streets stuff            
-            wpedgeid = f'{edges[j][0]}-{edges[j][1]}'
+            wpedgeid = edges[j]
             
             group_number = edge_traffic.edge_dict[wpedgeid]['height_allocation']
             edge_layer_type = edge_traffic.edge_dict[wpedgeid]['height_allocation']
@@ -766,7 +785,7 @@ class PathPlans(Entity):
         # We basically need to find the qdr between the second and the third waypoint, as
         # the first one is the origin
         if len(acrte.wplat)>2:
-            bs.traf.actwp.next_qdr[ridx], dummy = geo.qdrdist(acrte.wplat[1], acrte.wplon[1],
+            bs.traf.actwp.next_qdr[ridx], _ = geo.qdrdist(acrte.wplat[1], acrte.wplon[1],
                                                         acrte.wplat[2], acrte.wplon[2])
             
         # Calculate flight plan
@@ -777,13 +796,20 @@ class PathPlans(Entity):
 
 
     def plan_path(self) -> None:
-        orig = 303933494
-        dest = 32637455
-        route = nx.shortest_path(self.graph, orig, dest, method='dijkstra')
+        
+        # todo: CREM2 with nearest nodes
+        orig_node = sutils.nearest_nodes(self.kdtree, self.node_gdf_proj, self.origin[1], self.origin[0])
+        dest_node = sutils.nearest_nodes(self.kdtree, self.node_gdf_proj, self.destination[1], self.destination[0])
+        node_route = nx.shortest_path(self.graph, orig_node, dest_node, method='dijkstra')
 
         # get lat and lon from route and turninfo
-        lats, lons = helpers.get_lat_lon_from_osm_route(self.graph, route)
-        turn_bool, turn_speed, turn_coords = helpers.get_turn_arrays(lats, lons)
+        lats, lons, edges, _ = sutils.lat_lon_from_nx_route(self.graph, node_route)
+        turn_bool, turn_speed, turn_coords = sutils.get_turn_arrays(lats, lons)
+        
+        # lat lon route
+        route = list(zip(lats, lons))
 
         # get initial bearing
-        qdr = geo.qdrdist(lats[0], lons[0], lats[1], lons[1])
+        qdr, _ = geo.qdrdist(lats[0], lons[0], lats[1], lons[1])
+        
+        return route, turn_bool, edges, turn_coords, turn_speed, qdr
