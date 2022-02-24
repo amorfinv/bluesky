@@ -241,8 +241,6 @@ class EdgesAp(Entity):
             edge_traffic.actedge.group_number[i], edge_traffic.actedge.flow_number[i], \
             edge_traffic.actedge.edge_layer_dict[i], \
             edge_traffic.actedge.turn_lat[i], edge_traffic.actedge.turn_lon[i], \
-            edge_traffic.actedge.hdg_lat[i], edge_traffic.actedge.hdg_lon[i], \
-            edge_traffic.actedge.const_lat[i], edge_traffic.actedge.const_lon[i], \
             edge_traffic.actedge.edge_airspace_type[i] = self.edge_rou[i].getnextwp()      
 
         # TODO: only calculate for drones that are in constrained airspace
@@ -296,16 +294,8 @@ class ActiveEdge(Entity):
 
             self.turn_lat = np.array([])
             self.turn_lon = np.array([])
-
-            # open airspace information
-            self.const_lat = np.array([])
-            self.const_lon = np.array([])
-
-            self.hdg_lat = np.array([])
-            self.hdg_lon = np.array([])
-
+            
             # Distances to next intersection/turn intersection
-
             self.dis_to_int = np.array([])
             self.dis_to_turn = np.array([])
 
@@ -336,12 +326,6 @@ class ActiveEdge(Entity):
 
         self.turn_lat[-n:]                  = 89.99
         self.turn_lon[-n:]                  = 89.99
-
-        self.const_lat[-n:]                 = 89.99
-        self.const_lon[-n:]                 = 89.99
-
-        self.hdg_lat[-n:]                   = 89.99
-        self.hdg_lon[-n:]                   = 89.99
 
         self.dis_to_int[-n:]                = 9999.9
         self.dis_to_turn[-n:]               = 9999.9
@@ -378,10 +362,6 @@ class Route_edge(Replaceable):
         self.turn_lat = []
         self.turn_lon = []
 
-        # initialize location of heading change in open airspae
-        self.hdg_lat = []
-        self.hdg_lon = []
-
         # initialize group_number and flow_number
         self.group_number = []
         self.flow_number = []
@@ -417,20 +397,8 @@ class Route_edge(Replaceable):
         Overwrites or inserts information for a waypoint
         """
         # Process the type of action lat and lon
-        if edge_airspace_type == "constrained" or edge_airspace_type ==1:
-            hdg_lat = 48.1351
-            hdg_lon = 11.582
-
-            turn_lat = action_lat
-            turn_lon = action_lon
-
-        elif edge_airspace_type == "open" or edge_airspace_type == 0:
-            hdg_lat = action_lat
-            hdg_lon = action_lon
-
-            turn_lat = 48.1351
-            turn_lon = 11.582
-            
+        turn_lat = action_lat
+        turn_lon = action_lon
 
         if overwrt:
             self.wpname[wpidx]  = wpname
@@ -438,8 +406,6 @@ class Route_edge(Replaceable):
             self.group_number[wpidx] = group_number
             self.flow_number[wpidx] = flow_number
             self.edge_layer_dict[wpidx] = edge_layer_dict   
-            self.hdg_lat[wpidx] = hdg_lat
-            self.hdg_lon[wpidx] = hdg_lon
             self.turn_lat[wpidx] = action_lat
             self.turn_lon[wpidx] = action_lon
             self.edge_airspace_type[wpidx] = edge_airspace_type
@@ -452,8 +418,6 @@ class Route_edge(Replaceable):
             self.edge_layer_dict.insert(wpidx, edge_layer_dict)
             self.turn_lat.insert(wpidx, turn_lat)
             self.turn_lon.insert(wpidx, turn_lon)
-            self.hdg_lat.insert(wpidx, hdg_lat)
-            self.hdg_lon.insert(wpidx, hdg_lon)
             self.edge_airspace_type.insert(wpidx, edge_airspace_type)
 
     def direct(self, idx, wpnam):
@@ -473,10 +437,6 @@ class Route_edge(Replaceable):
             # distance to next turn
             edge_traffic.actedge.turn_lat[idx] = self.turn_lat[wpidx]
             edge_traffic.actedge.turn_lon[idx] = self.turn_lon[wpidx]
-
-            # distance to heading change
-            edge_traffic.actedge.hdg_lat[idx] = self.hdg_lat[wpidx]
-            edge_traffic.actedge.hdg_lon[idx] = self.hdg_lon[wpidx]
 
             # set group_number/flow number and edge layer_dict
             edge_traffic.actedge.group_number[idx] = self.group_number[wpidx]
@@ -504,23 +464,18 @@ class Route_edge(Replaceable):
 
         # get lat/lon of next intersection or distnace to constrained airspace
         intersection_lat ,intersection_lon = osmid_to_latlon(wpedgeid, 1)
-        const_lat, const_lon = 48.1351, 11.582
 
         # update turn lat and lon
         turn_lat = self.turn_lat[self.iactwp]
         turn_lon = self.turn_lon[self.iactwp]
-
-        # update heading lat and lon
-        hdg_lat = self.hdg_lat[self.iactwp]
-        hdg_lon = self.hdg_lon[self.iactwp]
 
         # Update group number/flow number and edge_layer_dict
         group_number = self.group_number[self.iactwp]
         flow_number = self.flow_number[self.iactwp]
         edge_layer_dict = self.edge_layer_dict[self.iactwp]
 
-        return wpedgeid, intersection_lat, intersection_lon, group_number, flow_number, edge_layer_dict, turn_lat, turn_lon, hdg_lat, hdg_lon, \
-            const_lat, const_lon, edge_airspace_type
+        return wpedgeid, intersection_lat, intersection_lon, group_number, flow_number,\
+               edge_layer_dict, turn_lat, turn_lon, edge_airspace_type
 
     @staticmethod
     def get_available_name(data, name_, len_=2):
