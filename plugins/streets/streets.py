@@ -92,7 +92,7 @@ def do_flowcontrol():
 def CREM2(acid, actype: str="B744", origlat: float=52., origlon: float=4., 
         destlat: float = 51., destlon: float = 3., achdg: float=None, acalt: float=0,  
         acspd: float = 0, prio: int = 1):
-    """CREM2 acid,actype,origlat,origlon,[destlat],[destlat],[achdg],[acalt,[acspd],
+    """CREM2 acid,actype,origlat,origlon,[destlat],[destlon],[achdg],[acalt,[acspd],
        [prio]"""    
     
     # TODO: CREM2 with start and end nodes instead of lat lon
