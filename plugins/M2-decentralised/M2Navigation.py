@@ -47,7 +47,7 @@ class M2Navigation(core.Entity):
         lnav_on = bs.traf.swlnav
         rogue = bs.traf.roguetraffic.rogue_bool
         still_going_to_dest = np.logical_and(abs(degto180(bs.traf.trk - bs.traf.ap.qdr2wp)) < 10.0, 
-                                       bs.traf.ap.dist2wp > 10)
+                                       bs.traf.ap.dist2wp > 5)
         landing = np.logical_and.reduce((np.logical_not(lnav_on), 
                                          bs.traf.actwp.swlastwp,
                                          np.logical_not(still_going_to_dest)))
