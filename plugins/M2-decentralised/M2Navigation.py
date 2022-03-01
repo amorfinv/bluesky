@@ -11,6 +11,7 @@ from shapely.ops import cascaded_union, nearest_points
 from shapely.affinity import translate
 from bluesky.tools.geo import kwikdist, kwikqdrdist, latlondist, qdrdist
 from bluesky.tools.aero import nm, ft, kts
+from bluesky.tools.misc import degto180
 import time
 
 def init_plugin():
@@ -45,7 +46,11 @@ class M2Navigation(core.Entity):
         speed_zero = np.array(bs.traf.selspd) == 0 # The selected speed is 0, so we're at our destination and landing
         lnav_on = bs.traf.swlnav
         rogue = bs.traf.roguetraffic.rogue_bool
-        landing = np.logical_and(np.logical_not(lnav_on), bs.traf.actwp.swlastwp)
+        still_going_to_dest = np.logical_and(abs(degto180(bs.traf.trk - bs.traf.ap.qdr2wp)) < 10.0, 
+                                       bs.traf.ap.dist2wp > 10)
+        landing = np.logical_and.reduce((np.logical_not(lnav_on), 
+                                         bs.traf.actwp.swlastwp,
+                                         np.logical_not(still_going_to_dest)))
         
         # CRUISE SPEED STUFF -----------------------------------------
         set_cruise_speed = np.logical_and.reduce((lnav_on, np.logical_not(rogue)))
