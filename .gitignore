@@ -34,6 +34,7 @@ __pycache__/
 *.so
 
 # Distribution / packaging
+.env*
 __pycache__
 .Python
 env/
