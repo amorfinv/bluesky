@@ -327,7 +327,7 @@ def handle_replan(edges_changes):
                     spd = -999
                     
                     # Do flyby or flyturn processing
-                    if turns[j]:
+                    if turns[j] and j < len(route)-1:
                         acrte.turnspd = turn_speeds[j]*kts
                         acrte.swflyby   = False
                         acrte.swflyturn = True
@@ -1424,7 +1424,7 @@ class PathPlans(Entity):
             spd = -999
             
             # Do flyby or flyturn processing
-            if turns[j]:
+            if turns[j] and j < len(route)-1:
                 acrte.turnspd = turn_speeds[j]*kts
                 acrte.swflyby   = False
                 acrte.swflyturn = True
