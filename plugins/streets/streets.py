@@ -529,6 +529,7 @@ def queue_attempt_create(first_time, acid, actype, path_file, aclat, aclon, dest
             # It's a loitering mission, so add the loitering stuff
             bs.traf.loiter.futuregeofences[acidx] = geocoords
             bs.traf.loiter.geodurations[acidx] = geodur
+            bs.traf.loiter.loiterbool[acidx] = True
 
             # send to flow contorl
             apply_loitering_flowcontrol(path_plans.loitering_edges_dict[acid])
@@ -563,6 +564,7 @@ def queue_attempt_create(first_time, acid, actype, path_file, aclat, aclon, dest
             # It's a loitering mission, so add the loitering stuff
             bs.traf.loiter.futuregeofences[acidx] = geocoords
             bs.traf.loiter.geodurations[acidx] = geodur
+            bs.traf.loiter.loiterbool[acidx] = True
 
             # send to flow contorl
             apply_loitering_flowcontrol(path_plans.loitering_edges_dict[acid])
@@ -588,6 +590,7 @@ def queue_attempt_create(first_time, acid, actype, path_file, aclat, aclon, dest
             # It's a loitering mission, so add the loitering stuff
             bs.traf.loiter.futuregeofences[acidx] = geocoords
             bs.traf.loiter.geodurations[acidx] = geodur
+            bs.traf.loiter.loiterbool[acidx] = True
 
             # send to flow contorl
             apply_loitering_flowcontrol(path_plans.loitering_edges_dict[acid])
