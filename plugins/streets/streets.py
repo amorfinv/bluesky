@@ -447,7 +447,8 @@ def CREM2(acid, actype: str="B744", aclat: float=52., aclon: float=4., achdg: fl
         # It's a loitering mission, so add the loitering stuff
         bs.traf.loiter.futuregeofences[acidx] = geocoords
         bs.traf.loiter.geodurations[acidx] = geodur
-
+        bs.traf.loiter.loiterbool[acidx] = True
+        
         # send to flow contorl
         apply_loitering_flowcontrol(path_plans.loitering_edges_dict[acid])
         
