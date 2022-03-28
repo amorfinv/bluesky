@@ -46,12 +46,12 @@ class M2Navigation(core.Entity):
         speed_zero = np.array(bs.traf.selspd) == 0 # The selected speed is 0, so we're at our destination and landing
         lnav_on = bs.traf.swlnav
         rogue = bs.traf.roguetraffic.rogue_bool
-        still_going_to_dest = np.logical_and(abs(degto180(bs.traf.trk - bs.traf.ap.qdr2wp)) < 160.0, 
+        still_going_to_dest = np.logical_and(abs(degto180(bs.traf.trk - bs.traf.ap.qdr2wp)) < 165.0, 
                                        bs.traf.ap.dist2wp > 5)
         landing = np.logical_and.reduce((np.logical_not(lnav_on), 
                                          bs.traf.actwp.swlastwp,
                                          np.logical_not(still_going_to_dest)))
-        
+
         # CRUISE SPEED STUFF -----------------------------------------
         set_cruise_speed = np.logical_and.reduce((lnav_on, np.logical_not(rogue)))
         
@@ -216,29 +216,23 @@ class M2Navigation(core.Entity):
         # Stop their negative VS
         bs.traf.selvs = np.where(prevent_positive_altitude, 0, bs.traf.selvs)
         
-        # Finally, if anyone has lnav off and is not a rogue, make them go to altitude 0 and give them speed 0
-        give_0_command = np.logical_and.reduce((np.logical_not(rogue),
-                                                landing))
-        
-        bs.traf.selalt = np.where(give_0_command, 0, bs.traf.selalt)
-        bs.traf.selspd = np.where(give_0_command, 0, bs.traf.selspd)
-        
         # Aircraft to delete
         # We delete aircraft if:
-        # 1. They are at alt 0 with lnav off
+        # 1. They have lnav off
         # 2. They are a loitering aircraft with lnav off
         # 3. Above two only if the last waypoint flag is active
         
         delete_array = np.logical_and.reduce((np.logical_not(rogue),
-                                              landing,
-                                              np.logical_or(bs.traf.alt <0.1, bs.traf.loiter.loiterbool)
-                                              ))
+                                              landing))
         
         if np.any(delete_array):
             # Get the ACIDs of the aircraft to delete
             acids_to_delete = np.array(bs.traf.id)[delete_array]
             for acid in acids_to_delete:
-                stack.stack(f'DEL {acid}')
+                if bs.traf.loiter.loiterbool[bs.traf.id.index(acid)]:
+                    stack.stack(f'DELLOITER {acid}')
+                else:
+                    stack.stack(f'DEL {acid}')
         
     def ascent_descent(self, distance, above_alt, below_alt):
         # We also don't want descents when there are other aircraft below
