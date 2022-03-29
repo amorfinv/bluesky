@@ -33,10 +33,16 @@ from plugins.streets.open_airspace_grid import *
 import time
 
 path_plans = None
+flight_layers = None
+edge_traffic = None
 
 def init_plugin():
     
-    global path_plans
+    global path_plans, flight_layers, edge_traffic
+    
+    dict_file_path = 'plugins/streets/graph_data/03-graph/'
+    edge_traffic = EdgeTraffic(dict_file_path)
+    flight_layers = FlightLayers()
     path_plans = PathPlans()
 
     config = {
@@ -55,8 +61,6 @@ use_flow_control = True
 
 # initialise queue
 queue_dict = dict()
-
-#path_plans = PathPlans()
 
 # initialise dill loading
 dill_to_load = -1
@@ -112,12 +116,6 @@ def reset():
     # reset queue
     global queue_dict
     queue_dict = dict()
-
-    # global path_plans
-    # try:
-    #     del path_plans
-    # except:
-    #     pass
 
 ######################## FLOW CONTROL FUNCTIONS #########################
 @core.timed_function(dt=10)
@@ -510,6 +508,25 @@ def streetsenable():
 
     streets_bool = True
 
+@stack.command
+def loadloiteringdill(fpath: str):
+    """
+    Load loitering edges dictionary from a dill file.
+    """
+    loitering_fpath = f'plugins/streets/scenario_loitering_dills/{fpath}'  
+    
+    path_plans.load(loitering_fpath)
+
+@stack.command
+def layerstruct(fpath: str):
+    """
+    Load the layer structure.
+    """
+    # graph_data/03-graph/layers.json
+    loitering_fpath = f'plugins/streets/{fpath}'  
+    
+    flight_layers.load(loitering_fpath)
+    
 ######################## QUEUE ###############################
 def queue_attempt_create(first_time, acid, actype, path_file, aclat, aclon, destlat, destlon, achdg, acalt, acspd, prio, geodur, geocoords = None):
     # Easiest check, if any aircraft is below 30 ft
@@ -1124,7 +1141,7 @@ def osmid_to_latlon(osmid , i=2):
 
 ######################## FLIGHT LAYER TRACKING ############################
 class FlightLayers(Entity):
-    def __init__(self, dict_file_path):
+    def __init__(self):
         super().__init__()
 
         with self.settrafarrays():
@@ -1164,18 +1181,17 @@ class FlightLayers(Entity):
         bs.traf.leg_angle_levels = self.leg_angle_levels
         bs.traf.next_leg_angle_levels = self.next_leg_angle_levels
         bs.traf.open_closest_layer = self.open_closest_layer
-
-        self.layer_dict = {}
-        # Opening edges.JSON as a dictionary
-        with open(f'{dict_file_path}layers.json', 'r') as filename:
-            self.layer_dict = json.load(filename)
         
-        self.layer_spacing = self.layer_dict['info']['spacing']
-        self.angle_spacing = self.layer_dict['info']['angle_spacing']
-        self.layer_levels = np.array(self.layer_dict['info']['levels'])
-        self.layer_dist_center = self.layer_levels - self.layer_dict['info']['spacing']/2
-        self.heading_levels = self.layer_dict['config']['open']['heading']['heights']['center']
-        self.layer_heading_level_choices = self.layer_dict['config']['open']['heading']['angle']['center']
+        # Initliaze flight layer tracking variables
+        self.layer_dict = {}
+        self.heading_levels = {}
+        self.layer_heading_level_choices = {}
+
+        self.layer_spacing = None
+        self.angle_spacing = None
+
+        self.layer_levels = np.array([], dtype=int)
+        self.layer_dist_center = np.array([], dtype=float)
 
         # vectorize function to extract layer_info
         self.layer_info = np.vectorize(self.get_layer_type)
@@ -1203,6 +1219,21 @@ class FlightLayers(Entity):
         self.next_leg_angle_levels[-n:]         = 0.0
 
         self.open_closest_layer[-n:]            = 0
+    
+    def load(self, dict_file_path):
+
+        # Load layer structure from stack command
+
+        # Opening edges.JSON as a dictionary
+        with open(dict_file_path, 'r') as filename:
+            self.layer_dict = json.load(filename)
+        
+        self.layer_spacing = self.layer_dict['info']['spacing']
+        self.angle_spacing = self.layer_dict['info']['angle_spacing']
+        self.layer_levels = np.array(self.layer_dict['info']['levels'])
+        self.layer_dist_center = self.layer_levels - self.layer_dict['info']['spacing']/2
+        self.heading_levels = self.layer_dict['config']['open']['heading']['heights']['center']
+        self.layer_heading_level_choices = self.layer_dict['config']['open']['heading']['angle']['center']
 
     def layer_tracking(self):
         
@@ -1347,20 +1378,7 @@ class FlightLayers(Entity):
             closest_empty_layer_bottom, closest_empty_layer_top, \
             lowest_cruise_layer, highest_cruise_layer, open_closest_layer
 
-        
-######### INITIALIZATION OF QUEUE, EDGE TRACKING AND FLIGHT LAYERS ########
-
-# load street_graphs
-dict_file_path = 'plugins/streets/graph_data/03-graph/'
-
-# Initialize EdgeTraffic class
-edge_traffic = EdgeTraffic(dict_file_path)
-
-# Initialize Flight Layers
-flight_layers = FlightLayers(dict_file_path)
-
-
-######################### FLOW CONTROL #######################
+############################ Path Plans ###################################
 
 class PathPlans(Entity):
     def __init__(self):
@@ -1478,71 +1496,3 @@ class PathPlans(Entity):
     
     def update_path_plans(self):
         self.graph=dill.load(open("plugins/streets/Flow_control.dill", "rb"))
-
-
-def graph_to_dfs(G):
-    """
-    Adapted from osmnx code: https://github.com/gboeing/osmnx
-
-    Convert a MultiDiGraph to node and edge DataFrames.
-
-    Parameters
-    ----------
-    G : networkx.MultiDiGraph
-        input graph
-
-    Returns
-    -------
-    pandas.DataFrame or tuple
-        gdf_nodes or gdf_edges or tuple of (gdf_nodes, gdf_edges). gdf_nodes
-        is indexed by osmid and gdf_edges is multi-indexed by u, v, key
-        following normal MultiDiGraph structure.
-    """
-    import pandas as pd
-    from shapely.geometry import LineString, Point
-    import networkx as nx
-
-    # create node dataframe
-    nodes, data = zip(*G.nodes(data=True))
-
-    # convert node x/y attributes to Points for geometry column
-    geom = (Point(d["x"], d["y"]) for d in data)
-    df_nodes = pd.DataFrame(data, index=nodes)
-    df_nodes['geometry'] = list(geom)
-
-    df_nodes.index.rename("osmid", inplace=True)
-
-    # create edge dataframe 
-    u, v, k, data = zip(*G.edges(keys=True, data=True))
-
-    # subroutine to get geometry for every edge: if edge already has
-    # geometry return it, otherwise create it using the incident nodes
-    x_lookup = nx.get_node_attributes(G, "x")
-    y_lookup = nx.get_node_attributes(G, "y")
-
-    def make_geom(u, v, data, x=x_lookup, y=y_lookup):
-        if "geometry" in data:
-            return data["geometry"]
-        else:
-            return LineString((Point((x[u], y[u])), Point((x[v], y[v]))))
-
-    geom = map(make_geom, u, v, data)
-    df_edges = pd.DataFrame(data)
-    df_edges['geometry'] = list(geom)
-
-    # add u, v, key attributes as index
-    df_edges["u"] = u
-    df_edges["v"] = v
-    df_edges["key"] = k
-    df_edges.set_index(["u", "v", "key"], inplace=True)
-
-    return df_nodes, df_edges
-
-@stack.command
-def loadloiteringdill(fpath: str):
-    """
-    Load loitering edges dictionary from a dill file.
-    """
-    loitering_fpath = f'plugins/streets/scenario_loitering_dills/{fpath}'  
-    
-    path_plans.load(loitering_fpath)
