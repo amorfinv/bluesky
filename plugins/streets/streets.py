@@ -40,8 +40,7 @@ def init_plugin():
     
     global path_plans, flight_layers, edge_traffic
     
-    dict_file_path = 'plugins/streets/graph_data/03-graph/'
-    edge_traffic = EdgeTraffic(dict_file_path)
+    edge_traffic = EdgeTraffic()
     flight_layers = FlightLayers()
     path_plans = PathPlans()
 
@@ -518,14 +517,16 @@ def loadloiteringdill(fpath: str):
     path_plans.load(loitering_fpath)
 
 @stack.command
-def layerstruct(fpath: str):
+def airspaceinfo(fpath: str):
     """
-    Load the layer structure.
+    Load the layer edges edges, nodes and structure into edge_traffic and flight layers.
+    Must be inside plugins/streets/ folders
     """
     # graph_data/03-graph/layers.json
-    loitering_fpath = f'plugins/streets/{fpath}'  
+    fpath = f'plugins/streets/{fpath}'  
     
-    flight_layers.load(loitering_fpath)
+    edge_traffic.load(fpath)
+    flight_layers.load(fpath)
     
 ######################## QUEUE ###############################
 def queue_attempt_create(first_time, acid, actype, path_file, aclat, aclon, destlat, destlon, achdg, acalt, acspd, prio, geodur, geocoords = None):
@@ -647,7 +648,7 @@ def check_queue():
 # "traffic" class. Contains edge "autopilot" and "activedge"
 class EdgeTraffic(Entity):
 
-    def __init__(self, dict_file_path):
+    def __init__(self):
         super().__init__()
 
         with self.settrafarrays():
@@ -659,14 +660,28 @@ class EdgeTraffic(Entity):
         bs.traf.edgeap = self.edgeap
         bs.traf.actedge = self.actedge
 
-        # initialize edge and nodes dictionaries
-        
+        # initialize edge and nodes dictionaries and arrays
+        self.edge_dict = {}
+        self.node_dict = {}
+
+        self.edge_to_uv_array = np.array([], dtype='uint16,uint16')
+        self.const_edge_stroke_array = np.array([], dtype='uint16')
+        self.const_edge_flow_array = np.array([], dtype='uint16')
+        self.const_edge_height_allocation_array = np.array([], dtype='uint8')       
+        self.const_edge_speed_limit_array = np.array([], dtype='uint16')
+
+        self.const_edge_id_array = np.array([], dtype='uint16')
+        self.uv_to_edge_matrix = csr_matrix(np.array([]), dtype=np.uint16)
+
+    def load(self, dict_file_path):
+        # load the edge and node info from the stack command
+
         # Opening edges.JSON as a dictionary
-        with open(f'{dict_file_path}edges.json', 'r') as filename:
+        with open(f'{dict_file_path}/edges.json', 'r') as filename:
             self.edge_dict = json.load(filename)
 
         # Opening nodes.JSON as a dictionary
-        with open(f'{dict_file_path}nodes.json', 'r') as filename:
+        with open(f'{dict_file_path}/nodes.json', 'r') as filename:
             node_dict = json.load(filename)
 
         # reverse dictionary
@@ -674,11 +689,11 @@ class EdgeTraffic(Entity):
 
         # TODO: could comment everything below this line if we don't use it
         # read constrained node dict
-        with open(f'{dict_file_path}constrained_node_dict.json', 'r') as filename:
+        with open(f'{dict_file_path}/constrained_node_dict.json', 'r') as filename:
             constrained_node_dict = json.load(filename)
 
         # open constrained edges JSON as a dictionary
-        with open(f'{dict_file_path}const_edges.json', 'r') as filename:
+        with open(f'{dict_file_path}/const_edges.json', 'r') as filename:
             constrained_edges_dict = json.load(filename)
 
         # Build mapping from node to edges
@@ -1221,11 +1236,10 @@ class FlightLayers(Entity):
         self.open_closest_layer[-n:]            = 0
     
     def load(self, dict_file_path):
-
         # Load layer structure from stack command
 
         # Opening edges.JSON as a dictionary
-        with open(dict_file_path, 'r') as filename:
+        with open(f'{dict_file_path}/layers.json', 'r') as filename:
             self.layer_dict = json.load(filename)
         
         self.layer_spacing = self.layer_dict['info']['spacing']
