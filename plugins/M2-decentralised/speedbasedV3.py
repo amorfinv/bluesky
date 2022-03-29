@@ -39,6 +39,7 @@ class SpeedBasedV3(ConflictResolution):
         self.cruiselayerdiff = self.layer_height * 3
         self.frnt_tol = 20 # Degrees
         self.rpz = 40
+        self.hopping = True
         with self.settrafarrays():
             self.in_headon = []
             self.stuck = np.array([], dtype = bool)
@@ -342,9 +343,10 @@ class SpeedBasedV3(ConflictResolution):
                                     alt = self.get_below_empty_layer(ownship, idx1)
                                     
                             # Give stack command
-                            stack.stack(f'ALT {ownship.id[idx1]} {alt}')
-                            stack.stack(f'LNAV {ownship.id[idx1]} ON') 
-                            stack.stack(f'VNAV {ownship.id[idx1]} ON')
+                            if self.hopping:
+                                stack.stack(f'ALT {ownship.id[idx1]} {alt}')
+                                stack.stack(f'LNAV {ownship.id[idx1]} ON') 
+                                stack.stack(f'VNAV {ownship.id[idx1]} ON')
                         #print('In front, head-on, attempt alt change.')
                         
                     self.in_headon[idx1] = True
@@ -419,28 +421,28 @@ class SpeedBasedV3(ConflictResolution):
                 if can_ascend:
                     # Go to cruise layer above
                     alt = self.get_above_cruise_layer(ownship, idx1)
-                    if alt > 0:
+                    if alt > 0 and self.hopping:
                         stack.stack(f'ALT {ownship.id[idx1]} {alt}')
                         stack.stack(f'LNAV {ownship.id[idx1]} ON') 
                         stack.stack(f'VNAV {ownship.id[idx1]} ON')
                 else:
                     #Go to unused layer above
                     alt = self.get_above_empty_layer(ownship, idx1)
-                    if alt > 0:
+                    if alt > 0 and self.hopping:
                         stack.stack(f'ALT {ownship.id[idx1]} {alt}')
                         stack.stack(f'LNAV {ownship.id[idx1]} ON') 
                         stack.stack(f'VNAV {ownship.id[idx1]} ON')
                         
         if ascend and can_ascend and self.in_headon[idx1] != True:
             alt = self.get_above_cruise_layer(ownship, idx1)
-            if alt > 0:
+            if alt > 0 and self.hopping:
                 stack.stack(f'ALT {ownship.id[idx1]} {alt}')
                 stack.stack(f'LNAV {ownship.id[idx1]} ON') 
                 stack.stack(f'VNAV {ownship.id[idx1]} ON')
             
         elif descend and can_descend and self.in_headon[idx1] != True:
             alt = self.get_below_cruise_layer(ownship, idx1)
-            if alt>0:
+            if alt>0 and self.hopping:
                 stack.stack(f'ALT {ownship.id[idx1]} {alt}')
                 stack.stack(f'LNAV {ownship.id[idx1]} ON') 
                 stack.stack(f'VNAV {ownship.id[idx1]} ON')

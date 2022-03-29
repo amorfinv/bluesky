@@ -31,7 +31,8 @@ def init_plugin():
 
 class M2Navigation(core.Entity):
     def __init__(self):
-        super().__init__()  
+        super().__init__() 
+        self.hopping = True 
         
     @timed_function(name='navtimedfunction', dt=0.5)
     def navtimedfunction(self):
@@ -154,45 +155,46 @@ class M2Navigation(core.Entity):
         # Going down a layer if possible -------------------------------------------
         # First of all we have to do some checks. 
         # Don't descend to a new cruise layer when a turn is close
-        turn_close = bs.traf.ap.dist2turn < 150 #m
-        
-        can_ascend, can_descend = self.ascent_descent(150, 200, -100)
-        
-        # Descent command for aircraft that can
-        target_descent_layer = np.where(emergency, bs.traf.closest_empty_layer_bottom,
-                                bs.traf.closest_cruise_layer_bottom)*ft
+        if self.hopping:
+            turn_close = bs.traf.ap.dist2turn < 150 #m
+            
+            can_ascend, can_descend = self.ascent_descent(150, 200, -100)
+            
+            # Descent command for aircraft that can
+            target_descent_layer = np.where(emergency, bs.traf.closest_empty_layer_bottom,
+                                    bs.traf.closest_cruise_layer_bottom)*ft
 
-        give_descent_command = np.logical_and.reduce((in_constrained,
-                                                     np.logical_not(in_vert_man),
-                                                     np.logical_not(cr_active),
-                                                     np.logical_not(in_turn),
-                                                     np.logical_not(turn_close),
-                                                     can_descend,
-                                                     target_descent_layer != 0,
-                                                     np.logical_not(speed_zero),
-                                                     lnav_on,
-                                                     np.logical_not(rogue)))
-        
-        bs.traf.selalt = np.where(give_descent_command,  target_descent_layer, bs.traf.selalt)
-        
-        # Ascent command for aircraf that are stuck behind another
-        target_ascent_layer = np.where(emergency, bs.traf.closest_cruise_layer_top,
-                                        bs.traf.closest_empty_layer_top)*ft
-        
-        give_ascent_command = np.logical_and.reduce((in_constrained,
-                                                     np.logical_not(in_vert_man),
-                                                     np.logical_or(bs.traf.cr.stuck, np.logical_not(can_descend)),
-                                                     np.logical_not(in_turn),
-                                                     np.logical_not(turn_close),
-                                                     can_ascend,
-                                                     target_ascent_layer !=0,
-                                                     np.logical_not(speed_zero),
-                                                     lnav_on,
-                                                     np.logical_not(rogue)))
+            give_descent_command = np.logical_and.reduce((in_constrained,
+                                                        np.logical_not(in_vert_man),
+                                                        np.logical_not(cr_active),
+                                                        np.logical_not(in_turn),
+                                                        np.logical_not(turn_close),
+                                                        can_descend,
+                                                        target_descent_layer != 0,
+                                                        np.logical_not(speed_zero),
+                                                        lnav_on,
+                                                        np.logical_not(rogue)))
+            
+            bs.traf.selalt = np.where(give_descent_command,  target_descent_layer, bs.traf.selalt)
+            
+            # Ascent command for aircraf that are stuck behind another
+            target_ascent_layer = np.where(emergency, bs.traf.closest_cruise_layer_top,
+                                            bs.traf.closest_empty_layer_top)*ft
+            
+            give_ascent_command = np.logical_and.reduce((in_constrained,
+                                                        np.logical_not(in_vert_man),
+                                                        np.logical_or(bs.traf.cr.stuck, np.logical_not(can_descend)),
+                                                        np.logical_not(in_turn),
+                                                        np.logical_not(turn_close),
+                                                        can_ascend,
+                                                        target_ascent_layer !=0,
+                                                        np.logical_not(speed_zero),
+                                                        lnav_on,
+                                                        np.logical_not(rogue)))
 
-        bs.traf.selalt = np.where(give_ascent_command, bs.traf.closest_cruise_layer_top*ft, bs.traf.selalt)
-        # Set the aircraft we gave the command to as unstuck
-        bs.traf.cr.stuck = np.where(give_ascent_command, False, bs.traf.cr.stuck)
+            bs.traf.selalt = np.where(give_ascent_command, bs.traf.closest_cruise_layer_top*ft, bs.traf.selalt)
+            # Set the aircraft we gave the command to as unstuck
+            bs.traf.cr.stuck = np.where(give_ascent_command, False, bs.traf.cr.stuck)
         
         # If anyone is below 30 ft altitude and going down, make them hold altitude.
         prevent_negative_altitude = np.logical_and.reduce((bs.traf.vs<0,
