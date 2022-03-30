@@ -14,6 +14,9 @@ from bluesky.tools.aero import nm, ft, kts
 from bluesky.tools.misc import degto180
 import time
 
+# Hopping is controlled from streets.py
+hopping = True
+
 def init_plugin():
 
     # Addtional initilisation code
@@ -32,7 +35,6 @@ def init_plugin():
 class M2Navigation(core.Entity):
     def __init__(self):
         super().__init__() 
-        self.hopping = True 
         
     @timed_function(name='navtimedfunction', dt=0.5)
     def navtimedfunction(self):
@@ -155,7 +157,7 @@ class M2Navigation(core.Entity):
         # Going down a layer if possible -------------------------------------------
         # First of all we have to do some checks. 
         # Don't descend to a new cruise layer when a turn is close
-        if self.hopping:
+        if hopping:
             turn_close = bs.traf.ap.dist2turn < 150 #m
             
             can_ascend, can_descend = self.ascent_descent(150, 200, -100)
