@@ -63,6 +63,7 @@ queue_dict = dict()
 
 # initialise dill loading
 dill_to_load = -1
+angle_range = ''
 
 # TODO: 
 #   - update CREM2 command for pre processed path planning
@@ -112,6 +113,10 @@ def reset():
     global streets_bool
     streets_bool = False
     
+    # default setting for streets is not constrained
+    global heading_based_constrained
+    heading_based_constrained = False
+
     # reset queue
     global queue_dict
     queue_dict = dict()
@@ -346,6 +351,11 @@ def handle_replan(edges_changes):
                     
                     edge_layer_type = edge_traffic.edge_dict[wpedgeid]['height_allocation']
                     edge_layer_dict = flight_layers.layer_dict["config"][edge_layer_type]['levels']
+
+                    if edge_layer_type != 'open' and heading_based_constrained:
+                        # Get the layer dictionary for the heading range
+                        edge_layer_dict = edge_layer_dict[flight_layers.constrained_airspace_alloc[idx]]
+
                     flow_number = edge_traffic.edge_dict[wpedgeid]['flow_group']
 
                     # get the edge_airspace_type
@@ -508,6 +518,14 @@ def streetsenable():
     streets_bool = True
 
 @stack.command
+def headingconstrained():
+    """headingconstrained"""
+    # # Turns on heading constrained airspace for scenario
+    global heading_based_constrained
+
+    heading_based_constrained = True
+
+@stack.command
 def loadloiteringdill(fpath: str):
     """
     Load loitering edges dictionary from a dill file.
@@ -533,11 +551,27 @@ def queue_attempt_create(first_time, acid, actype, path_file, aclat, aclon, dest
     # Easiest check, if any aircraft is below 30 ft
     alt_not_ok = np.any(bs.traf.alt<40*ft)
     
-    global dill_to_load
+    global dill_to_load, angle_range
 
     if not alt_not_ok:
         # First, set the global DILL loading variable
         dill_to_load = path_file
+
+        if heading_based_constrained:
+            # assign the flight layer allocation in constrained airspace
+            # step 1: calculate the heading from origin to destination
+            qdr_full, _ = geo.qdrdist(aclat, aclon, destlat, destlon)
+            qdr_full = qdr_full % 360
+
+            # step 2: check between which heading range the aircraft is
+            # TODO: make this dynamic
+            heading_ranges_constrained = np.array([0,72,144,216,288,360])
+
+            # check which two values qdr is in between
+            idx_qdr = np.where(qdr_full<heading_ranges_constrained)[0]
+
+            # select the idx and the one before
+            angle_range = f'{heading_ranges_constrained[idx_qdr-1][0]}-{heading_ranges_constrained[idx_qdr][0]}'
 
         # Then create the aircraft
         bs.traf.cre(acid, actype, aclat, aclon, achdg, acalt, acspd)
@@ -575,6 +609,23 @@ def queue_attempt_create(first_time, acid, actype, path_file, aclat, aclon, dest
     if not dist_not_ok:
         # First create the aircraft
         dill_to_load = path_file
+
+        if heading_based_constrained:
+            # assign the flight layer allocation in constrained airspace
+            # step 1: calculate the heading from origin to destination
+            qdr_full, _ = geo.qdrdist(aclat, aclon, destlat, destlon)
+            qdr_full = qdr_full % 360
+
+            # step 2: check between which heading range the aircraft is
+            # TODO: make this dynamic
+            heading_ranges_constrained = np.array([0,72,144,216,288,360])
+
+            # check which two values qdr is in between
+            idx_qdr = np.where(qdr_full<heading_ranges_constrained)[0]
+
+            # select the idx and the one before
+            angle_range = f'{heading_ranges_constrained[idx_qdr-1][0]}-{heading_ranges_constrained[idx_qdr][0]}'
+            
         bs.traf.cre(acid, actype, aclat, aclon, achdg, acalt, acspd)
 
         acidx = bs.traf.id.index(acid)
@@ -601,6 +652,23 @@ def queue_attempt_create(first_time, acid, actype, path_file, aclat, aclon, dest
     if bs.sim.simt - first_time > 300:
         # First create the aircraft
         dill_to_load = path_file
+
+        if heading_based_constrained:
+            # assign the flight layer allocation in constrained airspace
+            # step 1: calculate the heading from origin to destination
+            qdr_full, _ = geo.qdrdist(aclat, aclon, destlat, destlon)
+            qdr_full = qdr_full % 360
+
+            # step 2: check between which heading range the aircraft is
+            # TODO: make this dynamic
+            heading_ranges_constrained = np.array([0,72,144,216,288,360])
+
+            # check which two values qdr is in between
+            idx_qdr = np.where(qdr_full<heading_ranges_constrained)[0]
+
+            # select the idx and the one before
+            angle_range = f'{heading_ranges_constrained[idx_qdr-1][0]}-{heading_ranges_constrained[idx_qdr][0]}'
+        
         bs.traf.cre(acid, actype, aclat, aclon, achdg, acalt, acspd)
 
         acidx = bs.traf.id.index(acid)
@@ -617,7 +685,7 @@ def queue_attempt_create(first_time, acid, actype, path_file, aclat, aclon, dest
         # Then assign its priority
         idx = bs.traf.id.index(acid)
         bs.traf.priority[idx] = prio
-        
+
         # Add the necessary stack commands for this aircraft
         stack.stack(f'LNAV {acid} ON')
         stack.stack(f'VNAV {acid} ON')
@@ -1181,6 +1249,8 @@ class FlightLayers(Entity):
 
             self.open_closest_layer             = np.array([], dtype=int)
 
+            self.constrained_airspace_alloc     = np.array([], dtype=str)
+
         # Patch bs.traf with new information
         bs.traf.flight_levels = self.flight_levels
         bs.traf.flight_layer_type = self.flight_layer_type
@@ -1196,6 +1266,7 @@ class FlightLayers(Entity):
         bs.traf.leg_angle_levels = self.leg_angle_levels
         bs.traf.next_leg_angle_levels = self.next_leg_angle_levels
         bs.traf.open_closest_layer = self.open_closest_layer
+        bs.traf.constrained_airspace_alloc = self.constrained_airspace_alloc
         
         # Initliaze flight layer tracking variables
         self.layer_dict = {}
@@ -1234,6 +1305,8 @@ class FlightLayers(Entity):
         self.next_leg_angle_levels[-n:]         = 0.0
 
         self.open_closest_layer[-n:]            = 0
+
+        self.constrained_airspace_alloc[-n:]    = angle_range
     
     def load(self, dict_file_path):
         # Load layer structure from stack command
@@ -1299,6 +1372,7 @@ class FlightLayers(Entity):
         bs.traf.leg_angle_levels = self.leg_angle_levels
         bs.traf.next_leg_angle_levels = self.next_leg_angle_levels
         bs.traf.open_closest_layer = self.open_closest_layer
+        bs.traf.constrained_airspace_alloc = self.constrained_airspace_alloc
 
         return
 
@@ -1478,6 +1552,13 @@ class PathPlans(Entity):
             
             edge_layer_type = edge_traffic.edge_dict[wpedgeid]['height_allocation']
             edge_layer_dict = flight_layers.layer_dict["config"][edge_layer_type]['levels']
+
+            # when layer type is not in open airspace check if there is a heading based
+            # constrained airspace
+            if edge_layer_type != 'open' and heading_based_constrained:
+                # Get the layer number
+                edge_layer_dict = edge_layer_dict[angle_range]
+
             flow_number = edge_traffic.edge_dict[wpedgeid]['flow_group']
 
             # get the edge_airspace_type
