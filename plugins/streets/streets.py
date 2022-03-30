@@ -23,6 +23,7 @@ from bluesky.core import Entity, Replaceable
 from bluesky.traffic import Route
 from bluesky.tools.misc import degto180, txt2tim, txt2alt, txt2spd
 from bluesky.core.simtime import timed_function
+from bluesky.core.varexplorer import access_plugin_object
 
 import dill
 import networkx as nx
@@ -64,6 +65,7 @@ queue_dict = dict()
 # initialise dill loading
 dill_to_load = -1
 angle_range = ''
+heading_based_constrained = False
 
 # TODO: 
 #   - update CREM2 command for pre processed path planning
@@ -115,6 +117,13 @@ def reset():
     
     # default setting for streets is not constrained
     global heading_based_constrained
+
+    # set hopping to true on the reset
+    if heading_based_constrained:
+        # turn off M2 Navigation
+        access_plugin_object('M2NAVIGATION').hopping = True
+        access_plugin_object('SPEEDBASEDV3').hopping = True
+
     heading_based_constrained = False
 
     # reset queue
@@ -521,9 +530,13 @@ def streetsenable():
 def headingconstrained():
     """headingconstrained"""
     # # Turns on heading constrained airspace for scenario
-    global heading_based_constrained
+    global heading_based_constrained, nav
 
     heading_based_constrained = True
+
+    # set M2 Navigation hopping to False
+    access_plugin_object('M2NAVIGATION').hopping = False
+    access_plugin_object('SPEEDBASEDV3').hopping = False
 
 @stack.command
 def loadloiteringdill(fpath: str):
