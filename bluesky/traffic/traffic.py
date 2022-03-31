@@ -92,7 +92,9 @@ confheader = \
     'LON2 [deg],' + \
     'ALT2 [ft],' + \
     'CPALAT [lat],' + \
-    'CPALON [lon]\n'
+    'CPALON [lon],' + \
+    'EDGEID1 [-],' + \
+    'EDGEID2 [-]\n'
     
 losheader = \
     '#######################################################\n' + \
@@ -120,7 +122,7 @@ regheader = \
     '#######################################################\n\n' + \
     'Parameters [Units]:\n' + \
     'Simulation time [s], ' + \
-    'ACIDs [-], ALTs [ft], LATs [deg], LONs [deg]\n'
+    'ACIDs [-], ALTs [ft], LATs [deg], LONs [deg], EDGEID [-]\n'
     
 geoheader = \
     '#######################################################\n' + \
@@ -607,7 +609,8 @@ class Traffic(Entity):
                     self.conflog.log(pair[0], pair[1],
                                     self.lat[idx1], self.lon[idx1],self.alt[idx1],
                                     self.lat[idx2], self.lon[idx2],self.alt[idx2],
-                                    cpalatlon[0], cpalatlon[1])
+                                    cpalatlon[0], cpalatlon[1], self.actedge.wpedgeid[idx1],
+                                    self.actedge.wpedgeid[idx2])
                 
         self.prevconfpairs = set(self.cd.confpairs)
         
@@ -671,6 +674,7 @@ class Traffic(Entity):
         self.reglog.log(*self.alt/ft)
         self.reglog.log(*self.lat)
         self.reglog.log(*self.lon)
+        self.reglog.log(*self.actedge.wpedgeid)
         return
 
     @timed_function(name='asas', dt=bs.settings.asas_dt, manual=True)
