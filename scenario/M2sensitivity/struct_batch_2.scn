@@ -1,0 +1,324 @@
+00:00:00>SCEN Flight_intention_high_40_1
+00:00:00>PCALL M2sensitivity/Flight_intention_high_40_1.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_high_40_0
+00:00:00>PCALL M2sensitivity/Flight_intention_high_40_0.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_high_40_2
+00:00:00>PCALL M2sensitivity/Flight_intention_high_40_2.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_high_40_3
+00:00:00>PCALL M2sensitivity/Flight_intention_high_40_3.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_high_40_7
+00:00:00>PCALL M2sensitivity/Flight_intention_high_40_7.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_high_40_6
+00:00:00>PCALL M2sensitivity/Flight_intention_high_40_6.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_high_40_4
+00:00:00>PCALL M2sensitivity/Flight_intention_high_40_4.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_high_40_5
+00:00:00>PCALL M2sensitivity/Flight_intention_high_40_5.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_high_40_8
+00:00:00>PCALL M2sensitivity/Flight_intention_high_40_8.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_high_40_5_1to1
+00:00:00>PCALL M2sensitivity/Flight_intention_high_40_5_1to1.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_high_40_4_1to1
+00:00:00>PCALL M2sensitivity/Flight_intention_high_40_4_1to1.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_high_40_8_1to1
+00:00:00>PCALL M2sensitivity/Flight_intention_high_40_8_1to1.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_high_40_2_1to1
+00:00:00>PCALL M2sensitivity/Flight_intention_high_40_2_1to1.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_high_40_3_1to1
+00:00:00>PCALL M2sensitivity/Flight_intention_high_40_3_1to1.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_high_40_6_1to1
+00:00:00>PCALL M2sensitivity/Flight_intention_high_40_6_1to1.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_high_40_7_1to1
+00:00:00>PCALL M2sensitivity/Flight_intention_high_40_7_1to1.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_high_40_1_1to1
+00:00:00>PCALL M2sensitivity/Flight_intention_high_40_1_1to1.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_high_40_0_1to1
+00:00:00>PCALL M2sensitivity/Flight_intention_high_40_0_1to1.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_high_40_4_headalloc
+00:00:00>PCALL M2sensitivity/Flight_intention_high_40_4_headalloc.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_high_40_0_headalloc
+00:00:00>PCALL M2sensitivity/Flight_intention_high_40_0_headalloc.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_high_40_7_headalloc
+00:00:00>PCALL M2sensitivity/Flight_intention_high_40_7_headalloc.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_high_40_3_headalloc
+00:00:00>PCALL M2sensitivity/Flight_intention_high_40_3_headalloc.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_high_40_8_headalloc
+00:00:00>PCALL M2sensitivity/Flight_intention_high_40_8_headalloc.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_high_40_2_headalloc
+00:00:00>PCALL M2sensitivity/Flight_intention_high_40_2_headalloc.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_high_40_6_headalloc
+00:00:00>PCALL M2sensitivity/Flight_intention_high_40_6_headalloc.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_high_40_1_headalloc
+00:00:00>PCALL M2sensitivity/Flight_intention_high_40_1_headalloc.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_high_40_5_headalloc
+00:00:00>PCALL M2sensitivity/Flight_intention_high_40_5_headalloc.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_ultra_40_8
+00:00:00>PCALL M2sensitivity/Flight_intention_ultra_40_8.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_ultra_40_2
+00:00:00>PCALL M2sensitivity/Flight_intention_ultra_40_2.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_ultra_40_3
+00:00:00>PCALL M2sensitivity/Flight_intention_ultra_40_3.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_ultra_40_1
+00:00:00>PCALL M2sensitivity/Flight_intention_ultra_40_1.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_ultra_40_0
+00:00:00>PCALL M2sensitivity/Flight_intention_ultra_40_0.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_ultra_40_4
+00:00:00>PCALL M2sensitivity/Flight_intention_ultra_40_4.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_ultra_40_5
+00:00:00>PCALL M2sensitivity/Flight_intention_ultra_40_5.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_ultra_40_7
+00:00:00>PCALL M2sensitivity/Flight_intention_ultra_40_7.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_ultra_40_6
+00:00:00>PCALL M2sensitivity/Flight_intention_ultra_40_6.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_ultra_40_0_1to1
+00:00:00>PCALL M2sensitivity/Flight_intention_ultra_40_0_1to1.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_ultra_40_1_1to1
+00:00:00>PCALL M2sensitivity/Flight_intention_ultra_40_1_1to1.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_ultra_40_7_1to1
+00:00:00>PCALL M2sensitivity/Flight_intention_ultra_40_7_1to1.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_ultra_40_6_1to1
+00:00:00>PCALL M2sensitivity/Flight_intention_ultra_40_6_1to1.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_ultra_40_8_1to1
+00:00:00>PCALL M2sensitivity/Flight_intention_ultra_40_8_1to1.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_ultra_40_3_1to1
+00:00:00>PCALL M2sensitivity/Flight_intention_ultra_40_3_1to1.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_ultra_40_2_1to1
+00:00:00>PCALL M2sensitivity/Flight_intention_ultra_40_2_1to1.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_ultra_40_4_1to1
+00:00:00>PCALL M2sensitivity/Flight_intention_ultra_40_4_1to1.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_ultra_40_5_1to1
+00:00:00>PCALL M2sensitivity/Flight_intention_ultra_40_5_1to1.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_ultra_40_8_headalloc
+00:00:00>PCALL M2sensitivity/Flight_intention_ultra_40_8_headalloc.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_ultra_40_1_headalloc
+00:00:00>PCALL M2sensitivity/Flight_intention_ultra_40_1_headalloc.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_ultra_40_5_headalloc
+00:00:00>PCALL M2sensitivity/Flight_intention_ultra_40_5_headalloc.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_ultra_40_2_headalloc
+00:00:00>PCALL M2sensitivity/Flight_intention_ultra_40_2_headalloc.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_ultra_40_6_headalloc
+00:00:00>PCALL M2sensitivity/Flight_intention_ultra_40_6_headalloc.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_ultra_40_7_headalloc
+00:00:00>PCALL M2sensitivity/Flight_intention_ultra_40_7_headalloc.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_ultra_40_3_headalloc
+00:00:00>PCALL M2sensitivity/Flight_intention_ultra_40_3_headalloc.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_ultra_40_4_headalloc
+00:00:00>PCALL M2sensitivity/Flight_intention_ultra_40_4_headalloc.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_ultra_40_0_headalloc
+00:00:00>PCALL M2sensitivity/Flight_intention_ultra_40_0_headalloc.scn
+00:00:00>FF
+00:00:00>SCHEDULE 03:00:00 HOLD
+00:00:00>SCHEDULE 03:00:00 DELETEALL
+
