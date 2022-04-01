@@ -111,10 +111,11 @@ def update():
 
 ####################### RESET FUNCTION ###############################
 def reset():
-    # when reseting bluesky turn off streets
-    global streets_bool
+    # when reseting bluesky turn off streets and turn on flow controls
+    global streets_bool, use_flow_control
     streets_bool = False
-    
+    use_flow_control = True
+
     # default setting for streets is not constrained
     global heading_based_constrained
 
@@ -558,6 +559,14 @@ def airspaceinfo(fpath: str):
     
     edge_traffic.load(fpath)
     flight_layers.load(fpath)
+
+@stack.command
+def DISABLEFLOWCONTROL():
+    """DISABLEFLOWCONTROL"""
+    # # Turns off flow control for scenario
+    global use_flow_control
+
+    use_flow_control = False
     
 ######################## QUEUE ###############################
 def queue_attempt_create(first_time, acid, actype, path_file, aclat, aclon, destlat, destlon, achdg, acalt, acspd, prio, geodur, geocoords = None):
