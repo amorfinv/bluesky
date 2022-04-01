@@ -120,10 +120,8 @@ def reset():
     global heading_based_constrained
 
     # set hopping to true on the reset
-    if heading_based_constrained:
-        # turn off M2 Navigation
-        access_plugin_object('M2NAVIGATION').hopping = True
-        access_plugin_object('SPEEDBASEDV3').hopping = True
+    access_plugin_object('M2NAVIGATION').hopping = True
+    access_plugin_object('SPEEDBASEDV3').hopping = True
 
     heading_based_constrained = False
 
