@@ -1,6 +1,3 @@
-from ast import Continue
-from bluesky.traffic.turbulence import Turbulence
-from bluesky.core.simtime import timed_function
 from bluesky.traffic.asas import ConflictResolution
 import bluesky as bs
 import numpy as np
@@ -42,6 +39,8 @@ class SpeedBasedV3(ConflictResolution):
         self.cruiselayerdiff = self.layer_height * 3
         self.frnt_tol = 20 # Degrees
         self.rpz = 40
+        
+        self.heading_based = False
     
         with self.settrafarrays():
             self.in_headon = []
@@ -461,62 +460,82 @@ class SpeedBasedV3(ConflictResolution):
             # Combine all velocity obstacles into one big polygon
             CombinedObstacles = cascaded_union(VelocityObstacles)
             
-            # Get minimum and maximum speed of ownship
-            vmin = ownship.perf.vmin[idx1]
-            if bs.traf.ap.inturn[idx1] or bs.traf.ap.dist2turn[idx1] < 100:
-                vmax = bs.traf.actwp.nextturnspd[idx1] 
+            #####################################################
+            # SHORTEST WAY OUT METHOD
+            #####################################################      
+            if self.heading_based == True and open_airspace:
+                # We're in open airspace, do heading based.
+                # Find the closest point on polygon from the current velocity and attempt
+                # solution.
+                # Add big circle ring around polygon so we make sure that the solution will
+                # not be beyond vmax
+                limit_vmax = Point(0,0).buffer(100)-Point(0,0).buffer(vmax)
+                # Get the union of these two polygons
+                bad_states = limit_vmax.union(CombinedObstacles)
+                # Get the closest point on this polygon to the current velocity
+                p1, _ = nearest_points(bad_states, Point(v1))
+                # P1 is our new solution (combined track and velocity). Get each
+                gs_new = np.sqrt(p1.x**2 + p1.y**2)
+                track_new = (np.arctan2(p1.x[0,:],p1.y[1,:])*180/np.pi) % 360
+                
             else:
-                vmax = ownship.perf.vmax[idx1]
-            
-            # Create velocity line
-            v_dir = self.normalized(v1)
-            v_line_min = v_dir * vmin
-            v_line_max = v_dir * vmax
-            
-            # Create velocity line
-            line = LineString([v_line_min, v_line_max])
-            # Get the intersection with the velocity obstacles
-            intersection = CombinedObstacles.intersection(line)
-            
-            #---------------- RESOLUTION SPEEDS ---------------
-            # Apply the VO resolution speed
-            if intersection:
-                solutions = []
-                if type(intersection) == LineString:
-                    for velocity in list(intersection.coords):
-                        # Check whether to put velocity "negative" or "positive". 
-                        # Drones can fly backwards.
-                        if np.degrees(self.angle(velocity, v1)) < 1:
-                            solutions.append(self.norm(velocity))
-                        else:
-                            solutions.append(-self.norm(velocity))
+                # Get minimum and maximum speed of ownship
+                vmin = ownship.perf.vmin[idx1]
+                if bs.traf.ap.inturn[idx1] or bs.traf.ap.dist2turn[idx1] < 100:
+                    vmax = bs.traf.actwp.nextturnspd[idx1] 
                 else:
-                    for line in intersection:
-                        for velocity in list(line.coords):
+                    vmax = ownship.perf.vmax[idx1]
+                
+                # Create velocity line
+                v_dir = self.normalized(v1)
+                v_line_min = v_dir * vmin
+                v_line_max = v_dir * vmax
+                
+                # Create velocity line
+                line = LineString([v_line_min, v_line_max])
+                # Get the intersection with the velocity obstacles
+                intersection = CombinedObstacles.intersection(line)
+                
+                #---------------- RESOLUTION SPEEDS ---------------
+                # Apply the VO resolution speed
+                if intersection:
+                    solutions = []
+                    if type(intersection) == LineString:
+                        for velocity in list(intersection.coords):
                             # Check whether to put velocity "negative" or "positive". 
                             # Drones can fly backwards.
                             if np.degrees(self.angle(velocity, v1)) < 1:
                                 solutions.append(self.norm(velocity))
                             else:
                                 solutions.append(-self.norm(velocity))
-                            
-                pos_speeds = [spd for spd in solutions if spd >= 0]
-                neg_speeds = [spd for spd in solutions if spd < 0]
-                if pos_speeds:
-                    gs_new = min(pos_speeds)
-                elif neg_speeds:
-                    gs_new = max(neg_speeds)
-                else:
-                    gs_new = min(ownship.ap.tas[idx1], vmax)
+                    else:
+                        for line in intersection:
+                            for velocity in list(line.coords):
+                                # Check whether to put velocity "negative" or "positive". 
+                                # Drones can fly backwards.
+                                if np.degrees(self.angle(velocity, v1)) < 1:
+                                    solutions.append(self.norm(velocity))
+                                else:
+                                    solutions.append(-self.norm(velocity))
+                                
+                    pos_speeds = [spd for spd in solutions if spd >= 0]
+                    neg_speeds = [spd for spd in solutions if spd < 0]
+                    if pos_speeds:
+                        gs_new = min(pos_speeds)
+                    elif neg_speeds:
+                        gs_new = max(neg_speeds)
+                    else:
+                        gs_new = min(ownship.ap.tas[idx1], vmax)
+                        
+                elif VelocityObstacles and not intersection:
+                    # Means we need to take gs_new as vmax
+                    gs_new = vmax
+                    #print('HERE')
                     
-            elif VelocityObstacles and not intersection:
-                # Means we need to take gs_new as vmax
-                gs_new = vmax
-                #print('HERE')
+                else:
+                    # Nothing worked, do nothing
+                    gs_new = min(ownship.ap.tas[idx1], vmax)
                 
-            else:
-                # Nothing worked, do nothing
-                gs_new = min(ownship.ap.tas[idx1], vmax)
         
             gs_new = min([gs_new, min(should_speed), vmax])
             
@@ -543,7 +562,9 @@ class SpeedBasedV3(ConflictResolution):
             alt_new = ownship.ap.alt[idx1]
             self.altactivearr[idx1] = False
             
-        return gs_new, alt_new
+        return gs_new, alt_new, track_new
+            
+
     
     ##### Helper functions #####
     def check_speed(self, conf, ownship, intruder, idx1, speed):
@@ -898,6 +919,10 @@ class SpeedBasedV3(ConflictResolution):
             the conflict resolution algorithm.
         '''
         return np.logical_and(self.active, self.altactivearr)
+    
+    @stack.command
+    def headingbasedCR(self):
+        self.heading_based = True
     
     def resumenav(self, conf, ownship, intruder):
         '''
