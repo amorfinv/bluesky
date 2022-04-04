@@ -120,6 +120,9 @@ class SpeedBasedV3(ConflictResolution):
         open_airspace = bs.traf.actedge.edge_airspace_type[idx1] == 0
         landing = (not bs.traf.swlnav[idx1]) and bs.traf.actwp.swlastwp[idx1]
         
+        # Initialise track new
+        track_new = bs.traf.ap.hdg[idx1]
+        
         
         # ------------ Aircraft above or below check --------------
         # We check if we can ascend or descend by checking aircraft above
