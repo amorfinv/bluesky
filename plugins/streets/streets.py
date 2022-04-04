@@ -1609,4 +1609,4 @@ class PathPlans(Entity):
 # =============================================================================
     
     def load_flow_dill(self, fpath):
-        self.graph=dill.load(open(f"plugins/streets/{fpath}/Flow_control.dill", "rb"))
+        self.graph=dill.load(open(f"{fpath}/Flow_control.dill", "rb"))
