@@ -121,7 +121,7 @@ class SpeedBasedV3(ConflictResolution):
         landing = (not bs.traf.swlnav[idx1]) and bs.traf.actwp.swlastwp[idx1]
         
         # Initialise track new
-        track_new = bs.traf.ap.hdg[idx1]
+        track_new = bs.traf.ap.trk[idx1]
         
         
         # ------------ Aircraft above or below check --------------
