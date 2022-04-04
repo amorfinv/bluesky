@@ -509,7 +509,7 @@ def loadpath(filename: 'txt'):
     file_path = f'plugins/streets/path_plans/{filename}.dill'
 
     if use_path_plan:
-        path_plans.update_path_plans(file_path)
+        path_plans.load_flow_dill(file_path)
     
 @stack.command
 def DELRTEM2(acidx: 'acid' = None):
@@ -558,6 +558,7 @@ def airspaceinfo(fpath: str):
     
     edge_traffic.load(fpath)
     flight_layers.load(fpath)
+    path_plans.load_flow_dill(fpath)
 
 @stack.command
 def DISABLEFLOWCONTROL():
@@ -1499,9 +1500,6 @@ class PathPlans(Entity):
     def load(self, loitering_fpath):
         # load loitering aircraft 
         self.loitering_edges_dict = dill.load(open(loitering_fpath, 'rb'))
-        
-        # initialize flow control graph
-        self.update_path_plans()
             
     def create(self, n = 1):
         super().create(n)
@@ -1610,5 +1608,5 @@ class PathPlans(Entity):
 #         bs.traf.swvnavspd[ridx] = True
 # =============================================================================
     
-    def update_path_plans(self):
-        self.graph=dill.load(open("plugins/streets/Flow_control.dill", "rb"))
+    def load_flow_dill(self, fpath):
+        self.graph=dill.load(open(f"plugins/streets/{fpath}/Flow_control.dill", "rb"))
