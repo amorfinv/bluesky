@@ -59,6 +59,7 @@ class SpeedBasedV3(ConflictResolution):
         newgscapped = np.copy(ownship.gs)
         newvs       = np.copy(ownship.vs)
         newalt      = np.copy(ownship.alt)
+        newtrack    = np.copy(ownship.trk)
         
         # idx1 is of the ownship, idx2 is of the intruder
         # Iterate over aircraft in conflict
@@ -70,14 +71,14 @@ class SpeedBasedV3(ConflictResolution):
             idx_pairs = self.pairs(conf, ownship, intruder, idx1)
             # We're doing this because we want to solve for ALL intruders, not only pairwise
             # Find solution for aircraft 'idx'
-            gs_new, alt_new = self.SpeedBasedV3(conf, ownship, intruder, idx1, idx_pairs)
+            gs_new, alt_new, track_new = self.SpeedBasedV3(conf, ownship, intruder, idx1, idx_pairs)
             
             # Write the new velocity of aircraft 'idx' to traffic data
             newgscapped[idx1] = gs_new
             newalt[idx1]      = alt_new  
+            newtrack[idx1] = track_new
         
         # Speed based, and 2D, for now.
-        newtrack       = ownship.ap.trk
         newvs          = ownship.ap.vs
 
         return newtrack, newgscapped, newvs, newalt
@@ -905,7 +906,7 @@ class SpeedBasedV3(ConflictResolution):
             with True for all elements where heading is currently controlled by
             the conflict resolution algorithm.
         '''
-        return np.array([False] * len(self.active))
+        return np.logical_and(bs.traf.actedge.edge_airspace_type == 0, self.heading_based)
     
     @property
     def vsactive(self):
