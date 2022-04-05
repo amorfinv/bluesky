@@ -58,7 +58,7 @@ for file in list_dills:
     try: 
         dill.load(open(f'path_plan_dills/{file}', 'rb'),ignore=True)
     except:
-        print('Error loading file: ' + file)
+        # print('Error loading file: ' + file)
         # split file at '_'
         failed_dill = file.split('_')[0]
 
@@ -66,6 +66,7 @@ for file in list_dills:
         failed_dills[failed_dill] = pairs[int(failed_dill)]
         continue
 
+print(len(failed_dills))
 # write dictionary to json
 with open('failed_dills.json', 'w') as outfile:
     json.dump(failed_dills, outfile)
