@@ -32,8 +32,8 @@ def kwikdist(origin, destination):
     return dist
 
 # get the pairs list
-origins = gpd.read_file('/Users/andresmorfin/Desktop/M2/M2_test_scenario/current_code/whole_vienna/gis/Sending_nodes.gpkg').to_numpy()[:,0:2]
-destinations = gpd.read_file('/Users/andresmorfin/Desktop/M2/M2_test_scenario/current_code/whole_vienna/gis/Recieving_nodes.gpkg').to_numpy()[:,0:2]
+origins = gpd.read_file('/home/niki/Desktop/M2Decentralised/M2_test_decentralised/current_code/whole_vienna/gis/Sending_nodes.gpkg').to_numpy()[:,0:2]
+destinations = gpd.read_file('/home/niki/Desktop/M2Decentralised/M2_test_decentralised/current_code/whole_vienna/gis/Recieving_nodes.gpkg').to_numpy()[:,0:2]
 
 pairs = []
 round_int = 10
