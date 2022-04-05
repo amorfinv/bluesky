@@ -63,7 +63,7 @@ for file in list_dills:
         failed_dill = file.split('_')[0]
 
         # get the origin and destination from pairs
-        failed_dills[failed_dill] = pairs[int(failed_dill)]
+        failed_dills[failed_dill] = f'path_plan_dills/{file}'
         continue
 
 print(len(failed_dills))
