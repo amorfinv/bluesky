@@ -5,6 +5,7 @@ import plugins.streets.flow_control
 import os
 import geopandas as gpd
 import numpy as np
+import json
 
 def kwikdist(origin, destination):
     """
@@ -64,4 +65,8 @@ for file in list_dills:
         # get the origin and destination from pairs
         failed_dills[failed_dill] = pairs[int(failed_dill)]
         continue
+
+# write dictionary to json
+with open('failed_dills.json', 'w') as outfile:
+    json.dump(failed_dills, outfile)
 # %%
