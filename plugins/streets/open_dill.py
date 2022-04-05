@@ -51,8 +51,8 @@ for origin in origins:
 # list files in directory
 list_dills = os.listdir('path_plan_dills/')
 
-failed_dills = {}
-
+# failed_dills = {}
+failed_dills = []
 for file in list_dills:
 
     try: 
@@ -60,14 +60,20 @@ for file in list_dills:
     except:
         # print('Error loading file: ' + file)
         # split file at '_'
-        failed_dill = file.split('_')[0]
+        # failed_dill = file.split('_')[0]
 
         # get the origin and destination from pairs
-        failed_dills[failed_dill] = f'path_plan_dills/{file}'
+        # failed_dills[failed_dill] = pairs[int(failed_dill)]
+        failed_dills.append(f'path_plan_dills/{file}')
         continue
 
 print(len(failed_dills))
-# write dictionary to json
-with open('failed_dills.json', 'w') as outfile:
-    json.dump(failed_dills, outfile)
+# # write dictionary to json
+# with open('failed_dills.json', 'w') as outfile:
+#     json.dump(failed_dills, outfile)
+
+# write failed dill to text file
+with open('failed_dills.txt', 'w') as outfile:
+    for failed_dill in failed_dills:
+        outfile.write(failed_dill + '\n')
 # %%
