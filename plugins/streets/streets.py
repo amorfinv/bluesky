@@ -397,6 +397,9 @@ def queuem2(acid, actype: str="B744", path_file: str="", aclat: float=52., aclon
     # First, correct some values.
     acspd *= kts
     acalt *= ft
+
+    # always set geodur = 0
+    geodur = 0.0
     
     # Attempt to create
     queue_attempt_create(bs.sim.simt, acid, actype, path_file, aclat, aclon, destlat, destlon, achdg, acalt, acspd, prio, geodur, geocoords)
@@ -1499,7 +1502,11 @@ class PathPlans(Entity):
 
     def load(self, loitering_fpath):
         # load loitering aircraft 
-        self.loitering_edges_dict = dill.load(open(loitering_fpath, 'rb'))
+        # self.loitering_edges_dict = dill.load(open(loitering_fpath, 'rb'))
+
+        # make loitering dill empty
+        self.loitering_edges_dict = {}
+
             
     def create(self, n = 1):
         super().create(n)
