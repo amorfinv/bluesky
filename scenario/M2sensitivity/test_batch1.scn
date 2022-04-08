@@ -1,0 +1,65 @@
+00:00:00>SCEN Flight_intention_very_low_40_5
+00:00:00>PCALL M2sensitivity/Flight_intention_very_low_40_5.scn
+00:00:00>FF
+00:00:00>SCHEDULE 00:10:00 HOLD
+00:00:00>SCHEDULE 00:10:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_very_low_40_1_1to1
+00:00:00>PCALL M2sensitivity/Flight_intention_very_low_40_1_1to1.scn
+00:00:00>FF
+00:00:00>SCHEDULE 00:10:00 HOLD
+00:00:00>SCHEDULE 00:10:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_very_low_40_7_headalloc
+00:00:00>PCALL M2sensitivity/Flight_intention_very_low_40_7_headalloc.scn
+00:00:00>FF
+00:00:00>SCHEDULE 00:10:00 HOLD
+00:00:00>SCHEDULE 00:10:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_very_low_40_8_headallocnoflow
+00:00:00>PCALL M2sensitivity/Flight_intention_very_low_40_8_headallocnoflow.scn
+00:00:00>FF
+00:00:00>SCHEDULE 00:10:00 HOLD
+00:00:00>SCHEDULE 00:10:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_very_low_40_8_headingcr
+00:00:00>PCALL M2sensitivity/Flight_intention_very_low_40_8_headingcr.scn
+00:00:00>FF
+00:00:00>SCHEDULE 00:10:00 HOLD
+00:00:00>SCHEDULE 00:10:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_very_low_40_5_noflow
+00:00:00>PCALL M2sensitivity/Flight_intention_very_low_40_5_noflow.scn
+00:00:00>FF
+00:00:00>SCHEDULE 00:10:00 HOLD
+00:00:00>SCHEDULE 00:10:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_very_low_40_3_gridsectors
+00:00:00>PCALL M2sensitivity/Flight_intention_very_low_40_3_gridsectors.scn
+00:00:00>FF
+00:00:00>SCHEDULE 00:10:00 HOLD
+00:00:00>SCHEDULE 00:10:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_low_40_1
+00:00:00>PCALL M2sensitivity/Flight_intention_low_40_1.scn
+00:00:00>FF
+00:00:00>SCHEDULE 00:10:00 HOLD
+00:00:00>SCHEDULE 00:10:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_low_40_7_1to1
+00:00:00>PCALL M2sensitivity/Flight_intention_low_40_7_1to1.scn
+00:00:00>FF
+00:00:00>SCHEDULE 00:10:00 HOLD
+00:00:00>SCHEDULE 00:10:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_low_40_4_headalloc
+00:00:00>PCALL M2sensitivity/Flight_intention_low_40_4_headalloc.scn
+00:00:00>FF
+00:00:00>SCHEDULE 00:10:00 HOLD
+00:00:00>SCHEDULE 00:10:00 DELETEALL
+
+00:00:00>SCEN Flight_intention_low_40_2_headallocnoflow
+00:00:00>PCALL M2sensitivity/Flight_intention_low_40_2_headallocnoflow.scn
+00:00:00>FF
+00:00:00>SCHEDULE 00:10:00 HOLD
+00:00:00>SCHEDULE 00:10:00 DELETEALL
