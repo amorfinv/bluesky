@@ -39,6 +39,9 @@ class ScreenIO:
         self.custacclr = dict()
         self.custgrclr = dict()
 
+        # route_toggle
+        self.route_hide= False
+
         # Timing bookkeeping counters
         self.prevtime    = 0.0
         self.samplecount = 0
@@ -177,8 +180,16 @@ class ScreenIO:
         if not stack.sender():
             self.route_all = acid
             self.client_route.clear()
-        else:
+        elif not self.route_hide:
             self.client_route[stack.sender()] = acid
+            self.route_hide = True
+        else:
+            self.client_route[stack.sender()] = ""
+            for sender, acid in self.client_route.items():
+                _sendrte(sender, acid)
+            
+            self.client_route.clear()
+            self.route_hide = False
         return True
 
     def addnavwpt(self, name, lat, lon):
