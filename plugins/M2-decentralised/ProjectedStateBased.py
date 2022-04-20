@@ -10,6 +10,7 @@ import bluesky as bs
 from bluesky.tools import geo
 from bluesky.tools.aero import nm
 from bluesky.traffic.asas import ConflictDetection
+from time import time
 
 def init_plugin():
 
@@ -75,39 +76,81 @@ class M2StateBased(ConflictDetection):
         ''' Conflict detection between ownship (traf) and intruder (traf/adsb).'''
 
         ############### START PROJECTION ########################
-                
+        
+        t1 = time()
         # here find the position along route of ownship
         routes = ownship.ap.route
         
-        # test (just for one lat lon)
-        test_route = routes[0]
-        speed = ownship.selspd[0]
-        look_ahead_dist = ownship.selspd[0] * dtlookahead[0]
-        current_loc = gpd.GeoSeries(Point([ownship.lon[0], ownship.lat[0]]), crs='epsg:4326')
-        # convert to urm
-        current_loc = current_loc.to_crs(epsg=32633)
+        # intialize the geo_dict
+        geo_dict = {'geometry': [], 'acid': []}
 
-        # add lon lat to shapely linestring
-        route_line = gpd.GeoSeries(LineString(zip(test_route.wplon,test_route.wplat)), crs='epsg:4326')
-        route_line = route_line.to_crs(epsg=32633)
-        # find closest point to linestring
-        p1, _ = nearest_points(route_line.geometry.values[0], current_loc.geometry.values[0])
+        # for loop through aircraft id
+        for idx, route in enumerate(routes):
 
-        # now split the line to remove eveything before current position
-        _, end_line = split_line_with_point(route_line.geometry.values[0], p1)
+            # get the current location
+            current_loc = gpd.GeoSeries(Point([ownship.lon[idx], ownship.lat[idx]]), crs='epsg:4326')
 
-        # now interpolate along this line
-        look_ahead_dist = look_ahead_dist + rpz[0]
-        look_ahead_dist = 100 if look_ahead_dist < 100 else look_ahead_dist
-        end_point = end_line.interpolate(look_ahead_dist)
+            # get the lookahead distance
+            look_ahead_dist = ownship.selspd[idx] * dtlookahead[idx]
+            
+            # convert to utm
+            current_loc = current_loc.to_crs(epsg=32633)
 
-        # now split line again to get line with a lookahead tine
-        look_ahead_line, _ = split_line_with_point(end_line, end_point)
+            # add lon lat to shapely linestring
+            route_line = gpd.GeoSeries(LineString(zip(route.wplon, route.wplat)), crs='epsg:4326')
+            route_line = route_line.to_crs(epsg=32633)
+
+            # find closest point to linestring
+            p1, _ = nearest_points(route_line.geometry.values[0], current_loc.geometry.values[0])
+
+            # now split the line to remove eveything before current position
+            _, end_line = split_line_with_point(route_line.geometry.values[0], p1)
+
+            # now interpolate along this line
+            look_ahead_dist = look_ahead_dist + rpz[0]
+            look_ahead_dist = 100 if look_ahead_dist < 100 else look_ahead_dist
+            end_point = end_line.interpolate(look_ahead_dist)
+
+            # now split line again to get line with a lookahead tine
+            look_ahead_line, _ = split_line_with_point(end_line, end_point)
+
+            # fill the geo_dict
+            geo_dict['geometry'].append(look_ahead_line)
+            geo_dict['acid'].append(ownship.id[idx])
+
+        t2 = time()
+        print('Time to extrapolate: ', t2-t1)
+
+        t1 = time()
+        # create geopandas geoseries
+        geo_series = gpd.GeoSeries(geo_dict['geometry'], crs='epsg:32633', index=geo_dict['acid'])
 
         # check if look_ahead_lines_intersect
+        own_inter, int_inter = geo_series.sindex.query_bulk(geo_series, predicate="intersects")
 
-        # if they intersect rebuild ownship.lat ownship.lon, intruder.lon, intuder.lat so that State Based can work
+        # note that all intersect with themselves so you must check if there are any unique intersections
+        # This happens when there are more intersections than aircraft
+        if len(own_inter) > ownship.ntraf:
 
+            # Get all unique intersections since there are more intersections than aircraft
+            # Also because query_bulk returns also self-intersections
+            _, uniq_idx, counts = np.unique(own_inter, axis=0, return_index=True, return_counts=True)
+
+            # select values where counts is 1 and get the indices
+            potential_intersections = np.setdiff1d(own_inter, uniq_idx[counts == 1])
+
+            # stack the ownship and intruder intersection vertically (nx2) array
+            own_int_array = np.column_stack((own_inter[potential_intersections], int_inter[potential_intersections]))
+
+            # check rows and if the columns are equal delete that row
+            actual_intersections = own_int_array[own_int_array[:,0] != own_int_array[:,1]]
+
+        # if they intersect rebuild intruder.lat and intuder.lon, intruder.trk so that state based works normally
+        
+        t2 = time()
+        print("Time to check intersection: ", t2-t1)
+
+        t3 = time()
 
         ############### END PROJECTION ########################
         # Calculate everything using the buffered RPZ
@@ -199,6 +242,10 @@ class M2StateBased(ConflictDetection):
         # It's a LOS if the actual RPZ of 32m is violated.
         swlos = (dist < (np.zeros(len(rpz)) + self.rpz_actual)) * (np.abs(dalt) < hpz)
         lospairs = [(ownship.id[i], ownship.id[j]) for i, j in zip(*np.where(swlos))]
+
+        t4 = time()
+        print("Time to calculate: ", t4-t3)
+        print('---------------------------------------------------------------------------------------------------------------------')
 
         return confpairs, lospairs, inconf, tcpamax, \
             qdr[swconfl], dist[swconfl], np.sqrt(dcpa2[swconfl]), \
