@@ -136,7 +136,7 @@ class M2StateBased(ConflictDetection):
             # Also because query_bulk returns also self-intersections
             uniq_arr, counts = np.unique(own_inter, axis=0, return_counts=True)
 
-            # select values where counts is 1 and get the indices
+            # select indices from own_inter that correspond to unique values with a count greater than 1
             potential_intersections = np.arange(len(own_inter))[~np.in1d(own_inter, uniq_arr[counts == 1])]
 
             # stack the ownship and intruder intersection vertically (nx2) array
