@@ -134,10 +134,10 @@ class M2StateBased(ConflictDetection):
 
             # Get all unique intersections since there are more intersections than aircraft
             # Also because query_bulk returns also self-intersections
-            _, uniq_idx, counts = np.unique(own_inter, axis=0, return_index=True, return_counts=True)
+            uniq_arr, counts = np.unique(own_inter, axis=0, return_counts=True)
 
             # select values where counts is 1 and get the indices
-            potential_intersections = np.setdiff1d(own_inter, uniq_idx[counts == 1])
+            potential_intersections = np.arange(len(own_inter))[~np.in1d(own_inter, uniq_arr[counts == 1])]
 
             # stack the ownship and intruder intersection vertically (nx2) array
             own_int_array = np.column_stack((own_inter[potential_intersections], int_inter[potential_intersections]))
