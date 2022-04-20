@@ -162,8 +162,6 @@ class M2StateBased(ConflictDetection):
         for intersection in actual_intersections:
 
             print('THERE IS AN INTERSECTION')
-            
-            t3 = time()
 
             curr_ownship = intersection[0]
             ownship_id = ownship.id[curr_ownship]
@@ -224,8 +222,8 @@ class M2StateBased(ConflictDetection):
             intruderlon[curr_intruder] = new_point.x
 
 
-            t4 = time()
-            print("Time to project positions: ", t4-t3)
+        t4 = time()
+        print("Time to project positions: ", t4-t3)
 
         t3 = time()
 
