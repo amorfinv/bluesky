@@ -11,6 +11,7 @@ from bluesky.tools import geo
 from bluesky.tools.aero import nm
 from bluesky.traffic.asas import ConflictDetection
 from time import time
+from copy import deepcopy
 
 def init_plugin():
 
@@ -76,7 +77,12 @@ class M2StateBased(ConflictDetection):
         ''' Conflict detection between ownship (traf) and intruder (traf/adsb).'''
 
         ############### START PROJECTION ########################
-        
+
+        # make a deep copy of intruder coordinates and trk
+        intruderlat = deepcopy(intruder.lat)
+        intruderlon = deepcopy(intruder.lon)
+        intrudertrk = deepcopy(intruder.trk)
+
         t1 = time()
         # here find the position along route of ownship
         routes = ownship.ap.route
@@ -84,7 +90,7 @@ class M2StateBased(ConflictDetection):
         # intialize the geo_dict
         geo_dict = {'geometry': [], 'acid': []}
 
-        # for loop through aircraft id
+        # for loop through aircraft id TODO: vectorize
         for idx, route in enumerate(routes):
 
             # get the current location
@@ -130,6 +136,7 @@ class M2StateBased(ConflictDetection):
 
         # note that all intersect with themselves so you must check if there are any unique intersections
         # This happens when there are more intersections than aircraft
+        actual_intersections = []
         if len(own_inter) > ownship.ntraf:
 
             # Get all unique intersections since there are more intersections than aircraft
@@ -145,10 +152,80 @@ class M2StateBased(ConflictDetection):
             # check rows and if the columns are equal delete that row
             actual_intersections = own_int_array[own_int_array[:,0] != own_int_array[:,1]]
 
-        # if they intersect rebuild intruder.lat and intuder.lon, intruder.trk so that state based works normally
-        
         t2 = time()
         print("Time to check intersection: ", t2-t1)
+
+        t3 = time()
+
+        # if they intersect rebuild intruder.lat and intuder.lon, intruder.trk so that state based works normally
+        # TODO: fix all of the angle calculations and vectorize the for loop
+        for intersection in actual_intersections:
+
+            print('THERE IS AN INTERSECTION')
+            
+            t3 = time()
+
+            curr_ownship = intersection[0]
+            ownship_id = ownship.id[curr_ownship]
+
+            curr_intruder = intersection[1]
+            intruder_id = intruder.id[curr_intruder]
+
+            # find intersection point between ownship and intruder using geo_series
+            own_line = geo_series[ownship_id]
+            int_line = geo_series[intruder_id]
+
+            # get the intersection point
+            intersection_point = own_line.intersection(int_line)
+
+            # now split ownship and intruder lines with interseciton point
+            own_cut_line, _ = split_line_with_point(own_line, intersection_point)
+            int_cut_line, _ = split_line_with_point(int_line, intersection_point)
+
+            # now make a straight line in the direction of ownship.trk that is same length
+            # as the length of own_cut_line
+            length_own_line = own_cut_line.length
+            own_trk = np.radians(ownship.trk[curr_ownship])
+
+            # get the current location
+            current_loc = gpd.GeoSeries(Point([ownship.lon[curr_ownship], ownship.lat[curr_ownship]]), crs='epsg:4326')
+
+            # convert to utm
+            current_loc = current_loc.to_crs(epsg=32633)
+
+            # now find intersecting position of ownship and intruder with straight line
+            inter_x = length_own_line * np.cos(own_trk) + current_loc.x.values[0]# m
+            inter_y = length_own_line * np.sin(own_trk) + current_loc.y.values[0] # m
+
+
+            # now find the angle at which the intruder intersects with the ownship.
+            # find interior angle between own_line and int_line
+            point1 = Point([own_cut_line.xy[0][-2], own_cut_line.xy[1][-2]])
+            point2 = Point([int_cut_line.xy[0][-2], int_cut_line.xy[1][-2]])
+
+            angle = np.arctan2(point2.x - point1.x, point2.y - point1.y)
+            interior_angle = np.degrees(angle) if angle >= 0 else np.degrees(angle) + 360
+
+            # now sum the interior angle with the ownship.trk
+            int_trk = np.radians(interior_angle + ownship.trk[curr_ownship])
+
+            # now subtract from length intruder line from inter_x, and inter_y
+            length_int_line = int_cut_line.length
+
+            int_x = inter_x - length_int_line * np.cos(int_trk) # m
+            int_y = inter_y - length_int_line * np.sin(int_trk) # m
+
+            # convert to lat lon from utm
+            new_point = gpd.GeoSeries(Point([int_x, int_y]), crs='epsg:32633')
+            new_point = new_point.to_crs(epsg=4326)
+
+            # assign intruder.lat and intruder.lon with int_x and int_y
+            intruderlat[curr_intruder] = new_point.y
+            intruderlon[curr_intruder] = new_point.x
+
+
+            t4 = time()
+            print("Time to project positions: ", t4-t3)
 
         t3 = time()
 
@@ -162,7 +239,7 @@ class M2StateBased(ConflictDetection):
 
         # qdrlst is for [i,j] qdr from i to j, from perception of ADSB and own coordinates
         qdr, dist = geo.kwikqdrdist_matrix(np.asmatrix(ownship.lat), np.asmatrix(ownship.lon),
-                                    np.asmatrix(intruder.lat), np.asmatrix(intruder.lon))
+                                    np.asmatrix(intruderlat), np.asmatrix(intruderlon))
 
         # Convert back to array to allow element-wise array multiplications later on
         # Convert to meters and add large value to own/own pairs
@@ -180,7 +257,7 @@ class M2StateBased(ConflictDetection):
         ownv = ownship.gs * np.cos(owntrkrad).reshape((1, ownship.ntraf))  # m/s
 
         # Intruder track angle and speed
-        inttrkrad = np.radians(intruder.trk)
+        inttrkrad = np.radians(intrudertrk)
         intu = intruder.gs * np.sin(inttrkrad).reshape((1, ownship.ntraf))  # m/s
         intv = intruder.gs * np.cos(inttrkrad).reshape((1, ownship.ntraf))  # m/s
 
