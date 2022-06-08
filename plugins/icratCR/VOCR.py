@@ -58,7 +58,10 @@ class VOCR(ConflictResolution):
                 v2 = np.array([intruder.gseast[idx2], intruder.gsnorth[idx2]])
                 
                 # Get the velocity obstacle
-                velocity_obstacle = self.get_VO(conf, ownship, intruder, idx1, idx2, idx_pair)
+                try:
+                    velocity_obstacle = self.get_VO(conf, ownship, intruder, idx1, idx2, idx_pair)
+                except:
+                    velocity_obstacle = None
                 
                 # If the velocity obstacle is not None, add it to the list
                 if velocity_obstacle is not None:
