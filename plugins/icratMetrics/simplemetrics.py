@@ -48,6 +48,9 @@ class SimpleMetrics(Entity):
     # Just as the create function, the delete function is called when an aircraft is deleted
     # In this case, we want to log the data when an aircraft is deleted
     def delete(self, acidxs):
+        # We print stuff here, but we can also save all this data to a file. 
+        # The delete function can be called for several aircraft, so we need to
+        # for loop through the received aircraft indexes.
         for acidx in acidxs:
             print('------------------------------------------------------')
             print(f'Aircraft {traf.id[acidx]} was created at {self.spawntime[acidx]}.')
