@@ -87,6 +87,10 @@ class VOCR(ConflictResolution):
         # We send the new data to the simulation.
         return newtrack, newgs, newvs, newalt
     
+    # --------------------------------------------------------------------------------
+    # All the functions below are simply helper functions to compute the velocity obstacles.
+    # --------------------------------------------------------------------------------
+    
     def get_VO(self, conf, ownship, intruder, idx1, idx2, idx_pair):
         '''Returns the VO of aircraft idx1 and idx2'''
         t = conf.dtlookahead[idx1]
@@ -208,5 +212,3 @@ class VOCR(ConflictResolution):
     
     def dist_sq(self, a, b):
         return self.norm_sq(b - a)
-        
-    
