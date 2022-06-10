@@ -59,15 +59,16 @@ class SimpleMetrics(Entity):
         if not self.enabled:
             return
         
-        # We print stuff here, but we can also save all this data to a file. 
+        # We print stuff here, but we can also save all this data to a file if we wanted to.
         # The delete function can be called for several aircraft, so we need to
         # for loop through the received aircraft indexes.
         for acidx in acidxs:
-            print('------------------------------------------------------')
+            print(f'---------------------------{traf.id[acidx]}---------------------------')
             print(f'Aircraft {traf.id[acidx]} was created at {self.spawntime[acidx]}.')
             print(f'Aircraft {traf.id[acidx]} was deleted at {sim.simt}.')
             print(f'Aircraft {traf.id[acidx]} flew {self.distance_horizontal[acidx]} m horizontally.')
             print(f'Aircraft {traf.id[acidx]} flew {self.distance_vertical[acidx]} m vertically.')
+            print(f'---------------------------{traf.id[acidx]}---------------------------')
             
         return
         
