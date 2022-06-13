@@ -3,7 +3,7 @@ import numpy as np
 from shapely.geometry import LineString, Point
 from shapely.ops import nearest_points, split
 import geopandas as gpd
-from rich import inspect
+# from rich import inspect
 from shapely.affinity  import affine_transform, scale
 from bluesky import stack
 import bluesky as bs
@@ -83,14 +83,14 @@ class M2StateBased(ConflictDetection):
         intruderlon = deepcopy(intruder.lon)
         intrudertrk = deepcopy(intruder.trk)
 
-        t1 = time()
+        # t1 = time()
         # here find the position along route of ownship
         routes = ownship.ap.route
         
         # intialize the geo_dict
         geo_dict = {'geometry': [], 'acid': []}
 
-        if ownship.ntraf <= 1:
+        if ownship.ntraf >= 1:
 
             # for loop through aircraft id TODO: vectorize
             for idx, route in enumerate(routes):
@@ -129,10 +129,10 @@ class M2StateBased(ConflictDetection):
                 geo_dict['geometry'].append(look_ahead_line)
                 geo_dict['acid'].append(ownship.id[idx])
 
-            t2 = time()
-            print('Time to extrapolate: ', t2-t1)
+            # t2 = time()
+            # print('Time to extrapolate: ', t2-t1)
 
-            t1 = time()
+            # t1 = time()
             # create geopandas geoseries
             geo_series = gpd.GeoSeries(geo_dict['geometry'], crs='epsg:32633', index=geo_dict['acid'])
 
@@ -157,10 +157,10 @@ class M2StateBased(ConflictDetection):
                 # check rows and if the columns are equal delete that row
                 actual_intersections = own_int_array[own_int_array[:,0] != own_int_array[:,1]]
 
-            t2 = time()
-            print("Time to check intersection: ", t2-t1)
+            # t2 = time()
+            # print("Time to check intersection: ", t2-t1)
 
-            t3 = time()
+            # t3 = time()
 
             # if they intersect rebuild intruder.lat and intuder.lon, intruder.trk so that state based works normally
             # TODO: fix all of the angle calculations and vectorize the for loop
@@ -227,10 +227,10 @@ class M2StateBased(ConflictDetection):
                 intruderlon[curr_intruder] = new_point.x
 
 
-            t4 = time()
-            print("Time to project positions: ", t4-t3)
+            # t4 = time()
+            # print("Time to project positions: ", t4-t3)
 
-            t3 = time()
+            # t3 = time()
 
         ############### END PROJECTION ########################
         # Calculate everything using the buffered RPZ
