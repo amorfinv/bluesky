@@ -90,142 +90,147 @@ class M2StateBased(ConflictDetection):
         # intialize the geo_dict
         geo_dict = {'geometry': [], 'acid': []}
 
-        # for loop through aircraft id TODO: vectorize
-        for idx, route in enumerate(routes):
+        if ownship.ntraf <= 1:
 
-            # get the current location
-            current_loc = gpd.GeoSeries(Point([ownship.lon[idx], ownship.lat[idx]]), crs='epsg:4326')
+            # for loop through aircraft id TODO: vectorize
+            for idx, route in enumerate(routes):
+                
+                if not route.wplat:
+                    continue
 
-            # get the lookahead distance
-            look_ahead_dist = ownship.selspd[idx] * dtlookahead[idx]
-            
-            # convert to utm
-            current_loc = current_loc.to_crs(epsg=32633)
+                # get the current location
+                current_loc = gpd.GeoSeries(Point([ownship.lon[idx], ownship.lat[idx]]), crs='epsg:4326')
 
-            # add lon lat to shapely linestring
-            route_line = gpd.GeoSeries(LineString(zip(route.wplon, route.wplat)), crs='epsg:4326')
-            route_line = route_line.to_crs(epsg=32633)
+                # get the lookahead distance
+                look_ahead_dist = ownship.selspd[idx] * dtlookahead[idx]
+                
+                # convert to utm
+                current_loc = current_loc.to_crs(epsg=32633)
 
-            # find closest point to linestring
-            p1, _ = nearest_points(route_line.geometry.values[0], current_loc.geometry.values[0])
+                # add lon lat to shapely linestring
+                route_line = gpd.GeoSeries(LineString(zip(route.wplon, route.wplat)), crs='epsg:4326')
+                route_line = route_line.to_crs(epsg=32633)
 
-            # now split the line to remove eveything before current position
-            _, end_line = split_line_with_point(route_line.geometry.values[0], p1)
+                # find closest point to linestring
+                p1, _ = nearest_points(route_line.geometry.values[0], current_loc.geometry.values[0])
 
-            # now interpolate along this line
-            look_ahead_dist = look_ahead_dist + rpz[0]
-            look_ahead_dist = 100 if look_ahead_dist < 100 else look_ahead_dist
-            end_point = end_line.interpolate(look_ahead_dist)
+                # now split the line to remove eveything before current position
+                _, end_line = split_line_with_point(route_line.geometry.values[0], p1)
 
-            # now split line again to get line with a lookahead tine
-            look_ahead_line, _ = split_line_with_point(end_line, end_point)
+                # now interpolate along this line
+                look_ahead_dist = look_ahead_dist + rpz[0]
+                look_ahead_dist = 100 if look_ahead_dist < 100 else look_ahead_dist
+                end_point = end_line.interpolate(look_ahead_dist)
 
-            # fill the geo_dict
-            geo_dict['geometry'].append(look_ahead_line)
-            geo_dict['acid'].append(ownship.id[idx])
+                # now split line again to get line with a lookahead tine
+                look_ahead_line, _ = split_line_with_point(end_line, end_point)
 
-        t2 = time()
-        print('Time to extrapolate: ', t2-t1)
+                # fill the geo_dict
+                geo_dict['geometry'].append(look_ahead_line)
+                geo_dict['acid'].append(ownship.id[idx])
 
-        t1 = time()
-        # create geopandas geoseries
-        geo_series = gpd.GeoSeries(geo_dict['geometry'], crs='epsg:32633', index=geo_dict['acid'])
+            t2 = time()
+            print('Time to extrapolate: ', t2-t1)
 
-        # check if look_ahead_lines_intersect
-        own_inter, int_inter = geo_series.sindex.query_bulk(geo_series, predicate="intersects")
+            t1 = time()
+            # create geopandas geoseries
+            geo_series = gpd.GeoSeries(geo_dict['geometry'], crs='epsg:32633', index=geo_dict['acid'])
 
-        # note that all intersect with themselves so you must check if there are any unique intersections
-        # This happens when there are more intersections than aircraft
-        actual_intersections = []
-        if len(own_inter) > ownship.ntraf:
+            # check if look_ahead_lines_intersect
+            own_inter, int_inter = geo_series.sindex.query_bulk(geo_series, predicate="intersects")
 
-            # Get all unique intersections since there are more intersections than aircraft
-            # Also because query_bulk returns also self-intersections
-            uniq_arr, counts = np.unique(own_inter, axis=0, return_counts=True)
+            # note that all intersect with themselves so you must check if there are any unique intersections
+            # This happens when there are more intersections than aircraft
+            actual_intersections = []
+            if len(own_inter) > ownship.ntraf:
 
-            # select indices from own_inter that correspond to unique values with a count greater than 1
-            potential_intersections = np.arange(len(own_inter))[~np.in1d(own_inter, uniq_arr[counts == 1])]
+                # Get all unique intersections since there are more intersections than aircraft
+                # Also because query_bulk returns also self-intersections
+                uniq_arr, counts = np.unique(own_inter, axis=0, return_counts=True)
 
-            # stack the ownship and intruder intersection vertically (nx2) array
-            own_int_array = np.column_stack((own_inter[potential_intersections], int_inter[potential_intersections]))
+                # select indices from own_inter that correspond to unique values with a count greater than 1
+                potential_intersections = np.arange(len(own_inter))[~np.in1d(own_inter, uniq_arr[counts == 1])]
 
-            # check rows and if the columns are equal delete that row
-            actual_intersections = own_int_array[own_int_array[:,0] != own_int_array[:,1]]
+                # stack the ownship and intruder intersection vertically (nx2) array
+                own_int_array = np.column_stack((own_inter[potential_intersections], int_inter[potential_intersections]))
 
-        t2 = time()
-        print("Time to check intersection: ", t2-t1)
+                # check rows and if the columns are equal delete that row
+                actual_intersections = own_int_array[own_int_array[:,0] != own_int_array[:,1]]
 
-        t3 = time()
+            t2 = time()
+            print("Time to check intersection: ", t2-t1)
 
-        # if they intersect rebuild intruder.lat and intuder.lon, intruder.trk so that state based works normally
-        # TODO: fix all of the angle calculations and vectorize the for loop
-        for intersection in actual_intersections:
+            t3 = time()
 
-            print('THERE IS AN INTERSECTION')
+            # if they intersect rebuild intruder.lat and intuder.lon, intruder.trk so that state based works normally
+            # TODO: fix all of the angle calculations and vectorize the for loop
+            for intersection in actual_intersections:
 
-            curr_ownship = intersection[0]
-            ownship_id = ownship.id[curr_ownship]
+                print('THERE IS AN INTERSECTION')
 
-            curr_intruder = intersection[1]
-            intruder_id = intruder.id[curr_intruder]
+                curr_ownship = intersection[0]
+                ownship_id = ownship.id[curr_ownship]
 
-            # find intersection point between ownship and intruder using geo_series
-            own_line = geo_series[ownship_id]
-            int_line = geo_series[intruder_id]
+                curr_intruder = intersection[1]
+                intruder_id = intruder.id[curr_intruder]
 
-            # get the intersection point
-            intersection_point = own_line.intersection(int_line)
+                # find intersection point between ownship and intruder using geo_series
+                own_line = geo_series[ownship_id]
+                int_line = geo_series[intruder_id]
 
-            # now split ownship and intruder lines with interseciton point
-            own_cut_line, _ = split_line_with_point(own_line, intersection_point)
-            int_cut_line, _ = split_line_with_point(int_line, intersection_point)
+                # get the intersection point
+                intersection_point = own_line.intersection(int_line)
 
-            # now make a straight line in the direction of ownship.trk that is same length
-            # as the length of own_cut_line
-            length_own_line = own_cut_line.length
-            own_trk = np.radians(ownship.trk[curr_ownship])
+                # now split ownship and intruder lines with interseciton point
+                own_cut_line, _ = split_line_with_point(own_line, intersection_point)
+                int_cut_line, _ = split_line_with_point(int_line, intersection_point)
 
-            # get the current location
-            current_loc = gpd.GeoSeries(Point([ownship.lon[curr_ownship], ownship.lat[curr_ownship]]), crs='epsg:4326')
+                # now make a straight line in the direction of ownship.trk that is same length
+                # as the length of own_cut_line
+                length_own_line = own_cut_line.length
+                own_trk = np.radians(ownship.trk[curr_ownship])
 
-            # convert to utm
-            current_loc = current_loc.to_crs(epsg=32633)
+                # get the current location
+                current_loc = gpd.GeoSeries(Point([ownship.lon[curr_ownship], ownship.lat[curr_ownship]]), crs='epsg:4326')
 
-            # now find intersecting position of ownship and intruder with straight line
-            inter_x = length_own_line * np.cos(own_trk) + current_loc.x.values[0]# m
-            inter_y = length_own_line * np.sin(own_trk) + current_loc.y.values[0] # m
+                # convert to utm
+                current_loc = current_loc.to_crs(epsg=32633)
 
-
-            # now find the angle at which the intruder intersects with the ownship.
-            # find interior angle between own_line and int_line
-            point1 = Point([own_cut_line.xy[0][-2], own_cut_line.xy[1][-2]])
-            point2 = Point([int_cut_line.xy[0][-2], int_cut_line.xy[1][-2]])
-
-            angle = np.arctan2(point2.x - point1.x, point2.y - point1.y)
-            interior_angle = np.degrees(angle) if angle >= 0 else np.degrees(angle) + 360
-
-            # now sum the interior angle with the ownship.trk
-            int_trk = np.radians(interior_angle + ownship.trk[curr_ownship])
-
-            # now subtract from length intruder line from inter_x, and inter_y
-            length_int_line = int_cut_line.length
-
-            int_x = inter_x - length_int_line * np.cos(int_trk) # m
-            int_y = inter_y - length_int_line * np.sin(int_trk) # m
-
-            # convert to lat lon from utm
-            new_point = gpd.GeoSeries(Point([int_x, int_y]), crs='epsg:32633')
-            new_point = new_point.to_crs(epsg=4326)
-
-            # assign intruder.lat and intruder.lon with int_x and int_y
-            intruderlat[curr_intruder] = new_point.y
-            intruderlon[curr_intruder] = new_point.x
+                # now find intersecting position of ownship and intruder with straight line
+                inter_x = length_own_line * np.cos(own_trk) + current_loc.x.values[0]# m
+                inter_y = length_own_line * np.sin(own_trk) + current_loc.y.values[0] # m
 
 
-        t4 = time()
-        print("Time to project positions: ", t4-t3)
+                # now find the angle at which the intruder intersects with the ownship.
+                # find interior angle between own_line and int_line
+                point1 = Point([own_cut_line.xy[0][-2], own_cut_line.xy[1][-2]])
+                point2 = Point([int_cut_line.xy[0][-2], int_cut_line.xy[1][-2]])
 
-        t3 = time()
+                angle = np.arctan2(point2.x - point1.x, point2.y - point1.y)
+                interior_angle = np.degrees(angle) if angle >= 0 else np.degrees(angle) + 360
+
+                # now sum the interior angle with the ownship.trk
+                int_trk = np.radians(interior_angle + ownship.trk[curr_ownship])
+
+                # now subtract from length intruder line from inter_x, and inter_y
+                length_int_line = int_cut_line.length
+
+                int_x = inter_x - length_int_line * np.cos(int_trk) # m
+                int_y = inter_y - length_int_line * np.sin(int_trk) # m
+
+                # convert to lat lon from utm
+                new_point = gpd.GeoSeries(Point([int_x, int_y]), crs='epsg:32633')
+                new_point = new_point.to_crs(epsg=4326)
+
+                # assign intruder.lat and intruder.lon with int_x and int_y
+                intruderlat[curr_intruder] = new_point.y
+                intruderlon[curr_intruder] = new_point.x
+
+
+            t4 = time()
+            print("Time to project positions: ", t4-t3)
+
+            t3 = time()
 
         ############### END PROJECTION ########################
         # Calculate everything using the buffered RPZ
