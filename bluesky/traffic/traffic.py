@@ -668,14 +668,14 @@ class Traffic(Entity):
         
         self.prevlospairs = set(self.cd.lospairs)
         
-    @timed_function(name='reglog', dt=30)
-    def thereglog(self):
-        self.reglog.log(*self.id)
-        self.reglog.log(*self.alt/ft)
-        self.reglog.log(*self.lat)
-        self.reglog.log(*self.lon)
-        self.reglog.log(*self.actedge.wpedgeid)
-        return
+    # @timed_function(name='reglog', dt=30)
+    # def thereglog(self):
+    #     self.reglog.log(*self.id)
+    #     self.reglog.log(*self.alt/ft)
+    #     self.reglog.log(*self.lat)
+    #     self.reglog.log(*self.lon)
+    #     self.reglog.log(*self.actedge.wpedgeid)
+    #     return
 
     @timed_function(name='asas', dt=bs.settings.asas_dt, manual=True)
     def update_asas(self):
