@@ -94,3 +94,14 @@ class UAMTraffic(Traffic):
         self.caution_buffer.update(np.array(caution_array, dtype=np.float32))
         self.warning_buffer.update(np.array(warning_array, dtype=np.float32))
         self.collision_buffer.update(np.array(collision_array, dtype=np.float32))
+
+        # set the color of the circles
+        # TODO: make it dynamic
+        # set rgb red color tuple
+        rgb_red = (1.0, 0.0, 0.0)
+        rgb_orange = (1.0, 0.5, 0.0)
+        rgb_yellow = (1.0, 1.0, 0.0)
+
+        self.caution_color.update(rgb_red)
+        self.warning_color.update(rgb_orange)
+        self.collision_color.update(rgb_yellow)
