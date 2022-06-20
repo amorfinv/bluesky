@@ -606,11 +606,11 @@ class Traffic(Entity):
                     pair_idx = self.cd.confpairs.index(pair)
                     cpalatlon = geo.qdrpos(self.lat[idx1], self.lon[idx1], self.hdg[idx1], self.cd.dcpa[pair_idx]/nm)
                         
-                    self.conflog.log(pair[0], pair[1],
-                                    self.lat[idx1], self.lon[idx1],self.alt[idx1],
-                                    self.lat[idx2], self.lon[idx2],self.alt[idx2],
-                                    cpalatlon[0], cpalatlon[1], self.actedge.wpedgeid[idx1],
-                                    self.actedge.wpedgeid[idx2])
+                    # self.conflog.log(pair[0], pair[1],
+                    #                 self.lat[idx1], self.lon[idx1],self.alt[idx1],
+                    #                 self.lat[idx2], self.lon[idx2],self.alt[idx2],
+                    #                 cpalatlon[0], cpalatlon[1], self.actedge.wpedgeid[idx1],
+                    #                 self.actedge.wpedgeid[idx2])
                 
         self.prevconfpairs = set(self.cd.confpairs)
         

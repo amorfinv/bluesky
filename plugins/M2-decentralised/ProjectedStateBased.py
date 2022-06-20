@@ -184,40 +184,53 @@ class M2StateBased(ConflictDetection):
                 # now split ownship and intruder lines with interseciton point
                 own_cut_line, _ = split_line_with_point(own_line, intersection_point)
                 int_cut_line, _ = split_line_with_point(int_line, intersection_point)
-
+                
                 # now make a straight line in the direction of ownship.trk that is same length
-                # as the length of own_cut_line
+                # as the length of own_cut_line.. don't use ownship trk..interpolate line from second point of ownship 
+                # intersecting line
                 length_own_line = own_cut_line.length
-                own_trk = np.radians(ownship.trk[curr_ownship])
+                p1 = Point([own_cut_line.xy[0][0], own_cut_line.xy[1][0]])
+                p2 = Point([own_cut_line.xy[0][1], own_cut_line.xy[1][1]])
+                line_to_scale = LineString([p1, p2])
+                line_to_scale_len = line_to_scale.length
+                scale_factor = length_own_line/line_to_scale_len
+                scaled_ownship_line = scale(line_to_scale, xfact=scale_factor, yfact=scale_factor, origin=p1)
+                
+                # get projected intersection point
+                inter_x = scaled_ownship_line.xy[0][1]
+                inter_y = scaled_ownship_line.xy[1][1]
 
-                # get the current location
-                current_loc = gpd.GeoSeries(Point([ownship.lon[curr_ownship], ownship.lat[curr_ownship]]), crs='epsg:4326')
-
-                # convert to utm
-                current_loc = current_loc.to_crs(epsg=32633)
-
-                # now find intersecting position of ownship and intruder with straight line
-                inter_x = length_own_line * np.cos(own_trk) + current_loc.x.values[0]# m
-                inter_y = length_own_line * np.sin(own_trk) + current_loc.y.values[0] # m
-
-
-                # now find the angle at which the intruder intersects with the ownship.
-                # find interior angle between own_line and int_line
-                point1 = Point([own_cut_line.xy[0][-2], own_cut_line.xy[1][-2]])
-                point2 = Point([int_cut_line.xy[0][-2], int_cut_line.xy[1][-2]])
-
-                angle = np.arctan2(point2.x - point1.x, point2.y - point1.y)
-                interior_angle = np.degrees(angle) if angle >= 0 else np.degrees(angle) + 360
-
-                # now sum the interior angle with the ownship.trk
-                int_trk = np.radians(interior_angle + ownship.trk[curr_ownship])
-
-                # now subtract from length intruder line from inter_x, and inter_y
+                # now project the intruder
+                # find the length of intruder line
                 length_int_line = int_cut_line.length
+                p1 = Point([int_cut_line.xy[0][-1], int_cut_line.xy[1][-1]])
+                p2 = Point([int_cut_line.xy[0][-2], int_cut_line.xy[1][-2]])
 
-                int_x = inter_x - length_int_line * np.cos(int_trk) # m
-                int_y = inter_y - length_int_line * np.sin(int_trk) # m
+                line_to_scale = LineString([p1, p2])
+                line_to_scale_len = line_to_scale.length
+                scale_factor = length_int_line/line_to_scale_len
+                scaled_intruder_line = scale(line_to_scale, xfact=scale_factor, yfact=scale_factor, origin=p1)
 
+                # now move this line to end at projected point of intersection (merge with above?)
+                scaled_intruder_line = scale(scaled_intruder_line, origin=(inter_x, inter_y))
+
+                # projected location of intruder
+                int_x = scaled_intruder_line.xy[0][-1]
+                int_y = scaled_intruder_line.xy[1][-1]
+
+                intersectin_fun4 = gpd.GeoSeries([
+                                                Point(own_cut_line.xy[0][0], own_cut_line.xy[1][0]), # current point of ownship
+                                                Point(int_cut_line.xy[0][0], int_cut_line.xy[1][0]), # current point of intruder
+                                                own_cut_line,  # ownship line from real own pos to real intersection
+                                                int_cut_line,   # int line from real int pos to real intersection
+                                                intersection_point, # real intersection point
+                                                Point(inter_x, inter_y),  # projected point of intersection
+                                                scaled_ownship_line, # projected line of ownship
+                                                #scaled_intruder_line, # projected line of intruder
+                                                #Point(int_x, int_y),  # projected point of intruder
+                                                ], crs='epsg:32633')
+
+                # funny stuff happening from second part of for loop check
                 # convert to lat lon from utm
                 new_point = gpd.GeoSeries(Point([int_x, int_y]), crs='epsg:32633')
                 new_point = new_point.to_crs(epsg=4326)
@@ -225,6 +238,9 @@ class M2StateBased(ConflictDetection):
                 # assign intruder.lat and intruder.lon with int_x and int_y
                 intruderlat[curr_intruder] = new_point.y
                 intruderlon[curr_intruder] = new_point.x
+
+                # TODO: override trk of ownship with scaled_ownship_line_track
+                # TODO: override trk of intruder with scaled_intruder_line_track
 
 
             # t4 = time()
@@ -324,7 +340,7 @@ class M2StateBased(ConflictDetection):
         lospairs = [(ownship.id[i], ownship.id[j]) for i, j in zip(*np.where(swlos))]
 
         t4 = time()
-        print("Time to calculate: ", t4-t3)
+        # print("Time to calculate: ", t4-t3)
         print('---------------------------------------------------------------------------------------------------------------------')
 
         return confpairs, lospairs, inconf, tcpamax, \
