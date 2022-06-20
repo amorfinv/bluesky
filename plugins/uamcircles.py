@@ -27,7 +27,7 @@ class UAMTraffic(Traffic):
         super().__init__()
 
         # create the buffers
-        # These store the radius of the circles
+        # These store the radius of the circles in GPU
         self.caution_buffer = glh.GLBuffer()
         self.warning_buffer = glh.GLBuffer()
         self.collision_buffer = glh.GLBuffer()
@@ -41,6 +41,11 @@ class UAMTraffic(Traffic):
         self.caution_circle = glh.Circle()
         self.warning_circle = glh.Circle()
         self.collision_circle = glh.Circle()
+
+        # initialize values for radius
+        self.caution_radius = 0.0
+        self.warning_radius = 0.0
+        self.collision_radius = 0.0
 
 
 
@@ -82,18 +87,18 @@ class UAMTraffic(Traffic):
 
 
     @stack.command
-    def aircraftcircles(self, *args):
+    def uamcircles(self, caution_radius: float, warning_radius: float, collision_radius: float):
         ''' Set the size of the circles. '''
 
         # create a numpy array that is self.ntraf size long and stores the radius
-        caution_array = np.ones(self.ntraf, dtype=np.float32)*args[0]
-        warning_array = np.ones(self.ntraf, dtype=np.float32)*args[1]
-        collision_array = np.ones(self.ntraf, dtype=np.float32)*args[2]
-        
-        # set the color of the circles
-        self.caution_buffer.update(np.array(caution_array, dtype=np.float32))
-        self.warning_buffer.update(np.array(warning_array, dtype=np.float32))
-        self.collision_buffer.update(np.array(collision_array, dtype=np.float32))
+        self.caution_radius = caution_radius
+        self.warning_radius = warning_radius
+        self.collision_radius = collision_radius
+
+
+    def update_aircraft_data(self, data):
+        super().update_aircraft_data(data)
+
 
         # set the color of the circles
         # TODO: make it dynamic
@@ -105,3 +110,14 @@ class UAMTraffic(Traffic):
         self.caution_color.update(rgb_red)
         self.warning_color.update(rgb_orange)
         self.collision_color.update(rgb_yellow)
+
+
+        # create a numpy array that is self.ntraf size long and stores the radius
+        caution_array = np.ones(self.ntraf, dtype=np.float32)*self.caution_radius
+        warning_array = np.ones(self.ntraf, dtype=np.float32)*self.warning_radius
+        collision_array = np.ones(self.ntraf, dtype=np.float32)*self.collision_radius
+        
+        # set the color of the circles
+        self.caution_buffer.update(np.array(caution_array, dtype=np.float32))
+        self.warning_buffer.update(np.array(warning_array, dtype=np.float32))
+        self.collision_buffer.update(np.array(collision_array, dtype=np.float32))
