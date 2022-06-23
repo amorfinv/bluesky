@@ -1,6 +1,6 @@
 ''' State-based conflict detection. '''
 import numpy as np
-from shapely.geometry import LineString, Point
+from shapely.geometry import LineString, Point, LinearRing
 from shapely.ops import nearest_points, split
 import geopandas as gpd
 # from rich import inspect
@@ -179,60 +179,92 @@ class M2StateBased(ConflictDetection):
                 int_line = geo_series[intruder_id]
 
                 # get the intersection point
-                intersection_point = own_line.intersection(int_line)
+                p_inter = own_line.intersection(int_line)
 
                 # now split ownship and intruder lines with interseciton point
-                own_cut_line, _ = split_line_with_point(own_line, intersection_point)
-                int_cut_line, _ = split_line_with_point(int_line, intersection_point)
+                s_own, _ = split_line_with_point(own_line, p_inter)
+                s_int, _ = split_line_with_point(int_line, p_inter)
+
+                # find the angle from s_own to s_int and direction of rotation
+                theta_int, is_ccw = intersection_angle(s_own, s_int)
                 
                 # now make a straight line in the direction of ownship.trk that is same length
                 # as the length of own_cut_line.. don't use ownship trk..interpolate line from second point of ownship 
                 # intersecting line
-                length_own_line = own_cut_line.length
-                p1 = Point([own_cut_line.xy[0][0], own_cut_line.xy[1][0]])
-                p2 = Point([own_cut_line.xy[0][1], own_cut_line.xy[1][1]])
-                line_to_scale = LineString([p1, p2])
-                line_to_scale_len = line_to_scale.length
-                scale_factor = length_own_line/line_to_scale_len
-                scaled_ownship_line = scale(line_to_scale, xfact=scale_factor, yfact=scale_factor, origin=p1)
+                p_own = Point([s_own.xy[0][0], s_own.xy[1][0]])
+                l_own = LineString([p_own, p_inter])
+                scale_factor =  s_own.length/l_own.length
+                lpr_own = scale(l_own, xfact=scale_factor, yfact=scale_factor, origin=p_own)
                 
-                # get projected intersection point
-                inter_x = scaled_ownship_line.xy[0][1]
-                inter_y = scaled_ownship_line.xy[1][1]
+                # get projected intersection point is the last point of scaled_own_line
+                pr_inter = Point([lpr_own.xy[0][1], lpr_own.xy[1][1]])
 
-                # now project the intruder
-                # find the length of intruder line
-                length_int_line = int_cut_line.length
-                p1 = Point([int_cut_line.xy[0][-1], int_cut_line.xy[1][-1]])
-                p2 = Point([int_cut_line.xy[0][-2], int_cut_line.xy[1][-2]])
+                # Use law of cosines to get subtraction betwen lpr_own and lpr_int
+                cpr_own_int = np.sqrt(s_own.length**2 + s_int.length**2 - 2*s_own.length*s_int.length*np.cos(theta_int))
+                
+                # calculate alpha which is the angle between lpr_own and cpr_own_int
+                cos_alpha =  (-s_int.length**2+ lpr_own.length**2 + cpr_own_int**2 ) / (2*cpr_own_int*lpr_own.length)
+                alpha = np.arccos(cos_alpha)
 
-                line_to_scale = LineString([p1, p2])
-                line_to_scale_len = line_to_scale.length
-                scale_factor = length_int_line/line_to_scale_len
-                scaled_intruder_line = scale(line_to_scale, xfact=scale_factor, yfact=scale_factor, origin=p1)
+                # define a unit vector of lpr_own
+                vec_prown = EndVector(p_own.x, p_own.y, pr_inter.x, pr_inter.y)
+                unit_vector_pr_own = EndVector(0, 0, vec_prown.x/abs(vec_prown), vec_prown.y/abs(vec_prown))
 
-                # now move this line to end at projected point of intersection (merge with above?)
-                scaled_intruder_line = scale(scaled_intruder_line, origin=(inter_x, inter_y))
+                # rotate vector by a certain angle counterclockwise
+                #     | cos(theta)  -sin(theta) |
+                # R = |                         |
+                #     | sin(theta)   cos(theta) |
+                #
+                # rotate vector by a certain angle clockwise
+                #     |  cos(theta)   sin(theta) |
+                # R = |                          |
+                #     | -sin(theta)   cos(theta) |
+                
+                # rotate the unit vector
+                if is_ccw:
+                    # clockwise rotatiion
+                    r = np.array([[np.cos(alpha), np.sin(alpha)],
+                                 [-np.sin(alpha), np.cos(alpha)]])
+                                                                    
+                else:
+                    # counterclockwise rotation
+                    r = np.array( [[np.cos(alpha), -np.sin(alpha)],
+                                   [np.sin(alpha),  np.cos(alpha)]])
 
-                # projected location of intruder
-                int_x = scaled_intruder_line.xy[0][-1]
-                int_y = scaled_intruder_line.xy[1][-1]
+                v = np.array((unit_vector_pr_own.x,unit_vector_pr_own.y))
+                
+                # get unit vector from pr_own to pr_int
+                unit_vec_to_int = r.dot(v)
+
+                # scale by cpr_own_int
+                vec_own_to_int = unit_vec_to_int*cpr_own_int
+
+                # translate the vector TODO: check the translation
+
+                # translate the vector to get pr_int
+                pr_int = Point([ p_own.x + vec_own_to_int[0], p_own.y + vec_own_to_int[1]])
+
+                # now get linw of pr_int
+                lpr_int = LineString([pr_int, pr_inter])
+
+
 
                 intersectin_fun4 = gpd.GeoSeries([
-                                                Point(own_cut_line.xy[0][0], own_cut_line.xy[1][0]), # current point of ownship
-                                                Point(int_cut_line.xy[0][0], int_cut_line.xy[1][0]), # current point of intruder
-                                                own_cut_line,  # ownship line from real own pos to real intersection
-                                                int_cut_line,   # int line from real int pos to real intersection
-                                                intersection_point, # real intersection point
-                                                Point(inter_x, inter_y),  # projected point of intersection
-                                                scaled_ownship_line, # projected line of ownship
-                                                #scaled_intruder_line, # projected line of intruder
-                                                #Point(int_x, int_y),  # projected point of intruder
+                                                Point(s_own.xy[0][0], s_own.xy[1][0]), # current point of ownship
+                                                Point(s_int.xy[0][0], s_int.xy[1][0]), # current point of intruder
+                                                s_own,  # ownship line from real own pos to real intersection
+                                                s_int,   # int line from real int pos to real intersection
+                                                p_inter, # real intersection point
+                                                pr_inter,  # projected point of intersection
+                                                lpr_own, # projected line of ownship
+                                                lpr_int, # projected line of intruder
+                                                pr_int,  # projected point of intruder
                                                 ], crs='epsg:32633')
 
                 # funny stuff happening from second part of for loop check
+
                 # convert to lat lon from utm
-                new_point = gpd.GeoSeries(Point([int_x, int_y]), crs='epsg:32633')
+                new_point = gpd.GeoSeries(Point([pr_int.x, pr_int.y]), crs='epsg:32633')
                 new_point = new_point.to_crs(epsg=4326)
 
                 # assign intruder.lat and intruder.lon with int_x and int_y
@@ -347,6 +379,34 @@ class M2StateBased(ConflictDetection):
             qdr[swconfl], dist[swconfl], np.sqrt(dcpa2[swconfl]), \
                 tcpa[swconfl], tinconf[swconfl], qdr, dist
 
+class EndVector():
+    def __init__(self, x1, y1, x2, y2):
+        self.x = x2-x1
+        self.y = y2-y1
+
+    def __abs__(self):
+        return np.sqrt(self.x**2 + self.y**2)
+
+    def __sub__(self, other):
+        return EndVector(self.x, other.x, self.y, other.y)
+
+    def __repr__(self):
+        return f'EndVector(x={self.x!r}, y={self.y!r})'
+
+def intersection_angle(s_own, s_int):
+    # a and b are two vectors so we get the line
+
+    # get end vectors of s_own and s_int
+    s_own_vec = EndVector(s_own.xy[0][-1], s_own.xy[1][-1], s_own.xy[0][-2], s_own.xy[1][-2])
+    s_int_vec = EndVector(s_int.xy[0][-1], s_int.xy[1][-1], s_int.xy[0][-2], s_int.xy[1][-2])
+
+    # Law of cosines to find angle between
+    cos_theta =  ( - abs(s_own_vec - s_int_vec) + abs(s_own_vec) + abs(s_int_vec) ) / (2*abs(s_own_vec)*abs(s_int_vec))
+
+    # also create a linear ring to check if rotation is ccw or counter clockwise
+    ring = LinearRing([(s_own.xy[0][-2], s_own.xy[1][-2]), (s_own.xy[0][-1], s_own.xy[1][-1]), (s_int.xy[0][-2], s_int.xy[1][-2])])
+    
+    return np.arccos(cos_theta), ring.is_ccw
 
 
 def split_line_with_point(line, splitter):
