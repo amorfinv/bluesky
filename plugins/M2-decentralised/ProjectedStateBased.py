@@ -83,6 +83,9 @@ class M2StateBased(ConflictDetection):
         intruderlon = deepcopy(intruder.lon)
         intrudertrk = deepcopy(intruder.trk)
 
+        ownshiptrk = deepcopy(ownship.trk)
+
+
         # t1 = time()
         # here find the position along route of ownship
         routes = ownship.ap.route
@@ -188,8 +191,7 @@ class M2StateBased(ConflictDetection):
                 # find the angle from s_own to s_int and direction of rotation
                 theta_int, is_ccw = intersection_angle(s_own, s_int)
                 
-                # now make a straight line in the direction of ownship.trk that is same length
-                # as the length of own_cut_line.. don't use ownship trk..interpolate line from second point of ownship 
+                # now make a straight line same length as of own_cut_line 
                 # intersecting line
                 p_own = Point([s_own.xy[0][0], s_own.xy[1][0]])
                 l_own = LineString([p_own, p_inter])
@@ -221,7 +223,8 @@ class M2StateBased(ConflictDetection):
                 #     | -sin(theta)   cos(theta) |
                 
                 # rotate the unit vector
-                if is_ccw:
+                # TODO: check
+                if not is_ccw:
                     # clockwise rotatiion
                     r = np.array([[np.cos(alpha), np.sin(alpha)],
                                  [-np.sin(alpha), np.cos(alpha)]])
@@ -263,14 +266,21 @@ class M2StateBased(ConflictDetection):
 
                 # funny stuff happening from second part of for loop check
 
-                # convert to lat lon from utm
-                new_point = gpd.GeoSeries(Point([pr_int.x, pr_int.y]), crs='epsg:32633')
-                new_point = new_point.to_crs(epsg=4326)
+                # convert to lat lon from utm of intruder
+                int_point = gpd.GeoSeries(pr_int, crs='epsg:32633')
+                int_point = int_point.to_crs(epsg=4326)
+                
+                own_point = gpd.GeoSeries(p_own, crs='epsg:32633')
+                own_point = own_point.to_crs(epsg=4326)
+
+                inter_point = gpd.GeoSeries(pr_inter, crs='epsg:32633')
+                inter_point = inter_point.to_crs(epsg=4326)
 
                 # assign intruder.lat and intruder.lon with int_x and int_y
-                intruderlat[curr_intruder] = new_point.y
-                intruderlon[curr_intruder] = new_point.x
-
+                intruderlat[curr_intruder] = int_point.y
+                intruderlon[curr_intruder] = int_point.x
+                intrudertrk[curr_intruder], *_ = geo.qdrdist(int_point.y, int_point.x, inter_point.y, inter_point.x)
+                ownshiptrk[curr_ownship], *_ = geo.qdrdist(own_point.y, own_point.x, inter_point.y, inter_point.x)
                 # TODO: override trk of ownship with scaled_ownship_line_track
                 # TODO: override trk of intruder with scaled_intruder_line_track
 
@@ -303,7 +313,7 @@ class M2StateBased(ConflictDetection):
         dy = dist * np.cos(qdrrad)  # is pos j rel to i
 
         # Ownship track angle and speed
-        owntrkrad = np.radians(ownship.trk)
+        owntrkrad = np.radians(ownshiptrk)
         ownu = ownship.gs * np.sin(owntrkrad).reshape((1, ownship.ntraf))  # m/s
         ownv = ownship.gs * np.cos(owntrkrad).reshape((1, ownship.ntraf))  # m/s
 
