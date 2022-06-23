@@ -194,6 +194,8 @@ class M2StateBased(ConflictDetection):
                 # now make a straight line same length as of own_cut_line 
                 # intersecting line
                 p_own = Point([s_own.xy[0][0], s_own.xy[1][0]])
+                p_int = Point([s_int.xy[0][0], s_int.xy[1][0]])
+
                 l_own = LineString([p_own, p_inter])
                 scale_factor =  s_own.length/l_own.length
                 lpr_own = scale(l_own, xfact=scale_factor, yfact=scale_factor, origin=p_own)
@@ -250,22 +252,12 @@ class M2StateBased(ConflictDetection):
                 # now get linw of pr_int
                 lpr_int = LineString([pr_int, pr_inter])
 
+                # TODO: multople p_inter
+                # TODO: s_int, or s_own have length=0
 
-
-                intersectin_fun4 = gpd.GeoSeries([
-                                                Point(s_own.xy[0][0], s_own.xy[1][0]), # current point of ownship
-                                                Point(s_int.xy[0][0], s_int.xy[1][0]), # current point of intruder
-                                                s_own,  # ownship line from real own pos to real intersection
-                                                s_int,   # int line from real int pos to real intersection
-                                                p_inter, # real intersection point
-                                                pr_inter,  # projected point of intersection
-                                                lpr_own, # projected line of ownship
-                                                lpr_int, # projected line of intruder
-                                                pr_int,  # projected point of intruder
-                                                ], crs='epsg:32633')
-
-                # funny stuff happening from second part of for loop check
-
+                # plot stuff for testing
+                # plot_things(own_line, int_line, p_own, p_int, s_own, s_int, p_inter, pr_inter, lpr_own, lpr_int, pr_int)
+            
                 # convert to lat lon from utm of intruder
                 int_point = gpd.GeoSeries(pr_int, crs='epsg:32633')
                 int_point = int_point.to_crs(epsg=4326)
@@ -389,6 +381,70 @@ class M2StateBased(ConflictDetection):
             qdr[swconfl], dist[swconfl], np.sqrt(dcpa2[swconfl]), \
                 tcpa[swconfl], tinconf[swconfl], qdr, dist
 
+def plot_things(own_line, int_line, p_own, p_int, s_own, s_int, p_inter, pr_inter, lpr_own, lpr_int, pr_int):
+    import matplotlib.pyplot as plt
+    fig, ax = plt.subplots()
+    ax.set_aspect('equal')
+
+    p_own = gpd.GeoSeries([
+                            p_own, # current point of ownship
+                            ], crs='epsg:32633')
+
+    p_own.plot(marker='o', color='blue', ax=ax)
+
+    p_int = gpd.GeoSeries([
+                            p_int, # current point of ownship
+                            ], crs='epsg:32633')
+
+    p_int.plot(marker='o', color='red', ax=ax)
+
+
+    s_own = gpd.GeoSeries([
+                            s_own, # current point of ownship
+                            ], crs='epsg:32633')
+    own_line = gpd.GeoSeries([
+            own_line, # current point of ownship
+            ], crs='epsg:32633')
+    int_line = gpd.GeoSeries([
+            int_line, # current point of ownship
+            ], crs='epsg:32633')
+
+    own_line.plot(color='blue', ax=ax,  linestyle='--')
+    int_line.plot(color='red', ax=ax, linestyle='--')
+
+    s_int = gpd.GeoSeries([
+                            s_int, # current point of ownship
+                            ], crs='epsg:32633')
+
+
+    
+    p_inter = gpd.GeoSeries([
+                            p_inter, # current point of ownship
+                            ], crs='epsg:32633')
+
+    p_inter.plot(marker='x', color='black', ax=ax)
+
+    pr_inter = gpd.GeoSeries([
+                            pr_inter, # current point of ownship
+                            ], crs='epsg:32633')
+
+    lpr_own = gpd.GeoSeries([
+                            lpr_own, # current point of ownship
+                            ], crs='epsg:32633')
+    lpr_int = gpd.GeoSeries([
+                            lpr_int, # current point of ownship
+                            ], crs='epsg:32633')
+
+    pr_int = gpd.GeoSeries([
+                            pr_int, # current point of ownship
+                            ], crs='epsg:32633')
+
+    pr_int.plot(marker='*', color='red', ax=ax)
+    lpr_own.plot(color='blue', ax=ax,  linestyle='-')
+    lpr_int.plot(color='red', ax=ax, linestyle='-')
+
+    # funny stuff happening from second part of for loop check
+    plt.show()
 class EndVector():
     def __init__(self, x1, y1, x2, y2):
         self.x = x2-x1
