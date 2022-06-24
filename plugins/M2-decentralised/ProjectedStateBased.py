@@ -83,6 +83,8 @@ class M2StateBased(ConflictDetection):
         intruderlon = deepcopy(intruder.lon)
         intrudertrk = deepcopy(intruder.trk)
 
+        ownshiplat = deepcopy(ownship.lat)
+        ownshiplon = deepcopy(ownship.lon)
         ownshiptrk = deepcopy(ownship.trk)
 
 
@@ -181,6 +183,9 @@ class M2StateBased(ConflictDetection):
                 own_line = geo_series[ownship_id]
                 int_line = geo_series[intruder_id]
 
+                p_own = Point([own_line.xy[0][0], own_line.xy[1][0]])
+                p_int = Point([int_line.xy[0][0], int_line.xy[1][0]])
+
                 # get the intersection point
                 p_inter = own_line.intersection(int_line)
 
@@ -188,95 +193,49 @@ class M2StateBased(ConflictDetection):
                 s_own, _ = split_line_with_point(own_line, p_inter)
                 s_int, _ = split_line_with_point(int_line, p_inter)
 
-                # find the angle from s_own to s_int and direction of rotation
-                theta_int, is_ccw = intersection_angle(s_own, s_int)
+                # first step is to project the ownship and intruder line
+                p1 = Point([s_own.xy[0][-2],  s_own.xy[1][-2]])
+                p2 = Point([s_int.xy[0][-2],  s_int.xy[1][-2]])
+
+                s_own_end = LineString([p1, p_inter])
+                s_int_end = LineString([p2, p_inter])
                 
-                # now make a straight line same length as of own_cut_line 
-                # intersecting line
-                p_own = Point([s_own.xy[0][0], s_own.xy[1][0]])
-                p_int = Point([s_int.xy[0][0], s_int.xy[1][0]])
+                own_scale_factor = s_own.length/s_own_end.length
+                int_scale_factor = s_int.length/s_int_end.length
 
-                l_own = LineString([p_own, p_inter])
-                scale_factor =  s_own.length/l_own.length
-                lpr_own = scale(l_own, xfact=scale_factor, yfact=scale_factor, origin=p_own)
-                
-                # get projected intersection point is the last point of scaled_own_line
-                pr_inter = Point([lpr_own.xy[0][1], lpr_own.xy[1][1]])
+                lpr_own = scale(s_own_end, xfact=own_scale_factor, yfact=own_scale_factor, origin=p_inter)
+                lpr_int = scale(s_int_end, xfact=int_scale_factor, yfact=int_scale_factor, origin=p_inter)
 
-                # Use law of cosines to get subtraction betwen lpr_own and lpr_int
-                cpr_own_int = np.sqrt(s_own.length**2 + s_int.length**2 - 2*s_own.length*s_int.length*np.cos(theta_int))
-                
-                # calculate alpha which is the angle between lpr_own and cpr_own_int
-                cos_alpha =  (-s_int.length**2+ lpr_own.length**2 + cpr_own_int**2 ) / (2*cpr_own_int*lpr_own.length)
-                alpha = np.arccos(cos_alpha)
+                pr_own = Point([lpr_own.xy[0][0], lpr_own.xy[1][0]])
+                pr_int = Point([lpr_int.xy[0][0], lpr_int.xy[1][0]])
 
-                # define a unit vector of lpr_own
-                vec_prown = EndVector(p_own.x, p_own.y, pr_inter.x, pr_inter.y)
-                unit_vector_pr_own = EndVector(0, 0, vec_prown.x/abs(vec_prown), vec_prown.y/abs(vec_prown))
+                # plot_things(p_own, p_int, own_line, int_line, s_own, s_int, p_inter, lpr_own, lpr_int, pr_own, pr_int)
 
-                # rotate vector by a certain angle counterclockwise
-                #     | cos(theta)  -sin(theta) |
-                # R = |                         |
-                #     | sin(theta)   cos(theta) |
-                #
-                # rotate vector by a certain angle clockwise
-                #     |  cos(theta)   sin(theta) |
-                # R = |                          |
-                #     | -sin(theta)   cos(theta) |
-                
-                # rotate the unit vector
-                # TODO: check
-                if not is_ccw:
-                    # clockwise rotatiion
-                    r = np.array([[np.cos(alpha), np.sin(alpha)],
-                                 [-np.sin(alpha), np.cos(alpha)]])
-                                                                    
-                else:
-                    # counterclockwise rotation
-                    r = np.array( [[np.cos(alpha), -np.sin(alpha)],
-                                   [np.sin(alpha),  np.cos(alpha)]])
-
-                v = np.array((unit_vector_pr_own.x,unit_vector_pr_own.y))
-                
-                # get unit vector from pr_own to pr_int
-                unit_vec_to_int = r.dot(v)
-
-                # scale by cpr_own_int
-                vec_own_to_int = unit_vec_to_int*cpr_own_int
-
-                # translate the vector TODO: check the translation
-
-                # translate the vector to get pr_int
-                pr_int = Point([ p_own.x + vec_own_to_int[0], p_own.y + vec_own_to_int[1]])
-
-                # now get linw of pr_int
-                lpr_int = LineString([pr_int, pr_inter])
-
-                # TODO: multople p_inter
-                # TODO: s_int, or s_own have length=0
-
-                # plot stuff for testing
-                # plot_things(own_line, int_line, p_own, p_int, s_own, s_int, p_inter, pr_inter, lpr_own, lpr_int, pr_int)
-            
                 # convert to lat lon from utm of intruder
                 int_point = gpd.GeoSeries(pr_int, crs='epsg:32633')
                 int_point = int_point.to_crs(epsg=4326)
                 
-                own_point = gpd.GeoSeries(p_own, crs='epsg:32633')
+                own_point = gpd.GeoSeries(pr_own, crs='epsg:32633')
                 own_point = own_point.to_crs(epsg=4326)
 
-                inter_point = gpd.GeoSeries(pr_inter, crs='epsg:32633')
+                inter_point = gpd.GeoSeries(p_inter, crs='epsg:32633')
                 inter_point = inter_point.to_crs(epsg=4326)
 
                 # assign intruder.lat and intruder.lon with int_x and int_y
                 intruderlat[curr_intruder] = int_point.y
                 intruderlon[curr_intruder] = int_point.x
                 intrudertrk[curr_intruder], *_ = geo.qdrdist(int_point.y, int_point.x, inter_point.y, inter_point.x)
+                
+                
+                ownshiplat[curr_ownship] = own_point.y
+                ownshiplon[curr_ownship] = own_point.x                
                 ownshiptrk[curr_ownship], *_ = geo.qdrdist(own_point.y, own_point.x, inter_point.y, inter_point.x)
-                # TODO: override trk of ownship with scaled_ownship_line_track
-                # TODO: override trk of intruder with scaled_intruder_line_track
+                
 
-
+                # TODO: check what happens when aircraft are following the same route and in conflict
+                # TODO: check what happens when they is more than one intersection
+                # TODO: extend line back 32 meters to make check if intersection happens.
+                # not a good idea to always start line at the w
             # t4 = time()
             # print("Time to project positions: ", t4-t3)
 
@@ -291,7 +250,7 @@ class M2StateBased(ConflictDetection):
         # Horizontal conflict ------------------------------------------------------
 
         # qdrlst is for [i,j] qdr from i to j, from perception of ADSB and own coordinates
-        qdr, dist = geo.kwikqdrdist_matrix(np.asmatrix(ownship.lat), np.asmatrix(ownship.lon),
+        qdr, dist = geo.kwikqdrdist_matrix(np.asmatrix(ownshiplat), np.asmatrix(ownshiplon),
                                     np.asmatrix(intruderlat), np.asmatrix(intruderlon))
 
         # Convert back to array to allow element-wise array multiplications later on
@@ -375,13 +334,12 @@ class M2StateBased(ConflictDetection):
 
         t4 = time()
         # print("Time to calculate: ", t4-t3)
-        print('---------------------------------------------------------------------------------------------------------------------')
 
         return confpairs, lospairs, inconf, tcpamax, \
             qdr[swconfl], dist[swconfl], np.sqrt(dcpa2[swconfl]), \
                 tcpa[swconfl], tinconf[swconfl], qdr, dist
 
-def plot_things(own_line, int_line, p_own, p_int, s_own, s_int, p_inter, pr_inter, lpr_own, lpr_int, pr_int):
+def plot_things(p_own, p_int, own_line, int_line, s_own, s_int, p_inter, lpr_own, lpr_int, pr_own, pr_int):
     import matplotlib.pyplot as plt
     fig, ax = plt.subplots()
     ax.set_aspect('equal')
@@ -424,22 +382,22 @@ def plot_things(own_line, int_line, p_own, p_int, s_own, s_int, p_inter, pr_inte
 
     p_inter.plot(marker='x', color='black', ax=ax)
 
-    pr_inter = gpd.GeoSeries([
-                            pr_inter, # current point of ownship
-                            ], crs='epsg:32633')
-
     lpr_own = gpd.GeoSeries([
                             lpr_own, # current point of ownship
                             ], crs='epsg:32633')
     lpr_int = gpd.GeoSeries([
                             lpr_int, # current point of ownship
                             ], crs='epsg:32633')
-
+    pr_own = gpd.GeoSeries([
+                            pr_own, # current point of ownship
+                            ], crs='epsg:32633')
     pr_int = gpd.GeoSeries([
                             pr_int, # current point of ownship
                             ], crs='epsg:32633')
 
+    pr_own.plot(marker='*', color='blue', ax=ax)
     pr_int.plot(marker='*', color='red', ax=ax)
+
     lpr_own.plot(color='blue', ax=ax,  linestyle='-')
     lpr_int.plot(color='red', ax=ax, linestyle='-')
 
