@@ -235,6 +235,7 @@ class M2StateBased(ConflictDetection):
                 # TODO: check what happens when aircraft are following the same route and in conflict
                 # TODO: check what happens when they is more than one intersection
                 # TODO: extend line back 32 meters to make check if intersection happens.
+                # TODO: only run state based if there is an intersection rather than all of the time
                 # not a good idea to always start line at the w
             # t4 = time()
             # print("Time to project positions: ", t4-t3)
@@ -403,35 +404,6 @@ def plot_things(p_own, p_int, own_line, int_line, s_own, s_int, p_inter, lpr_own
 
     # funny stuff happening from second part of for loop check
     plt.show()
-class EndVector():
-    def __init__(self, x1, y1, x2, y2):
-        self.x = x2-x1
-        self.y = y2-y1
-
-    def __abs__(self):
-        return np.sqrt(self.x**2 + self.y**2)
-
-    def __sub__(self, other):
-        return EndVector(self.x, other.x, self.y, other.y)
-
-    def __repr__(self):
-        return f'EndVector(x={self.x!r}, y={self.y!r})'
-
-def intersection_angle(s_own, s_int):
-    # a and b are two vectors so we get the line
-
-    # get end vectors of s_own and s_int
-    s_own_vec = EndVector(s_own.xy[0][-1], s_own.xy[1][-1], s_own.xy[0][-2], s_own.xy[1][-2])
-    s_int_vec = EndVector(s_int.xy[0][-1], s_int.xy[1][-1], s_int.xy[0][-2], s_int.xy[1][-2])
-
-    # Law of cosines to find angle between
-    cos_theta =  ( - abs(s_own_vec - s_int_vec) + abs(s_own_vec) + abs(s_int_vec) ) / (2*abs(s_own_vec)*abs(s_int_vec))
-
-    # also create a linear ring to check if rotation is ccw or counter clockwise
-    ring = LinearRing([(s_own.xy[0][-2], s_own.xy[1][-2]), (s_own.xy[0][-1], s_own.xy[1][-1]), (s_int.xy[0][-2], s_int.xy[1][-2])])
-    
-    return np.arccos(cos_theta), ring.is_ccw
-
 
 def split_line_with_point(line, splitter):
     """Split a LineString with a Point
