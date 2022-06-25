@@ -93,7 +93,7 @@ class M2StateBased(ConflictDetection):
         routes = ownship.ap.route
         
         # intialize the geo_dict
-        geo_dict = {'geometry': [], 'acid': []}
+        geo_dict = {'geometry': [], 'acid': [], 'current_point': []}
 
         if ownship.ntraf >= 1:
 
@@ -158,6 +158,7 @@ class M2StateBased(ConflictDetection):
                 geo_dict['geometry'].append(merged_line)
                 #geo_dict['geometry'].append(look_ahead_line)
                 geo_dict['acid'].append(ownship.id[idx])
+                geo_dict['current_point'].append(p1)
 
             # t2 = time()
             # print('Time to extrapolate: ', t2-t1)
@@ -196,7 +197,7 @@ class M2StateBased(ConflictDetection):
             # TODO: fix all of the angle calculations and vectorize the for loop
             for intersection in actual_intersections:
 
-                print('THERE IS AN INTERSECTION')
+                print('THERE IS AN INTERSECTION')                
 
                 curr_ownship = intersection[0]
                 ownship_id = ownship.id[curr_ownship]
@@ -208,8 +209,11 @@ class M2StateBased(ConflictDetection):
                 own_line = geo_series[ownship_id]
                 int_line = geo_series[intruder_id]
 
-                p_own = Point([own_line.xy[0][0], own_line.xy[1][0]])
-                p_int = Point([int_line.xy[0][0], int_line.xy[1][0]])
+                p_own = geo_dict['current_point'][curr_ownship]
+                p_int = geo_dict['current_point'][curr_intruder]
+
+                # TODO: split own_line and int_line for lookahead and lookback
+                # TODO: fix process below for a look back line
 
                 # get the intersection point
                 p_inter = own_line.intersection(int_line)
