@@ -1,7 +1,7 @@
 ''' State-based conflict detection. '''
 import numpy as np
-from shapely.geometry import LineString, Point, LinearRing
-from shapely.ops import nearest_points, split
+from shapely.geometry import LineString, Point, MultiLineString
+from shapely.ops import nearest_points, split, transform, linemerge
 import geopandas as gpd
 # from rich import inspect
 from shapely.affinity  import affine_transform, scale
@@ -120,18 +120,43 @@ class M2StateBased(ConflictDetection):
                 p1, _ = nearest_points(route_line.geometry.values[0], current_loc.geometry.values[0])
 
                 # now split the line to remove eveything before current position
-                _, end_line = split_line_with_point(route_line.geometry.values[0], p1)
+                back_line, front_line = split_line_with_point(route_line.geometry.values[0], p1)
 
-                # now interpolate along this line
+                # now interpolate along the end line
                 look_ahead_dist = look_ahead_dist + rpz[0]
                 look_ahead_dist = 100 if look_ahead_dist < 100 else look_ahead_dist
-                end_point = end_line.interpolate(look_ahead_dist)
+                end_point = front_line.interpolate(look_ahead_dist)
 
                 # now split line again to get line with a lookahead tine
-                look_ahead_line, _ = split_line_with_point(end_line, end_point)
+                look_ahead_line, _ = split_line_with_point(front_line, end_point)
+
+                # now also extend the line with back_line 32 meters back
+                back_line = reverse_geom(back_line)
+
+                # if near the start of the line then just extend the line so it is 32 meters
+                # TODO: do the same at end of route 
+                if back_line.length < rpz[0]:
+                    sf = rpz[0] / back_line.length
+                    look_back_line = scale(back_line, xfact=sf, yfact=sf, origin=Point([back_line.xy[0][0], back_line.xy[1][0]]))
+                
+                else:
+                    # interpolate with route geometry if larger than 32 meters
+                    start_point = back_line.interpolate(rpz[0])
+                
+                    # now split line again to get line that extends 32 meters back from aircraft
+                    look_back_line, _ = split_line_with_point(back_line, start_point)
+
+                # reverse the line again before merging with look_ahead_line
+                look_back_line = reverse_geom(look_back_line)
+
+                # merge lines
+                multi_line = MultiLineString([look_back_line, look_ahead_line])
+                merged_line = linemerge(multi_line)
+
 
                 # fill the geo_dict
-                geo_dict['geometry'].append(look_ahead_line)
+                geo_dict['geometry'].append(merged_line)
+                #geo_dict['geometry'].append(look_ahead_line)
                 geo_dict['acid'].append(ownship.id[idx])
 
             # t2 = time()
@@ -429,7 +454,25 @@ def split_line_with_point(line, splitter):
         current_position += segment_length
         if distance_on_line == current_position:
             # splitter is exactly on a vertex
+
+            # now check if the splitter is at the start of the line
+            if len(coords[i+1:]) == 1:
+                return LineString(coords[:i+2]), LineString([])
+
+            # now check if the splitter is at the end of the line
+            if len(coords[:i+2]) == 1:
+                return LineString([]), LineString(coords[i+1:])
+
+            # otherwise it is normal split
             return LineString(coords[:i+2]), LineString(coords[i+1:])
         elif distance_on_line < current_position:
             # splitter is between two vertices
             return LineString(coords[:i+1] + [splitter.coords[0]]), LineString([splitter.coords[0]] + coords[i+1:])
+
+def reverse_geom(geom) -> LineString:
+    def _reverse(x, y, z=None):
+        if z:
+            return x[::-1], y[::-1], z[::-1]
+        return x[::-1], y[::-1]
+
+    return transform(_reverse, geom)
