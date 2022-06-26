@@ -97,7 +97,13 @@ class M2StateBased(ConflictDetection):
 
         if ownship.ntraf >= 1:
 
-            # for loop through aircraft id TODO: vectorize
+            # for loop through aircraft id
+            
+            # TODO: check what happens when aircraft are following the same route and in conflict
+            # TODO: check what happens when they is more than one intersection
+            # TODO: only run state based if there is an intersection rather than all of the time
+            # TODO: vectorize this
+            # TODO: remove geopandas for conversion of CRS
             for idx, route in enumerate(routes):
                 
                 if not route.wplat:
@@ -122,13 +128,24 @@ class M2StateBased(ConflictDetection):
                 # now split the line to remove eveything before current position
                 back_line, front_line = split_line_with_point(route_line.geometry.values[0], p1)
 
-                # now interpolate along the end line
-                look_ahead_dist = look_ahead_dist + rpz[0]
-                look_ahead_dist = 100 if look_ahead_dist < 100 else look_ahead_dist
-                end_point = front_line.interpolate(look_ahead_dist)
+                # now interpolate along the line
+                if front_line.length == 0:
+                    # get the last two points of route and extend 32 meters
+                    # In reality, aircraft should be deleted at last waypoint so this
+                    # is a safety so bluesky doesn't crash
+                    dummy_line = LineString(route_line.geometry.values[0].coords[-2:])
+                    sf = rpz[0] / dummy_line.length
+                    look_ahead_line = scale(dummy_line, xfact=sf, yfact=sf, origin=route_line.geometry.values[0].coords[-1])
 
-                # now split line again to get line with a lookahead tine
-                look_ahead_line, _ = split_line_with_point(front_line, end_point)
+                else:
+                    
+                    # normal lookahead extension
+                    look_ahead_dist = look_ahead_dist + rpz[0]
+                    look_ahead_dist = 100 if look_ahead_dist < 100 else look_ahead_dist
+                    end_point = front_line.interpolate(look_ahead_dist)
+
+                    # now split line again to get line with a lookahead tine
+                    look_ahead_line, _ = split_line_with_point(front_line, end_point)
 
                 # now also extend the line with back_line 32 meters back
                 back_line = reverse_geom(back_line)
@@ -194,7 +211,6 @@ class M2StateBased(ConflictDetection):
             # t3 = time()
 
             # if they intersect rebuild intruder.lat and intuder.lon, intruder.trk so that state based works normally
-            # TODO: fix all of the angle calculations and vectorize the for loop
             for intersection in actual_intersections:
 
                 curr_ownship = intersection[0]
@@ -369,12 +385,8 @@ class M2StateBased(ConflictDetection):
                     # ignore if intersection is behind both intruder and ownship
                     continue
 
-            if len(actual_intersections) > 1:    
-                plot_things(p_own, p_int, own_line, int_line, s_own, s_int, p_inter, lpr_own, lpr_int, pr_own, pr_int)
-
-                # TODO: check what happens when aircraft are following the same route and in conflict
-                # TODO: check what happens when they is more than one intersection
-                # TODO: only run state based if there is an intersection rather than all of the time
+            # if len(actual_intersections) > 1:    
+            #     plot_things(p_own, p_int, own_line, int_line, s_own, s_int, p_inter, lpr_own, lpr_int, pr_own, pr_int)
                 # not a good idea to always start line at the w
             # t4 = time()
             # print("Time to project positions: ", t4-t3)
