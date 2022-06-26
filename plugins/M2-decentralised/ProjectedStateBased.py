@@ -101,9 +101,12 @@ class M2StateBased(ConflictDetection):
             
             # TODO: check what happens when aircraft are following the same route and in conflict
             # TODO: check what happens when they is more than one intersection
-            # TODO: only run state based if there is an intersection rather than all of the time
-            # TODO: vectorize this
+            # TODO: if no intersection then there should be no conflict.
+            # TODO: use "actual statebased" to check for intrusions
+            # TODO: only run projected based if there is an intersection rather than all of the time
             # TODO: remove geopandas for conversion of CRS
+            # TODO: vectorize this
+
             for idx, route in enumerate(routes):
                 
                 if not route.wplat:
