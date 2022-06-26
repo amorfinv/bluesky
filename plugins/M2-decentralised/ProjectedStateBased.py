@@ -61,6 +61,9 @@ class M2StateBased(ConflictDetection):
             self.dist, self.dcpa, self.tcpa, self.tLOS, self.qdr_mat, self.dist_mat = \
                 self.detect(ownship, intruder, self.rpz, self.hpz, self.dtlookahead)
 
+        # Check LOS the normal way
+        self.lospairs = self.detect_los(ownship, intruder, self.rpz, self.hpz)
+
         # confpairs has conflicts observed from both sides (a, b) and (b, a)
         # confpairs_unique keeps only one of these
         confpairs_unique = {frozenset(pair) for pair in self.confpairs}
@@ -493,6 +496,44 @@ class M2StateBased(ConflictDetection):
         return confpairs, lospairs, inconf, tcpamax, \
             qdr[swconfl], dist[swconfl], np.sqrt(dcpa2[swconfl]), \
                 tcpa[swconfl], tinconf[swconfl], qdr, dist
+
+    def detect_los(self, ownship, intruder, rpz, hpz):
+        ''' Conflict detection between ownship (traf) and intruder (traf/adsb).'''
+
+        # Calculate everything using the buffered RPZ
+        rpz = np.zeros(len(rpz)) + self.rpz_buffered
+        # Identity matrix of order ntraf: avoid ownship-ownship detected conflicts
+        I = np.eye(ownship.ntraf)
+
+        # Horizontal conflict ------------------------------------------------------
+
+        # qdrlst is for [i,j] qdr from i to j, from perception of ADSB and own coordinates
+        _, dist = geo.kwikqdrdist_matrix(np.asmatrix(ownship.lat), np.asmatrix(ownship.lon),
+                                    np.asmatrix(intruder.lat), np.asmatrix(intruder.lon))
+
+        # Convert back to array to allow element-wise array multiplications later on
+        # Convert to meters and add large value to own/own pairs
+        dist = np.asarray(dist) * nm + 1e9 * I
+
+        # Vertical conflict --------------------------------------------------------
+
+        # Vertical crossing of disk (-dh,+dh)
+        dalt = ownship.alt.reshape((1, ownship.ntraf)) - \
+            intruder.alt.reshape((1, ownship.ntraf)).T  + 1e9 * I
+
+
+        # --------------------------------------------------------------------------
+        # Update LOS lists
+        # --------------------------------------------------------------------------
+
+        # It's a LOS if the actual RPZ of 32m is violated.
+        swlos = (dist < (np.zeros(len(rpz)) + self.rpz_actual)) * (np.abs(dalt) < hpz)
+        lospairs = [(ownship.id[i], ownship.id[j]) for i, j in zip(*np.where(swlos))]
+
+
+        return lospairs
+
+
 
 def plot_things(p_own, p_int, own_line, int_line, s_own, s_int, p_inter, lpr_own, lpr_int, pr_own, pr_int):
     import matplotlib.pyplot as plt
