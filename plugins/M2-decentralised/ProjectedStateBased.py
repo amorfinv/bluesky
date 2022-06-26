@@ -197,8 +197,6 @@ class M2StateBased(ConflictDetection):
             # TODO: fix all of the angle calculations and vectorize the for loop
             for intersection in actual_intersections:
 
-                print('THERE IS AN INTERSECTION')                
-
                 curr_ownship = intersection[0]
                 ownship_id = ownship.id[curr_ownship]
 
@@ -212,58 +210,170 @@ class M2StateBased(ConflictDetection):
                 p_own = geo_dict['current_point'][curr_ownship]
                 p_int = geo_dict['current_point'][curr_intruder]
 
-                # TODO: split own_line and int_line for lookahead and lookback
-                # TODO: fix process below for a look back line
-
                 # get the intersection point
                 p_inter = own_line.intersection(int_line)
 
-                # now split ownship and intruder lines with interseciton point
-                s_own, _ = split_line_with_point(own_line, p_inter)
-                s_int, _ = split_line_with_point(int_line, p_inter)
+                # now split ownship and intruder lines with interseciton point (back and front)
+                s_own_back, s_own_front = split_line_with_point(own_line, p_inter)
+                s_int_back, s_int_front = split_line_with_point(int_line, p_inter)
 
-                # first step is to project the ownship and intruder line
-                p1 = Point([s_own.xy[0][-2],  s_own.xy[1][-2]])
-                p2 = Point([s_int.xy[0][-2],  s_int.xy[1][-2]])
+                # Case 1: Interection is in front of ownship and intruder
+                # this means that the p_own is in s_own_back
+                # and intuder is in s_int_back
 
-                s_own_end = LineString([p1, p_inter])
-                s_int_end = LineString([p2, p_inter])
+                # check if the intersection is in front of ownship and intruder
+
+                if s_own_back.contains(p_own) and s_int_back.contains(p_int):
+                    
+                    print('CASE 1: THERE IS AN INTERSECTION')                
+                    
+                    # remove back part behind ownship and intruder
+                    _, s_own = split_line_with_point(s_own_back, p_own)
+                    _, s_int = split_line_with_point(s_int_back, p_int)
+
+                    # first step is to project the ownship and intruder line
+                    p1 = Point([s_own.xy[0][-2],  s_own.xy[1][-2]])
+                    p2 = Point([s_int.xy[0][-2],  s_int.xy[1][-2]])
+
+                    s_own_end = LineString([p1, p_inter])
+                    s_int_end = LineString([p2, p_inter])
+                    
+                    own_scale_factor = s_own.length/s_own_end.length
+                    int_scale_factor = s_int.length/s_int_end.length
+
+                    lpr_own = scale(s_own_end, xfact=own_scale_factor, yfact=own_scale_factor, origin=p_inter)
+                    lpr_int = scale(s_int_end, xfact=int_scale_factor, yfact=int_scale_factor, origin=p_inter)
+
+                    pr_own = Point([lpr_own.xy[0][0], lpr_own.xy[1][0]])
+                    pr_int = Point([lpr_int.xy[0][0], lpr_int.xy[1][0]])
+
+
+                    # convert to lat lon from utm of intruder
+                    int_point = gpd.GeoSeries(pr_int, crs='epsg:32633')
+                    int_point = int_point.to_crs(epsg=4326)
+                    
+                    own_point = gpd.GeoSeries(pr_own, crs='epsg:32633')
+                    own_point = own_point.to_crs(epsg=4326)
+
+                    inter_point = gpd.GeoSeries(p_inter, crs='epsg:32633')
+                    inter_point = inter_point.to_crs(epsg=4326)
+
+                    # assign intruder.lat and intruder.lon with int_x and int_y
+                    intruderlat[curr_intruder] = int_point.y
+                    intruderlon[curr_intruder] = int_point.x
+                    intrudertrk[curr_intruder], *_ = geo.qdrdist(int_point.y, int_point.x, inter_point.y, inter_point.x)
+                    
+                    
+                    ownshiplat[curr_ownship] = own_point.y
+                    ownshiplon[curr_ownship] = own_point.x                
+                    ownshiptrk[curr_ownship], *_ = geo.qdrdist(own_point.y, own_point.x, inter_point.y, inter_point.x)
+                    
+                elif s_own_front.contains(p_own) and s_int_back.contains(p_int):
+
+                    # Case 2: Interection is behind ownship
+                    # and in front of intruder
+                    # this means that p_own is in s_own_front
+                    # and p_int is in s_int_back
+                    print('CASE 2: THERE IS AN INTERSECTION')
+                    
+                    # keep back part behind ownship and front part from intruder
+                    s_own, _ = split_line_with_point(s_own_front, p_own)
+                    _, s_int = split_line_with_point(s_int_back, p_int)
+
+                    # first step is to project the ownship and intruder line
+                    p1 = Point([s_own.xy[0][1],  s_own.xy[1][1]])
+                    p2 = Point([s_int.xy[0][-2],  s_int.xy[1][-2]])
+
+                    s_own_end = LineString([p_inter, p1])
+                    s_int_end = LineString([p2, p_inter])
+                    
+                    own_scale_factor = s_own.length/s_own_end.length
+                    int_scale_factor = s_int.length/s_int_end.length
+
+                    lpr_own = scale(s_own_end, xfact=own_scale_factor, yfact=own_scale_factor, origin=p_inter)
+                    lpr_int = scale(s_int_end, xfact=int_scale_factor, yfact=int_scale_factor, origin=p_inter)
+
+                    pr_own = Point([lpr_own.xy[0][-1], lpr_own.xy[1][-1]])
+                    pr_int = Point([lpr_int.xy[0][0], lpr_int.xy[1][0]])
+
+                    # convert to lat lon from utm of intruder
+                    int_point = gpd.GeoSeries(pr_int, crs='epsg:32633')
+                    int_point = int_point.to_crs(epsg=4326)
+                    
+                    own_point = gpd.GeoSeries(pr_own, crs='epsg:32633')
+                    own_point = own_point.to_crs(epsg=4326)
+
+                    inter_point = gpd.GeoSeries(p_inter, crs='epsg:32633')
+                    inter_point = inter_point.to_crs(epsg=4326)
+
+                    # assign intruder.lat and intruder.lon with int_x and int_y
+                    intruderlat[curr_intruder] = int_point.y
+                    intruderlon[curr_intruder] = int_point.x
+                    intrudertrk[curr_intruder], *_ = geo.qdrdist(int_point.y, int_point.x, inter_point.y, inter_point.x)
+                    
+                    
+                    ownshiplat[curr_ownship] = own_point.y
+                    ownshiplon[curr_ownship] = own_point.x                
+                    ownshiptrk[curr_ownship], *_ = geo.qdrdist(inter_point.y, inter_point.x, own_point.y, own_point.x)
                 
-                own_scale_factor = s_own.length/s_own_end.length
-                int_scale_factor = s_int.length/s_int_end.length
 
-                lpr_own = scale(s_own_end, xfact=own_scale_factor, yfact=own_scale_factor, origin=p_inter)
-                lpr_int = scale(s_int_end, xfact=int_scale_factor, yfact=int_scale_factor, origin=p_inter)
+                elif s_own_back.contains(p_own) and s_int_front.contains(p_int):
 
-                pr_own = Point([lpr_own.xy[0][0], lpr_own.xy[1][0]])
-                pr_int = Point([lpr_int.xy[0][0], lpr_int.xy[1][0]])
+                    # Case 3: Intersection is in front of ownship
+                    # and in back of intruder
+                    # this means that p_own is in s_own_front
+                    # and p_int is in s_int_back
+                    print('CASE 3: THERE IS AN INTERSECTION')     
 
-                # plot_things(p_own, p_int, own_line, int_line, s_own, s_int, p_inter, lpr_own, lpr_int, pr_own, pr_int)
+                    # keep back part behind ownship and front part from intruder
+                    _, s_own = split_line_with_point(s_own_back, p_own)
+                    s_int, _ = split_line_with_point(s_int_front, p_int)
 
-                # convert to lat lon from utm of intruder
-                int_point = gpd.GeoSeries(pr_int, crs='epsg:32633')
-                int_point = int_point.to_crs(epsg=4326)
+                    # first step is to project the ownship and intruder line
+                    p1 = Point([s_own.xy[0][-2],  s_own.xy[1][-2]])
+                    p2 = Point([s_int.xy[0][1],  s_int.xy[1][1]])
+
+                    s_own_end = LineString([p1, p_inter])
+                    s_int_end = LineString([p_inter, p2])
+                    
+                    own_scale_factor = s_own.length/s_own_end.length
+                    int_scale_factor = s_int.length/s_int_end.length
+
+                    lpr_own = scale(s_own_end, xfact=own_scale_factor, yfact=own_scale_factor, origin=p_inter)
+                    lpr_int = scale(s_int_end, xfact=int_scale_factor, yfact=int_scale_factor, origin=p_inter)
+
+                    pr_own = Point([lpr_own.xy[0][0], lpr_own.xy[1][0]])
+                    pr_int = Point([lpr_int.xy[0][-1], lpr_int.xy[1][-1]])
+
+                    # convert to lat lon from utm of intruder
+                    int_point = gpd.GeoSeries(pr_int, crs='epsg:32633')
+                    int_point = int_point.to_crs(epsg=4326)
+                    
+                    own_point = gpd.GeoSeries(pr_own, crs='epsg:32633')
+                    own_point = own_point.to_crs(epsg=4326)
+
+                    inter_point = gpd.GeoSeries(p_inter, crs='epsg:32633')
+                    inter_point = inter_point.to_crs(epsg=4326)
+
+                    # assign intruder.lat and intruder.lon with int_x and int_y
+                    intruderlat[curr_intruder] = int_point.y
+                    intruderlon[curr_intruder] = int_point.x
+                    intrudertrk[curr_intruder], *_ = geo.qdrdist(int_point.y, int_point.x, inter_point.y, inter_point.x)
+                    
+                    
+                    ownshiplat[curr_ownship] = own_point.y
+                    ownshiplon[curr_ownship] = own_point.x                
+                    ownshiptrk[curr_ownship], *_ = geo.qdrdist(inter_point.y, inter_point.x, own_point.y, own_point.x)
                 
-                own_point = gpd.GeoSeries(pr_own, crs='epsg:32633')
-                own_point = own_point.to_crs(epsg=4326)
+                else:
+                    # ignore if intersection is behind both intruder and ownship
+                    continue
 
-                inter_point = gpd.GeoSeries(p_inter, crs='epsg:32633')
-                inter_point = inter_point.to_crs(epsg=4326)
-
-                # assign intruder.lat and intruder.lon with int_x and int_y
-                intruderlat[curr_intruder] = int_point.y
-                intruderlon[curr_intruder] = int_point.x
-                intrudertrk[curr_intruder], *_ = geo.qdrdist(int_point.y, int_point.x, inter_point.y, inter_point.x)
-                
-                
-                ownshiplat[curr_ownship] = own_point.y
-                ownshiplon[curr_ownship] = own_point.x                
-                ownshiptrk[curr_ownship], *_ = geo.qdrdist(own_point.y, own_point.x, inter_point.y, inter_point.x)
-                
+            if len(actual_intersections) > 1:    
+                plot_things(p_own, p_int, own_line, int_line, s_own, s_int, p_inter, lpr_own, lpr_int, pr_own, pr_int)
 
                 # TODO: check what happens when aircraft are following the same route and in conflict
                 # TODO: check what happens when they is more than one intersection
-                # TODO: extend line back 32 meters to make check if intersection happens.
                 # TODO: only run state based if there is an intersection rather than all of the time
                 # not a good idea to always start line at the w
             # t4 = time()
