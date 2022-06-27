@@ -1,6 +1,6 @@
 ''' State-based conflict detection. '''
 import numpy as np
-from shapely.geometry import LineString, Point, MultiLineString
+from shapely.geometry import LineString, Point, MultiLineString, MultiPoint
 from shapely.ops import nearest_points, split, transform, linemerge
 import geopandas as gpd
 # from rich import inspect
@@ -160,7 +160,8 @@ class M2StateBased(ConflictDetection):
                 # TODO: do the same at end of route 
                 if back_line.length < rpz[0]:
                     sf = rpz[0] / back_line.length
-                    look_back_line = scale(back_line, xfact=sf, yfact=sf, origin=Point([back_line.xy[0][0], back_line.xy[1][0]]))
+                    look_back_line = scale(back_line, xfact=sf, yfact=sf, origin=back_line.coords[0])
+                    look_back_line = LineString([back_line.coords[0], look_back_line.coords[-1]])
                 
                 else:
                     # interpolate with route geometry if larger than 32 meters
@@ -174,6 +175,7 @@ class M2StateBased(ConflictDetection):
 
                 # merge lines
                 multi_line = MultiLineString([look_back_line, look_ahead_line])
+                # TODO: ensure that this a LineString and not a MultiLineString
                 merged_line = linemerge(multi_line)
 
 
@@ -234,6 +236,14 @@ class M2StateBased(ConflictDetection):
 
                 # get the intersection point
                 p_inter = own_line.intersection(int_line)
+
+                # check if p_inter is a multilinestring (this means multiple intersections)
+                if isinstance(p_inter,MultiLineString):
+                    p_inter = Point(p_inter[0].coords[0])
+                
+                # can also be a multipoint so select first intersection
+                if isinstance(p_inter, MultiPoint):
+                    p_inter = p_inter[0]
 
                 # now split ownship and intruder lines with interseciton point (back and front)
                 s_own_back, s_own_front = split_line_with_point(own_line, p_inter)
@@ -390,9 +400,13 @@ class M2StateBased(ConflictDetection):
                 else:
                     # ignore if intersection is behind both intruder and ownship
                     continue
+                
+                # plot_things(p_own, p_int, own_line, int_line, s_own, s_int, p_inter, lpr_own, lpr_int, pr_own, pr_int)
+
+
 
             # if len(actual_intersections) > 1:    
-            #     plot_things(p_own, p_int, own_line, int_line, s_own, s_int, p_inter, lpr_own, lpr_int, pr_own, pr_int)
+                # plot_things(p_own, p_int, own_line, int_line, s_own, s_int, p_inter, lpr_own, lpr_int, pr_own, pr_int)
                 # not a good idea to always start line at the w
             # t4 = time()
             # print("Time to project positions: ", t4-t3)
@@ -636,7 +650,8 @@ def split_line_with_point(line, splitter):
             # otherwise it is normal split
             return LineString(coords[:i+2]), LineString(coords[i+1:])
         elif distance_on_line < current_position:
-            # splitter is between two vertices
+            # splitter 
+            # is between two vertices
             return LineString(coords[:i+1] + [splitter.coords[0]]), LineString([splitter.coords[0]] + coords[i+1:])
 
 def reverse_geom(geom) -> LineString:
