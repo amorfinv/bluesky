@@ -102,11 +102,9 @@ class M2StateBased(ConflictDetection):
 
             # for loop through aircraft id
             
-            # TODO: check what happens when aircraft are following the same route and in conflict
-            # TODO: check what happens when they is more than one intersection
             # TODO: if no intersection then there should be no conflict.
-            # TODO: use "actual statebased" to check for intrusions
             # TODO: only run projected based if there is an intersection rather than all of the time
+            # TODO: assert geometries
             # TODO: remove geopandas for conversion of CRS
             # TODO: vectorize this
 
@@ -157,7 +155,6 @@ class M2StateBased(ConflictDetection):
                 back_line = reverse_geom(back_line)
 
                 # if near the start of the line then just extend the line so it is 32 meters
-                # TODO: do the same at end of route 
                 if back_line.length < rpz[0]:
                     sf = rpz[0] / back_line.length
                     look_back_line = scale(back_line, xfact=sf, yfact=sf, origin=back_line.coords[0])
@@ -175,7 +172,6 @@ class M2StateBased(ConflictDetection):
 
                 # merge lines
                 multi_line = MultiLineString([look_back_line, look_ahead_line])
-                # TODO: ensure that this a LineString and not a MultiLineString
                 merged_line = linemerge(multi_line)
 
 
