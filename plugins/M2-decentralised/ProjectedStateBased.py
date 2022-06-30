@@ -5,13 +5,14 @@ from shapely.ops import nearest_points, split, transform, linemerge
 import geopandas as gpd
 # from rich import inspect
 from shapely.affinity  import affine_transform, scale
+from pyproj import Transformer
+
 from bluesky import stack
 import bluesky as bs
 from bluesky.tools import geo
 from bluesky.tools.aero import nm
 from bluesky.traffic.asas import ConflictDetection
 from time import time
-from copy import deepcopy
 
 def init_plugin():
 
@@ -36,6 +37,10 @@ class M2StateBased(ConflictDetection):
         self.qdr_mat = np.array([])
         self.rpz_actual = 32 #m
         self.rpz_buffered = 40 #m
+
+        # create some transformers
+        self.transformer_to_utm    = Transformer.from_crs("EPSG:4326", "EPSG:32633")
+        self.transformer_to_latlon = Transformer.from_crs("EPSG:32633", "EPSG:4326")
         return
         
     def clearconfdb(self):
@@ -98,6 +103,7 @@ class M2StateBased(ConflictDetection):
             tcpamaxs = np.full(ownship.ntraf, 0)
             
             # TODO: assert geometries
+            # TODO: create routes just once outside of loop
             # TODO: remove geopandas for conversion of CRS
             # TODO: vectorize this
             # TODO: NUMPYFY THE RETURN VALUES
@@ -108,20 +114,17 @@ class M2StateBased(ConflictDetection):
                     continue
 
                 # get the current location
-                current_loc = gpd.GeoSeries(Point([ownship.lon[idx], ownship.lat[idx]]), crs='epsg:4326')
-
+                current_loc = Point(self.transformer_to_utm.transform(ownship.lat[idx], ownship.lon[idx]))
+                
                 # get the lookahead distance
                 look_ahead_dist = ownship.selspd[idx] * dtlookahead[idx]
-                
-                # convert to utm
-                current_loc = current_loc.to_crs(epsg=32633)
 
                 # add lon lat to shapely linestring
                 route_line = gpd.GeoSeries(LineString(zip(route.wplon, route.wplat)), crs='epsg:4326')
                 route_line = route_line.to_crs(epsg=32633)
 
                 # find closest point to linestring
-                p1, _ = nearest_points(route_line.geometry.values[0], current_loc.geometry.values[0])
+                p1, _ = nearest_points(route_line.geometry.values[0], current_loc)
 
                 # now split the line to remove eveything before current position
                 back_line, front_line = split_line_with_point(route_line.geometry.values[0], p1)
@@ -268,27 +271,14 @@ class M2StateBased(ConflictDetection):
                     pr_own = Point([lpr_own.xy[0][0], lpr_own.xy[1][0]])
                     pr_int = Point([lpr_int.xy[0][0], lpr_int.xy[1][0]])
 
-
                     # convert to lat lon from utm of intruder
-                    int_point = gpd.GeoSeries(pr_int, crs='epsg:32633')
-                    int_point = int_point.to_crs(epsg=4326)
-                    
-                    own_point = gpd.GeoSeries(pr_own, crs='epsg:32633')
-                    own_point = own_point.to_crs(epsg=4326)
-
-                    inter_point = gpd.GeoSeries(p_inter, crs='epsg:32633')
-                    inter_point = inter_point.to_crs(epsg=4326)
+                    intruderlat, intruderlon = self.transformer_to_latlon.transform(pr_int.x, pr_int.y)
+                    ownshiplat, ownshiplon = self.transformer_to_latlon.transform(pr_own.x, pr_own.y)
+                    inter_point_lat, inter_point_lon = self.transformer_to_latlon.transform(p_inter.x, p_inter.y)
 
                     # assign intruder.lat and intruder.lon with int_x and int_y
-                    intruderlat = int_point.y.values[0]
-                    intruderlon = int_point.x.values[0]
-                    inttrk, *_ = geo.qdrdist(int_point.y.values[0], int_point.x.values[0], 
-                                            inter_point.y.values[0], inter_point.x.values[0])
-                    
-                    ownshiplat = own_point.y.values[0]
-                    ownshiplon = own_point.x.values[0]
-                    ownntrk, *_ = geo.qdrdist(own_point.y.values[0], own_point.x.values[0], 
-                                                inter_point.y.values[0], inter_point.x.values[0])
+                    inttrk, *_ = geo.qdrdist(intruderlat, intruderlon, inter_point_lat, inter_point_lon)                   
+                    ownntrk, *_ = geo.qdrdist(ownshiplat, ownshiplon, inter_point_lat, inter_point_lon)
                     
                 elif s_own_front.contains(p_own) and s_int_back.contains(p_int):
 
@@ -319,26 +309,13 @@ class M2StateBased(ConflictDetection):
                     pr_int = Point([lpr_int.xy[0][0], lpr_int.xy[1][0]])
 
                     # convert to lat lon from utm of intruder
-                    int_point = gpd.GeoSeries(pr_int, crs='epsg:32633')
-                    int_point = int_point.to_crs(epsg=4326)
-                    
-                    own_point = gpd.GeoSeries(pr_own, crs='epsg:32633')
-                    own_point = own_point.to_crs(epsg=4326)
-
-                    inter_point = gpd.GeoSeries(p_inter, crs='epsg:32633')
-                    inter_point = inter_point.to_crs(epsg=4326)
+                    intruderlat, intruderlon = self.transformer_to_latlon.transform(pr_int.x, pr_int.y)
+                    ownshiplat, ownshiplon = self.transformer_to_latlon.transform(pr_own.x, pr_own.y)
+                    inter_point_lat, inter_point_lon = self.transformer_to_latlon.transform(p_inter.x, p_inter.y)
 
                     # assign intruder.lat and intruder.lon with int_x and int_y
-                    intruderlat = int_point.y.values[0]
-                    intruderlon = int_point.x.values[0]
-                    inttrk, *_ = geo.qdrdist(int_point.y.values[0], int_point.x.values[0], 
-                                                inter_point.y.values[0], inter_point.x.values[0])
-                    
-                    ownshiplat = own_point.y.values[0]
-                    ownshiplon = own_point.x.values[0]
-                    ownntrk, *_ = geo.qdrdist(inter_point.y.values[0], inter_point.x.values[0], 
-                                                own_point.y.values[0], own_point.x.values[0])                    
-                
+                    inttrk, *_ = geo.qdrdist(intruderlat, intruderlon, inter_point_lat, inter_point_lon)                   
+                    ownntrk, *_ = geo.qdrdist(inter_point_lat, inter_point_lon, ownshiplat, ownshiplon)
 
                 elif s_own_back.contains(p_own) and s_int_front.contains(p_int):
 
@@ -369,25 +346,13 @@ class M2StateBased(ConflictDetection):
                     pr_int = Point([lpr_int.xy[0][-1], lpr_int.xy[1][-1]])
 
                     # convert to lat lon from utm of intruder
-                    int_point = gpd.GeoSeries(pr_int, crs='epsg:32633')
-                    int_point = int_point.to_crs(epsg=4326)
-                    
-                    own_point = gpd.GeoSeries(pr_own, crs='epsg:32633')
-                    own_point = own_point.to_crs(epsg=4326)
+                    intruderlat, intruderlon = self.transformer_to_latlon.transform(pr_int.x, pr_int.y)
+                    ownshiplat, ownshiplon = self.transformer_to_latlon.transform(pr_own.x, pr_own.y)
+                    inter_point_lat, inter_point_lon = self.transformer_to_latlon.transform(p_inter.x, p_inter.y)
 
-                    inter_point = gpd.GeoSeries(p_inter, crs='epsg:32633')
-                    inter_point = inter_point.to_crs(epsg=4326)
-
-                    # assign intruder.lat and intruder.lon with int_x and int_y
-                    intruderlat = int_point.y.values[0]
-                    intruderlon = int_point.x.values[0]
-                    inttrk, *_ = geo.qdrdist(inter_point.y.values[0], inter_point.x.values[0], 
-                                                int_point.y.values[0], int_point.x.values[0])                    
-                    
-                    ownshiplat = own_point.y.values[0]
-                    ownshiplon = own_point.x.values[0]
-                    ownntrk, *_ = geo.qdrdist(own_point.y.values[0], own_point.x.values[0], 
-                                                inter_point.y.values[0], inter_point.x.values[0])
+                    # get trk of intruder and ownship
+                    inttrk, *_ = geo.qdrdist(inter_point_lat, inter_point_lon, intruderlat, intruderlon)                   
+                    ownntrk, *_ = geo.qdrdist(ownshiplat, ownshiplon, inter_point_lat, inter_point_lon)
                 
                 else:
                     # ignore if intersection is behind both intruder and ownship
