@@ -173,7 +173,6 @@ class M2StateBased(ConflictDetection):
 
                 # fill the geo_dict
                 geo_dict['geometry'].append(merged_line)
-                #geo_dict['geometry'].append(look_ahead_line)
                 geo_dict['acid'].append(ownship.id[idx])
                 geo_dict['current_point'].append(p1)
 
