@@ -57,12 +57,12 @@ class M2StateBased(ConflictDetection):
         
     def update(self, ownship, intruder):
         ''' Perform an update step of the Conflict Detection implementation. '''
-        self.confpairs, self.lospairs, self.inconf, self.tcpamax, self.qdr, \
-            self.dist, self.dcpa, self.tcpa, self.tLOS, self.qdr_mat, self.dist_mat = \
+        self.confpairs, self.inconf, self.tcpamax, \
+            self.qdr, self.dist, self.dcpa, self.tcpa, self.tLOS = \
                 self.detect(ownship, intruder, self.rpz, self.hpz, self.dtlookahead)
 
         # Check LOS the normal way
-        self.lospairs = self.detect_los(ownship, intruder, self.rpz, self.hpz)
+        self.lospairs, self.qdr_mat, self.dist_mat = self.detect_los(ownship, intruder, self.rpz, self.hpz)
 
         # confpairs has conflicts observed from both sides (a, b) and (b, a)
         # confpairs_unique keeps only one of these
@@ -81,33 +81,26 @@ class M2StateBased(ConflictDetection):
 
         ############### START PROJECTION ########################
 
-        # make a deep copy of intruder coordinates and trk
-        intruderlat = deepcopy(intruder.lat)
-        intruderlon = deepcopy(intruder.lon)
-        intrudertrk = deepcopy(intruder.trk)
-
-        ownshiplat = deepcopy(ownship.lat)
-        ownshiplon = deepcopy(ownship.lon)
-        ownshiptrk = deepcopy(ownship.trk)
-
-
         # t1 = time()
         # here find the position along route of ownship
         routes = ownship.ap.route
         
         # intialize the geo_dict
         geo_dict = {'geometry': [], 'acid': [], 'current_point': []}
+        
+        actual_intersections = []
 
         if ownship.ntraf >= 1:
 
-            # for loop through aircraft id
+            confpairs, qdr_conf, dist_conf, dcpa_conf, tcpa_conf, tLOS_conf = [], [], [], [], [], []
+            # return empty things if there are no intersections
+            inconfs = np.full(ownship.ntraf, False, dtype=np.bool)
+            tcpamaxs = np.full(ownship.ntraf, 0)
             
-            # TODO: if no intersection then there should be no conflict.
-            # TODO: only run projected based if there is an intersection rather than all of the time
             # TODO: assert geometries
             # TODO: remove geopandas for conversion of CRS
             # TODO: vectorize this
-
+            # TODO: NUMPYFY THE RETURN VALUES
             for idx, route in enumerate(routes):
                 
                 if not route.wplat:
@@ -193,7 +186,6 @@ class M2StateBased(ConflictDetection):
 
             # note that all intersect with themselves so you must check if there are any unique intersections
             # This happens when there are more intersections than aircraft
-            actual_intersections = []
             if len(own_inter) > ownship.ntraf:
 
                 # Get all unique intersections since there are more intersections than aircraft
@@ -287,14 +279,15 @@ class M2StateBased(ConflictDetection):
                     inter_point = inter_point.to_crs(epsg=4326)
 
                     # assign intruder.lat and intruder.lon with int_x and int_y
-                    intruderlat[curr_intruder] = int_point.y
-                    intruderlon[curr_intruder] = int_point.x
-                    intrudertrk[curr_intruder], *_ = geo.qdrdist(int_point.y, int_point.x, inter_point.y, inter_point.x)
+                    intruderlat = int_point.y.values[0]
+                    intruderlon = int_point.x.values[0]
+                    inttrk, *_ = geo.qdrdist(int_point.y.values[0], int_point.x.values[0], 
+                                            inter_point.y.values[0], inter_point.x.values[0])
                     
-                    
-                    ownshiplat[curr_ownship] = own_point.y
-                    ownshiplon[curr_ownship] = own_point.x                
-                    ownshiptrk[curr_ownship], *_ = geo.qdrdist(own_point.y, own_point.x, inter_point.y, inter_point.x)
+                    ownshiplat = own_point.y.values[0]
+                    ownshiplon = own_point.x.values[0]
+                    ownntrk, *_ = geo.qdrdist(own_point.y.values[0], own_point.x.values[0], 
+                                                inter_point.y.values[0], inter_point.x.values[0])
                     
                 elif s_own_front.contains(p_own) and s_int_back.contains(p_int):
 
@@ -335,14 +328,15 @@ class M2StateBased(ConflictDetection):
                     inter_point = inter_point.to_crs(epsg=4326)
 
                     # assign intruder.lat and intruder.lon with int_x and int_y
-                    intruderlat[curr_intruder] = int_point.y
-                    intruderlon[curr_intruder] = int_point.x
-                    intrudertrk[curr_intruder], *_ = geo.qdrdist(int_point.y, int_point.x, inter_point.y, inter_point.x)
+                    intruderlat = int_point.y.values[0]
+                    intruderlon = int_point.x.values[0]
+                    inttrk, *_ = geo.qdrdist(int_point.y.values[0], int_point.x.values[0], 
+                                                inter_point.y.values[0], inter_point.x.values[0])
                     
-                    
-                    ownshiplat[curr_ownship] = own_point.y
-                    ownshiplon[curr_ownship] = own_point.x                
-                    ownshiptrk[curr_ownship], *_ = geo.qdrdist(inter_point.y, inter_point.x, own_point.y, own_point.x)
+                    ownshiplat = own_point.y.values[0]
+                    ownshiplon = own_point.x.values[0]
+                    ownntrk, *_ = geo.qdrdist(inter_point.y.values[0], inter_point.x.values[0], 
+                                                own_point.y.values[0], own_point.x.values[0])                    
                 
 
                 elif s_own_back.contains(p_own) and s_int_front.contains(p_int):
@@ -384,14 +378,15 @@ class M2StateBased(ConflictDetection):
                     inter_point = inter_point.to_crs(epsg=4326)
 
                     # assign intruder.lat and intruder.lon with int_x and int_y
-                    intruderlat[curr_intruder] = int_point.y
-                    intruderlon[curr_intruder] = int_point.x
-                    intrudertrk[curr_intruder], *_ = geo.qdrdist(int_point.y, int_point.x, inter_point.y, inter_point.x)
+                    intruderlat = int_point.y.values[0]
+                    intruderlon = int_point.x.values[0]
+                    inttrk, *_ = geo.qdrdist(inter_point.y.values[0], inter_point.x.values[0], 
+                                                int_point.y.values[0], int_point.x.values[0])                    
                     
-                    
-                    ownshiplat[curr_ownship] = own_point.y
-                    ownshiplon[curr_ownship] = own_point.x                
-                    ownshiptrk[curr_ownship], *_ = geo.qdrdist(inter_point.y, inter_point.x, own_point.y, own_point.x)
+                    ownshiplat = own_point.y.values[0]
+                    ownshiplon = own_point.x.values[0]
+                    ownntrk, *_ = geo.qdrdist(own_point.y.values[0], own_point.x.values[0], 
+                                                inter_point.y.values[0], inter_point.x.values[0])
                 
                 else:
                     # ignore if intersection is behind both intruder and ownship
@@ -399,113 +394,134 @@ class M2StateBased(ConflictDetection):
                 
                 # plot_things(p_own, p_int, own_line, int_line, s_own, s_int, p_inter, lpr_own, lpr_int, pr_own, pr_int)
 
+                # check if intersecting pair is in a conflict
+                ownshiplats = np.array([ownshiplat, intruderlat])
+                ownshiplons = np.array([ownshiplon, intruderlon])
+                ownshiptrks = np.array([ownntrk, inttrk])
 
+                intruderlats = np.array([ownshiplat, intruderlat])
+                intruderlons = np.array([ownshiplon, intruderlon])
+                intrudertrks = np.array([ownntrk, inttrk])
 
-            # if len(actual_intersections) > 1:    
-                # plot_things(p_own, p_int, own_line, int_line, s_own, s_int, p_inter, lpr_own, lpr_int, pr_own, pr_int)
-                # not a good idea to always start line at the w
-            # t4 = time()
-            # print("Time to project positions: ", t4-t3)
+                ownshipids = np.array([ownship_id, intruder_id])
+                ownshipgs = np.array([ownship.gs[curr_ownship], intruder.gs[curr_intruder]])
+                ownshipalts = np.array([ownship.alt[curr_ownship], intruder.alt[curr_intruder]])
+                ownshipvs = np.array([ownship.vs[curr_ownship], intruder.vs[curr_intruder]])
 
-            # t3 = time()
+                intruderids = np.array([ownship_id, intruder_id])
+                intrudergs = np.array([ownship.gs[curr_ownship], intruder.gs[curr_intruder]])
+                intruderalts = np.array([ownship.alt[curr_ownship], intruder.alt[curr_intruder]])
+                intrudervs = np.array([ownship.vs[curr_ownship], intruder.vs[curr_intruder]])
+            
+                # use statebased method if there are intersections
+                ntraf_intersecting = 2
+                rpz = np.zeros(ntraf_intersecting) + self.rpz_buffered
+                # Identity matrix of order ntraf: avoid ownship-ownship detected conflicts
+                I = np.eye(ntraf_intersecting)
 
-        ############### END PROJECTION ########################
-        # Calculate everything using the buffered RPZ
-        rpz = np.zeros(len(rpz)) + self.rpz_buffered
-        # Identity matrix of order ntraf: avoid ownship-ownship detected conflicts
-        I = np.eye(ownship.ntraf)
+                # Horizontal conflict ------------------------------------------------------
 
-        # Horizontal conflict ------------------------------------------------------
+                qdr, dist = geo.kwikqdrdist_matrix(np.asmatrix(ownshiplats), np.asmatrix(ownshiplons),
+                                    np.asmatrix(intruderlats), np.asmatrix(intruderlons))
 
-        # qdrlst is for [i,j] qdr from i to j, from perception of ADSB and own coordinates
-        qdr, dist = geo.kwikqdrdist_matrix(np.asmatrix(ownshiplat), np.asmatrix(ownshiplon),
-                                    np.asmatrix(intruderlat), np.asmatrix(intruderlon))
+                # Convert back to array to allow element-wise array multiplications later on
+                # Convert to meters and add large value to own/own pairs
+                qdr = np.asarray(qdr)
+                dist = np.asarray(dist) * nm + 1e9 * I
 
-        # Convert back to array to allow element-wise array multiplications later on
-        # Convert to meters and add large value to own/own pairs
-        qdr = np.asarray(qdr)
-        dist = np.asarray(dist) * nm + 1e9 * I
+                # Calculate horizontal closest point of approach (CPA)
+                qdrrad = np.radians(qdr)
+                dx = dist * np.sin(qdrrad)  # is pos j rel to i
+                dy = dist * np.cos(qdrrad)  # is pos j rel to i
 
-        # Calculate horizontal closest point of approach (CPA)
-        qdrrad = np.radians(qdr)
-        dx = dist * np.sin(qdrrad)  # is pos j rel to i
-        dy = dist * np.cos(qdrrad)  # is pos j rel to i
+                # Ownship track angle and speed
+                owntrkrad = np.radians(ownshiptrks)
+                ownu = ownshipgs * np.sin(owntrkrad).reshape((1, ntraf_intersecting))  # m/s
+                ownv = ownshipgs * np.cos(owntrkrad).reshape((1, ntraf_intersecting))  # m/s
 
-        # Ownship track angle and speed
-        owntrkrad = np.radians(ownshiptrk)
-        ownu = ownship.gs * np.sin(owntrkrad).reshape((1, ownship.ntraf))  # m/s
-        ownv = ownship.gs * np.cos(owntrkrad).reshape((1, ownship.ntraf))  # m/s
+                # Intruder track angle and speed
+                inttrkrad = np.radians(intrudertrks)
+                intu = intrudergs * np.sin(inttrkrad).reshape((1, ntraf_intersecting))  # m/s
+                intv = intrudergs * np.cos(inttrkrad).reshape((1, ntraf_intersecting))  # m/s
 
-        # Intruder track angle and speed
-        inttrkrad = np.radians(intrudertrk)
-        intu = intruder.gs * np.sin(inttrkrad).reshape((1, ownship.ntraf))  # m/s
-        intv = intruder.gs * np.cos(inttrkrad).reshape((1, ownship.ntraf))  # m/s
+                du = ownu - intu.T  # Speed du[i,j] is perceived eastern speed of i to j
+                dv = ownv - intv.T  # Speed dv[i,j] is perceived northern speed of i to j
 
-        du = ownu - intu.T  # Speed du[i,j] is perceived eastern speed of i to j
-        dv = ownv - intv.T  # Speed dv[i,j] is perceived northern speed of i to j
+                dv2 = du * du + dv * dv
+                dv2 = np.where(np.abs(dv2) < 1e-6, 1e-6, dv2)  # limit lower absolute value
+                vrel = np.sqrt(dv2)
 
-        dv2 = du * du + dv * dv
-        dv2 = np.where(np.abs(dv2) < 1e-6, 1e-6, dv2)  # limit lower absolute value
-        vrel = np.sqrt(dv2)
+                tcpa = -(du * dx + dv * dy) / dv2 + 1e9 * I
 
-        tcpa = -(du * dx + dv * dy) / dv2 + 1e9 * I
+                # Calculate distance^2 at CPA (minimum distance^2)
+                dcpa2 = np.abs(dist * dist - tcpa * tcpa * dv2)
 
-        # Calculate distance^2 at CPA (minimum distance^2)
-        dcpa2 = np.abs(dist * dist - tcpa * tcpa * dv2)
+                # Check for horizontal conflict
+                R2 = rpz * rpz
+                swhorconf = dcpa2 < R2  # conflict or not
 
-        # Check for horizontal conflict
-        R2 = rpz * rpz
-        swhorconf = dcpa2 < R2  # conflict or not
+                # Calculate times of entering and leaving horizontal conflict
+                dxinhor = np.sqrt(np.maximum(0., R2 - dcpa2))  # half the distance travelled inzide zone
+                dtinhor = dxinhor / vrel
 
-        # Calculate times of entering and leaving horizontal conflict
-        dxinhor = np.sqrt(np.maximum(0., R2 - dcpa2))  # half the distance travelled inzide zone
-        dtinhor = dxinhor / vrel
+                tinhor = np.where(swhorconf, tcpa - dtinhor, 1e8)  # Set very large if no conf
+                touthor = np.where(swhorconf, tcpa + dtinhor, -1e8)  # set very large if no conf
 
-        tinhor = np.where(swhorconf, tcpa - dtinhor, 1e8)  # Set very large if no conf
-        touthor = np.where(swhorconf, tcpa + dtinhor, -1e8)  # set very large if no conf
+                # Vertical conflict --------------------------------------------------------
 
-        # Vertical conflict --------------------------------------------------------
+                # Vertical crossing of disk (-dh,+dh)
 
-        # Vertical crossing of disk (-dh,+dh)
-        dalt = ownship.alt.reshape((1, ownship.ntraf)) - \
-            intruder.alt.reshape((1, ownship.ntraf)).T  + 1e9 * I
+                dalt = ownshipalts.reshape((1, ntraf_intersecting)) - \
+                      intruderalts.reshape((1, ntraf_intersecting)).T  + 1e9 * I
 
-        dvs = ownship.vs.reshape(1, ownship.ntraf) - \
-            intruder.vs.reshape(1, ownship.ntraf).T
-        dvs = np.where(np.abs(dvs) < 1e-6, 1e-6, dvs)  # prevent division by zero
+                dvs = ownshipvs.reshape(1, ntraf_intersecting) - \
+                    intrudervs.reshape(1, ntraf_intersecting).T
+                dvs = np.where(np.abs(dvs) < 1e-6, 1e-6, dvs)  # prevent division by zero
 
-        # Check for passing through each others zone
-        tcrosshi = (dalt + hpz) / -dvs
-        tcrosslo = (dalt - hpz) / -dvs
-        tinver = np.minimum(tcrosshi, tcrosslo)
-        toutver = np.maximum(tcrosshi, tcrosslo)
+                # Check for passing through each others zone
+                tcrosshi = (dalt + hpz) / -dvs
+                tcrosslo = (dalt - hpz) / -dvs
+                tinver = np.minimum(tcrosshi, tcrosslo)
+                toutver = np.maximum(tcrosshi, tcrosslo)
 
-        # Combine vertical and horizontal conflict----------------------------------
-        tinconf = np.maximum(tinver, tinhor)
-        toutconf = np.minimum(toutver, touthor)
+                # Combine vertical and horizontal conflict----------------------------------
+                tinconf = np.maximum(tinver, tinhor)
+                toutconf = np.minimum(toutver, touthor)
 
-        swconfl = np.array(swhorconf * (tinconf <= toutconf) * (toutconf > 0.0) * \
-            (tinconf < dtlookahead) * (1.0 - I), dtype=np.bool)
+                swconfl = np.array(swhorconf * (tinconf <= toutconf) * (toutconf > 0.0) * \
+                    (tinconf < dtlookahead) * (1.0 - I), dtype=np.bool)
 
-        # --------------------------------------------------------------------------
-        # Update conflict lists
-        # --------------------------------------------------------------------------
-        # Ownship conflict flag and max tCPA
-        inconf = np.any(swconfl, 1)
-        tcpamax = np.max(tcpa * swconfl, 1)
+                # --------------------------------------------------------------------------
+                # Update conflict lists
+                # --------------------------------------------------------------------------
+                # Ownship conflict flag and max tCPA
+                inconf = np.any(swconfl, 1)
+                tcpamax = np.max(tcpa * swconfl, 1)
 
-        # Select conflicting pairs: each a/c gets their own record
-        confpairs = [(ownship.id[i], ownship.id[j]) for i, j in zip(*np.where(swconfl))]
-        # It's a LOS if the actual RPZ of 32m is violated.
-        swlos = (dist < (np.zeros(len(rpz)) + self.rpz_actual)) * (np.abs(dalt) < hpz)
-        lospairs = [(ownship.id[i], ownship.id[j]) for i, j in zip(*np.where(swlos))]
+                # Select conflicting pairs: each a/c gets their own record
+                confpair = [(ownshipids[i], ownshipids[j]) for i, j in zip(*np.where(swconfl))]
 
-        t4 = time()
-        # print("Time to calculate: ", t4-t3)
+                # extend the return lists
+                # TODO: NUMPYFY THEM
+                confpairs.append(confpair[0])
+                inconfs[curr_ownship] = inconf[0]
+                tcpamaxs[curr_ownship] = tcpamax[0]
+                qdr_conf.append(qdr[swconfl][0])
+                dist_conf.append(dist[swconfl][0])
+                dcpa_conf.append(np.sqrt(dcpa2[swconfl][0]))
+                tcpa_conf.append(tcpa[swconfl][0])
+                tLOS_conf.append(tinconf[swconfl][0])
 
-        return confpairs, lospairs, inconf, tcpamax, \
-            qdr[swconfl], dist[swconfl], np.sqrt(dcpa2[swconfl]), \
-                tcpa[swconfl], tinconf[swconfl], qdr, dist
+            
+            return confpairs, inconfs, tcpamaxs, qdr_conf, dist_conf, dcpa_conf, tcpa_conf, tLOS_conf
+
+        if len(actual_intersections) > 1:
+
+            # return empty things if there are no intersections
+            inconfs = np.full(ownship.ntraf, False, dtype=np.bool)
+            tcpamax = np.full(ownship.ntraf, 0)
+
+            return [], inconfs, tcpamaxs, [], [], [], [], []
 
     def detect_los(self, ownship, intruder, rpz, hpz):
         ''' Conflict detection between ownship (traf) and intruder (traf/adsb).'''
@@ -518,7 +534,7 @@ class M2StateBased(ConflictDetection):
         # Horizontal conflict ------------------------------------------------------
 
         # qdrlst is for [i,j] qdr from i to j, from perception of ADSB and own coordinates
-        _, dist = geo.kwikqdrdist_matrix(np.asmatrix(ownship.lat), np.asmatrix(ownship.lon),
+        qdr, dist = geo.kwikqdrdist_matrix(np.asmatrix(ownship.lat), np.asmatrix(ownship.lon),
                                     np.asmatrix(intruder.lat), np.asmatrix(intruder.lon))
 
         # Convert back to array to allow element-wise array multiplications later on
@@ -541,7 +557,7 @@ class M2StateBased(ConflictDetection):
         lospairs = [(ownship.id[i], ownship.id[j]) for i, j in zip(*np.where(swlos))]
 
 
-        return lospairs
+        return lospairs, qdr, dist
 
 
 
