@@ -246,7 +246,7 @@ class M2StateBased(ConflictDetection):
 
                 if s_own_back.contains(p_own) and s_int_back.contains(p_int):
                     
-                    print('CASE 1: THERE IS AN INTERSECTION')                
+                    # print('CASE 1: THERE IS AN INTERSECTION')                
                     
                     # remove back part behind ownship and intruder
                     _, s_own = split_line_with_point(s_own_back, p_own)
@@ -296,7 +296,7 @@ class M2StateBased(ConflictDetection):
                     # and in front of intruder
                     # this means that p_own is in s_own_front
                     # and p_int is in s_int_back
-                    print('CASE 2: THERE IS AN INTERSECTION')
+                    # print('CASE 2: THERE IS AN INTERSECTION')
                     
                     # keep back part behind ownship and front part from intruder
                     s_own, _ = split_line_with_point(s_own_front, p_own)
@@ -346,7 +346,7 @@ class M2StateBased(ConflictDetection):
                     # and in back of intruder
                     # this means that p_own is in s_own_front
                     # and p_int is in s_int_back
-                    print('CASE 3: THERE IS AN INTERSECTION')     
+                    # print('CASE 3: THERE IS AN INTERSECTION')     
 
                     # keep back part behind ownship and front part from intruder
                     _, s_own = split_line_with_point(s_own_back, p_own)
