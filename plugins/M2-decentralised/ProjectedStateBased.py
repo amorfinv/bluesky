@@ -101,6 +101,7 @@ class M2StateBased(ConflictDetection):
             # TODO: remove geopandas for conversion of CRS
             # TODO: vectorize this
             # TODO: NUMPYFY THE RETURN VALUES
+            # TODO: run once per pair instead of twice
             for idx, route in enumerate(routes):
                 
                 if not route.wplat:
