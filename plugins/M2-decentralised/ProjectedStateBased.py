@@ -104,7 +104,6 @@ class M2StateBased(ConflictDetection):
             
             # TODO: assert geometries
             # TODO: create routes just once outside of loop
-            # TODO: remove geopandas for conversion of CRS
             # TODO: vectorize this
             # TODO: NUMPYFY THE RETURN VALUES
             # TODO: run once per pair instead of twice
