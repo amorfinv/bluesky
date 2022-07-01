@@ -1,10 +1,10 @@
 ''' State-based conflict detection. '''
 import numpy as np
-from shapely.geometry import LineString, Point, MultiLineString, MultiPoint
+from shapely.geometry import LineString, Point, MultiLineString, MultiPoint, GeometryCollection
 from shapely.ops import nearest_points, split, transform, linemerge
 import geopandas as gpd
 # from rich import inspect
-from shapely.affinity  import affine_transform, scale
+from shapely.affinity  import affine_transform, scale, translate
 from pyproj import Transformer
 
 from bluesky import stack
@@ -37,6 +37,8 @@ class ProjectedBased(ConflictDetection):
         self.qdr_mat = np.array([])
         self.rpz_actual = 32 #m
         self.rpz_buffered = 40 #m
+        self.hpz_actual = 7.62 #m
+        self.dtlookahead_actual = 10 #s
 
         # create some transformers
         self.transformer_to_utm    = Transformer.from_crs("EPSG:4326", "EPSG:32633")
@@ -107,6 +109,8 @@ class ProjectedBased(ConflictDetection):
             # TODO: vectorize this
             # TODO: NUMPYFY THE RETURN VALUES
             # TODO: run once per pair instead of twice
+            # TODO: fix front and back of route when it is less than 32 meters
+            # solution just extend the route_line outside BlueSky
             for idx, route in enumerate(routes):
                 
                 if not route.wplat:
@@ -129,13 +133,25 @@ class ProjectedBased(ConflictDetection):
                 back_line, front_line = split_line_with_point(route_line.geometry.values[0], p1)
 
                 # now interpolate along the line
-                if front_line.length == 0:
-                    # get the last two points of route and extend 32 meters
-                    # In reality, aircraft should be deleted at last waypoint so this
-                    # is a safety so bluesky doesn't crash
-                    dummy_line = LineString(route_line.geometry.values[0].coords[-2:])
-                    sf = rpz[0] / dummy_line.length
-                    look_ahead_line = scale(dummy_line, xfact=sf, yfact=sf, origin=route_line.geometry.values[0].coords[-1])
+                if front_line.length < rpz[0]:
+
+                    if front_line.length == 0:
+                        # get the last two points of route and extend 32 meters
+                        # In reality, aircraft should be deleted at last waypoint so this
+                        # is a safety so bluesky doesn't crash
+                        dummy_line = LineString(route_line.geometry.values[0].coords[-2:])
+                        sf = rpz[0] / dummy_line.length
+                        look_ahead_line = scale(dummy_line, xfact=sf, yfact=sf, origin=route_line.geometry.values[0].coords[-1])
+
+                    else:
+                        sf = rpz[0] / front_line.length
+                        look_ahead_line = scale(front_line, xfact=sf, yfact=sf, origin=p1)
+
+                        l1 = LineString([p1, look_ahead_line.coords[1]])
+                        l2 = LineString(look_ahead_line.coords[1:])
+
+                        look_ahead_line = MultiLineString([l1, l2])
+                        look_ahead_line = linemerge(multi_line)
 
                 else:
                     
@@ -152,10 +168,23 @@ class ProjectedBased(ConflictDetection):
 
                 # if near the start of the line then just extend the line so it is 32 meters
                 if back_line.length < rpz[0]:
-                    sf = rpz[0] / back_line.length
-                    look_back_line = scale(back_line, xfact=sf, yfact=sf, origin=back_line.coords[0])
-                    look_back_line = LineString([back_line.coords[0], look_back_line.coords[-1]])
-                
+
+                    if back_line.length == 0:
+                        # get the first two points of route and extend 32 meters
+                        # In reality, aircraft should be deleted at last waypoint so this
+                        # is a safety so bluesky doesn't crash
+                        dummy_line = LineString(route_line.geometry.values[0].coords[:2])
+                        sf = rpz[0] / dummy_line.length
+                        look_back_line = scale(dummy_line, xfact=-sf, yfact=-sf, origin=p1)
+                        # ensure that rounding error is removed
+                        look_back_line = LineString([p1, look_back_line.coords[1]])
+
+                    
+                    else:
+                        sf = rpz[0] / back_line.length
+                        look_back_line = scale(back_line, xfact=sf, yfact=sf, origin=back_line.coords[0])
+                        look_back_line = LineString([back_line.coords[0], look_back_line.coords[-1]])
+                    
                 else:
                     # interpolate with route geometry if larger than 32 meters
                     start_point = back_line.interpolate(rpz[0])
@@ -170,7 +199,9 @@ class ProjectedBased(ConflictDetection):
                 multi_line = MultiLineString([look_back_line, look_ahead_line])
                 merged_line = linemerge(multi_line)
 
-
+                if not isinstance(merged_line, LineString):
+                    raise ValueError('Merged line is not a LineString')
+                    
                 # fill the geo_dict
                 geo_dict['geometry'].append(merged_line)
                 geo_dict['acid'].append(ownship.id[idx])
@@ -227,6 +258,11 @@ class ProjectedBased(ConflictDetection):
                 # get the intersection point
                 p_inter = own_line.intersection(int_line)
 
+                # check if p_inter is a linestring 
+                if isinstance(p_inter, LineString):
+                    # if so, get the first point
+                    p_inter = Point(p_inter.coords[0])
+
                 # check if p_inter is a multilinestring (this means multiple intersections)
                 if isinstance(p_inter,MultiLineString):
                     p_inter = Point(p_inter[0].coords[0])
@@ -234,6 +270,28 @@ class ProjectedBased(ConflictDetection):
                 # can also be a multipoint so select first intersection
                 if isinstance(p_inter, MultiPoint):
                     p_inter = p_inter[0]
+
+                if isinstance(p_inter, GeometryCollection):
+                    # get first geometry of collection
+                    p_inter = p_inter[0]
+
+                    # if linestring choose a point
+                    if isinstance(p_inter, LineString):
+                        p_inter = Point(p_inter.coords[0])
+                    
+                    # if point just use it
+                    if isinstance(p_inter, Point):
+                        pass
+                
+                # do a final sanity check to make sure p_inter is a point
+                if not isinstance(p_inter, Point):
+                    raise ValueError('p_inter is not a point')
+
+                if not isinstance(own_line, LineString):
+                    raise ValueError('own_line is not a linestring')
+
+                if not isinstance(int_line, LineString):
+                    raise ValueError('int_line is not a linestring')
 
                 # now split ownship and intruder lines with interseciton point (back and front)
                 s_own_back, s_own_front = split_line_with_point(own_line, p_inter)
@@ -378,7 +436,9 @@ class ProjectedBased(ConflictDetection):
             
                 # use statebased method if there are intersections
                 ntraf_intersecting = 2
-                rpz = np.zeros(ntraf_intersecting) + self.rpz_buffered
+                rpz = np.zeros(ntraf_intersecting) + self.rpz_actual
+                hpz = np.zeros(ntraf_intersecting) + self.hpz_actual
+                dtlookahead = np.zeros(ntraf_intersecting) + self.dtlookahead_actual
                 # Identity matrix of order ntraf: avoid ownship-ownship detected conflicts
                 I = np.eye(ntraf_intersecting)
 
@@ -466,14 +526,16 @@ class ProjectedBased(ConflictDetection):
 
                 # extend the return lists
                 # TODO: NUMPYFY THEM
-                confpairs.append(confpair[0])
-                inconfs[curr_ownship] = inconf[0]
-                tcpamaxs[curr_ownship] = tcpamax[0]
-                qdr_conf.append(qdr[swconfl][0])
-                dist_conf.append(dist[swconfl][0])
-                dcpa_conf.append(np.sqrt(dcpa2[swconfl][0]))
-                tcpa_conf.append(tcpa[swconfl][0])
-                tLOS_conf.append(tinconf[swconfl][0])
+
+                if len(confpair) > 0:
+                    confpairs.append(confpair[0])
+                    inconfs[curr_ownship] = inconf[0]
+                    tcpamaxs[curr_ownship] = tcpamax[0]
+                    qdr_conf.append(qdr[swconfl][0])
+                    dist_conf.append(dist[swconfl][0])
+                    dcpa_conf.append(np.sqrt(dcpa2[swconfl][0]))
+                    tcpa_conf.append(tcpa[swconfl][0])
+                    tLOS_conf.append(tinconf[swconfl][0])
 
             
             return confpairs, inconfs, tcpamaxs, qdr_conf, dist_conf, dcpa_conf, tcpa_conf, tLOS_conf
@@ -598,7 +660,7 @@ def split_line_with_point(line, splitter):
     distance_on_line = line.project(splitter)
 
     if distance_on_line == 0:
-        return line, line
+        return LineString([]), line
     
 
     coords = list(line.coords)
