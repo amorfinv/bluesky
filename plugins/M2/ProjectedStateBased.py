@@ -126,6 +126,29 @@ class ProjectedBased(ConflictDetection):
                 route_line = gpd.GeoSeries(LineString(zip(route.wplon, route.wplat)), crs='epsg:4326')
                 route_line = route_line.to_crs(epsg=32633)
 
+                # extend the route_line 40 meters in front and behind
+                # get last two points of front and back
+                end_extension =  LineString(route_line.geometry.values[0].coords[-2:])
+                end_sf = (end_extension.length + 100) / end_extension.length
+                end_extension = scale(end_extension, xfact=end_sf, yfact=end_sf, origin=end_extension.coords[0])
+                p_end = route_line.geometry.values[0].coords[-2]
+                end_extension = LineString([p_end, end_extension.coords[-1]])
+
+                start_extension  =  LineString(route_line.geometry.values[0].coords[:2])
+                start_sf = (start_extension.length + 100) / start_extension.length
+                start_extension = scale(start_extension, xfact=-start_sf, yfact=-start_sf, origin=start_extension.coords[0])
+                start_extension = reverse_geom(start_extension)
+
+                # now ensure that values are the same so merging becomes a linestring
+                p_start = route_line.geometry.values[0].coords[1]
+                start_extension = LineString([start_extension.coords[0], p_start])
+
+                # merge lines
+                route_merged = MultiLineString([start_extension.coords, route_line.geometry.values[0].coords[1:-1], end_extension.coords])
+                route_merged = linemerge(route_merged)
+                
+                route_line = gpd.GeoSeries(route_merged, crs='epsg:32633')
+
                 # find closest point to linestring
                 p1, _ = nearest_points(route_line.geometry.values[0], current_loc)
 
