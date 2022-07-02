@@ -55,7 +55,7 @@ class ORCASpeedBasedC(ConflictResolution):
             # Find solution for aircraft 'idx'
             gs_new, vs_new = self.ORCASpeedBasedC(conf, ownship, intruder, idx, idx_pairs)
             
-            print(gs_new)
+            # print(gs_new)
             
             # Write the new velocity of aircraft 'idx' to traffic data
             newgscapped[idx] = gs_new    
