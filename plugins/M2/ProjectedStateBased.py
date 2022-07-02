@@ -169,9 +169,14 @@ class ProjectedBased(ConflictDetection):
                     else:
                         sf = rpz[0] / front_line.length
                         look_ahead_line = scale(front_line, xfact=sf, yfact=sf, origin=p1)
-
-                        l1 = LineString([p1, look_ahead_line.coords[1]])
-                        l2 = LineString(look_ahead_line.coords[1:])
+                        try:
+                            l1 = LineString([p1, look_ahead_line.coords[1]])
+                            l2 = LineString(look_ahead_line.coords[1:])
+                        except ValueError:
+                            print('---------------------')
+                            print(bs.stack.get_scenname())
+                            print('---------------------')
+                            raise ValueError('Error in projecting lookahead line')
 
                         look_ahead_line = MultiLineString([l1, l2])
                         look_ahead_line = linemerge(multi_line)
