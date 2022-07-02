@@ -184,7 +184,15 @@ class ProjectedBased(ConflictDetection):
                     end_point = front_line.interpolate(look_ahead_dist)
 
                     # now split line again to get line with a lookahead tine
-                    look_ahead_line, _ = split_line_with_point(front_line, end_point)
+                    try: 
+                    # bs.stack.get_scenname()
+                        look_ahead_line, _ = split_line_with_point(front_line, end_point)
+                    except TypeError:
+                        print('----------------------------------------------------')
+                        print(bs.stack.get_scenname())
+                        print(bs.sim.simt)
+                        print('----------------------------------------------------')
+                        raise TypeError
 
                 # now also extend the line with back_line 32 meters back
                 back_line = reverse_geom(back_line)
