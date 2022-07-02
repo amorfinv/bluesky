@@ -129,13 +129,13 @@ class ProjectedBased(ConflictDetection):
                 # extend the route_line 40 meters in front and behind
                 # get last two points of front and back
                 end_extension =  LineString(route_line.geometry.values[0].coords[-2:])
-                end_sf = (end_extension.length + 100) / end_extension.length
+                end_sf = (end_extension.length + 400) / end_extension.length
                 end_extension = scale(end_extension, xfact=end_sf, yfact=end_sf, origin=end_extension.coords[0])
                 p_end = route_line.geometry.values[0].coords[-2]
                 end_extension = LineString([p_end, end_extension.coords[-1]])
 
                 start_extension  =  LineString(route_line.geometry.values[0].coords[:2])
-                start_sf = (start_extension.length + 100) / start_extension.length
+                start_sf = (start_extension.length + 400) / start_extension.length
                 start_extension = scale(start_extension, xfact=-start_sf, yfact=-start_sf, origin=start_extension.coords[0])
                 start_extension = reverse_geom(start_extension)
 
@@ -184,15 +184,9 @@ class ProjectedBased(ConflictDetection):
                     end_point = front_line.interpolate(look_ahead_dist)
 
                     # now split line again to get line with a lookahead tine
-                    try: 
                     # bs.stack.get_scenname()
-                        look_ahead_line, _ = split_line_with_point(front_line, end_point)
-                    except TypeError:
-                        print('----------------------------------------------------')
-                        print(bs.stack.get_scenname())
-                        print(bs.sim.simt)
-                        print('----------------------------------------------------')
-                        raise TypeError
+                    look_ahead_line, _ = split_line_with_point(front_line, end_point)
+
 
                 # now also extend the line with back_line 32 meters back
                 back_line = reverse_geom(back_line)
