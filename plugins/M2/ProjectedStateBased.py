@@ -683,7 +683,7 @@ def split_line_with_point(line, splitter):
     distance_on_line = line.project(splitter)
 
     if distance_on_line == 0:
-        return LineString([]), line
+        return LineString([]), line.simplify(0)
     
 
     coords = list(line.coords)
@@ -701,18 +701,18 @@ def split_line_with_point(line, splitter):
 
             # now check if the splitter is at the start of the line
             if len(coords[i+1:]) == 1:
-                return LineString(coords[:i+2]), LineString([])
+                return LineString(coords[:i+2]).simplify(0), LineString([])
 
             # now check if the splitter is at the end of the line
             if len(coords[:i+2]) == 1:
-                return LineString([]), LineString(coords[i+1:])
+                return LineString([]), LineString(coords[i+1:]).simplify(0)
 
             # otherwise it is normal split
-            return LineString(coords[:i+2]), LineString(coords[i+1:])
+            return LineString(coords[:i+2]).simplify(0), LineString(coords[i+1:]).simplify(0)
         elif distance_on_line < current_position:
             # splitter 
             # is between two vertices
-            return LineString(coords[:i+1] + [splitter.coords[0]]), LineString([splitter.coords[0]] + coords[i+1:])
+            return LineString(coords[:i+1] + [splitter.coords[0]]).simplify(0), LineString([splitter.coords[0]] + coords[i+1:]).simplify(0)
 
 def reverse_geom(geom) -> LineString:
     def _reverse(x, y, z=None):
