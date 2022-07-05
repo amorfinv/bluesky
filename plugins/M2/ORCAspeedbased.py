@@ -68,10 +68,8 @@ class ORCASpeedBased(ConflictResolution):
         return newtrack, newgscapped, newvs, alt
 
 
-    def ORCASpeedBased(self, conf, ownship, intruder, idx, idx_pairs):
+    def ORCASpeedBased(self, conf, ownship, intruder, idx1, idx_pairs):
         #print(f'------------ {ownship.id[idx]} ------------')
-        # Extract ownship data
-        v_ownship = np.array([ownship.gseast[idx], ownship.gsnorth[idx]])# [m/s]
         
         # Check if we can simply apply the waypoint constraint
         # next_spd_ok = True
@@ -83,9 +81,16 @@ class ORCASpeedBased(ConflictResolution):
         # Go through all conflict pairs for aircraft "idx", basically take
         # intruders one by one, and create their polygons
         for i, idx_pair in enumerate(idx_pairs):
-            idx_intruder = intruder.id.index(conf.confpairs[idx_pair][1])
+            idx2 = intruder.id.index(conf.confpairs[idx_pair][1])
             #print(f'### {intruder.id[idx_intruder]} ###')
-            v_intruder = np.array([intruder.gseast[idx_intruder], intruder.gsnorth[idx_intruder]])
+            
+            hdg_ownship = conf.conftrks[idx_pair][0]
+            hdg_intruder = conf.conftrks[idx_pair][1]
+            gs_ownship = ownship.gs[idx1]
+            gs_intruder = intruder.gs[idx2]
+            
+            v_ownship = np.array([gs_ownship * np.sin(np.radians(hdg_ownship)), gs_ownship * np.cos(np.radians(hdg_ownship))])
+            v_intruder = np.array([gs_intruder * np.sin(np.radians(hdg_intruder)), gs_intruder * np.cos(np.radians(hdg_intruder))])
             
             # Extract conflict bearing and distance information
             qdr = conf.qdr[idx_pair]
@@ -94,7 +99,7 @@ class ORCASpeedBased(ConflictResolution):
             qdr_rad = np.radians(qdr)
             
             # Get the separation distance
-            r = (conf.rpz[idx]) * 1.1
+            r = (conf.rpz[idx1]) * 1.1
             
             # In case of loss of separation, just continue
             if dist < r:
@@ -143,11 +148,11 @@ class ORCASpeedBased(ConflictResolution):
                 solutions.append(-self.norm(own_change))
         
         # Get minimum and maximum speed of ownship
-        vmin = ownship.perf.vmin[idx]
-        vmax = ownship.perf.vmax[idx]
+        vmin = ownship.perf.vmin[idx1]
+        vmax = ownship.perf.vmax[idx1]
         
         if not solutions:
-            return ownship.ap.tas[idx], ownship.ap.vs[idx]
+            return ownship.ap.tas[idx1], ownship.ap.vs[idx1]
         
         # Basically, greatest speed change is guaranteed to solve all conflicts if
         # all solutions are greater than 0. Otherwise, the smallest. If we have both
@@ -163,11 +168,11 @@ class ORCASpeedBased(ConflictResolution):
             delta = np.average(solutions)
             
         # Apply the speed if it's within vmin and vmax
-        if delta + ownship.gs[idx] > vmin and delta + ownship.gs[idx] < vmax:
-            gs_new = delta + ownship.gs[idx]
+        if delta + ownship.gs[idx1] > vmin and delta + ownship.gs[idx1] < vmax:
+            gs_new = delta + ownship.gs[idx1]
         else:
             #Do nothing I guess
-            gs_new = ownship.ap.tas[idx]
+            gs_new = ownship.ap.tas[idx1]
             
         # So we have all the velocity limits. According to ORCA, all speeds that are
         # lower than ours are basically lower limits. All speeds that are greater are
@@ -176,7 +181,7 @@ class ORCASpeedBased(ConflictResolution):
         # new velocity is the one that 
 
         
-        return gs_new, ownship.ap.vs[idx]
+        return gs_new, ownship.ap.vs[idx1]
     
     def pairs(self, conf, ownship, intruder, idx):
         '''Returns the indices of conflict pairs that involve aircraft idx

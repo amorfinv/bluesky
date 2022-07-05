@@ -60,13 +60,17 @@ class ProjectedBased(ConflictDetection):
         self.tcpamax = np.zeros(bs.traf.ntraf)
         self.dist_mat = np.array([])
         self.qdr_mat = np.array([])
+        self.projected_lats = np.array([])
+        self.projected_lons = np.array([])
+        self.conftrks = np.array([])
         return
         
     def update(self, ownship, intruder):
         ''' Perform an update step of the Conflict Detection implementation. '''
-        self.confpairs, self.inconf, self.tcpamax, \
-            self.qdr, self.dist, self.dcpa, self.tcpa, self.tLOS = \
-                self.detect(ownship, intruder, self.rpz, self.hpz, self.dtlookahead)
+        self.confpairs, self.inconf, self.tcpamax, self.qdr, \
+            self.dist, self.dcpa, self.tcpa, self.tLOS, self.projected_lats, self.projected_lons, \
+                self.conftrks= self.detect(ownship, intruder, self.rpz, self.hpz, self.dtlookahead)
+                
 
         # Check LOS the normal way
         self.lospairs, self.qdr_mat, self.dist_mat = self.detect_los(ownship, intruder, self.rpz, self.hpz)
@@ -100,6 +104,8 @@ class ProjectedBased(ConflictDetection):
         if ownship.ntraf >= 1:
 
             confpairs, qdr_conf, dist_conf, dcpa_conf, tcpa_conf, tLOS_conf = [], [], [], [], [], []
+            projected_lons, projected_lats = [], []
+            conftrks = []
             # return empty things if there are no intersections
             inconfs = np.full(ownship.ntraf, False, dtype=np.bool)
             tcpamaxs = np.full(ownship.ntraf, 0)
@@ -566,9 +572,13 @@ class ProjectedBased(ConflictDetection):
                     dcpa_conf.append(np.sqrt(dcpa2[swconfl][0]))
                     tcpa_conf.append(tcpa[swconfl][0])
                     tLOS_conf.append(tinconf[swconfl][0])
+                    projected_lats.append(ownshiplats)
+                    projected_lons.append(ownshiplons)
+                    conftrks.append(ownshiptrks)
 
             
-            return confpairs, inconfs, tcpamaxs, qdr_conf, dist_conf, dcpa_conf, tcpa_conf, tLOS_conf
+            return confpairs, inconfs, tcpamaxs, qdr_conf, dist_conf, dcpa_conf, tcpa_conf, \
+                tLOS_conf, projected_lats, projected_lons, conftrks
 
         if len(actual_intersections) > 1:
 
@@ -576,7 +586,7 @@ class ProjectedBased(ConflictDetection):
             inconfs = np.full(ownship.ntraf, False, dtype=np.bool)
             tcpamax = np.full(ownship.ntraf, 0)
 
-            return [], inconfs, tcpamaxs, [], [], [], [], []
+            return [], inconfs, tcpamaxs, [], [], [], [], [], [], [], []
 
     def detect_los(self, ownship, intruder, rpz, hpz):
         ''' Conflict detection between ownship (traf) and intruder (traf/adsb).'''
