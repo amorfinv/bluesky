@@ -1,26 +1,16 @@
 
 
-from typing import NewType, TypeVar
-
-import string
 from typing import Union
 from textual import events
 from textual.app import App
 from textual.keys import Keys
-from textual.widgets import Placeholder, ScrollView, Footer, TreeControl, TreeClick, TreeNode
+from textual.widgets import ScrollView, Footer
 from textual.widget import Widget
 from textual.reactive import Reactive
-from textual.views import DockView
-from rich.align import Align
 from rich import box
 from rich.console import RenderableType
-from rich.panel import Panel
 from rich.table import Table
-from rich.text import Text
-from rich.tree import Tree
-from rich.markdown import Markdown
 from rich.style import Style
-import rich.repr
 import numpy as np
 import copy
 
@@ -29,8 +19,6 @@ from bluesky.network.client import Client
 from bluesky.tools.misc import tim2txt
 from bluesky.tools.aero import ft, kts, nm, fpm
 
-NodeID = NewType("NodeID", int)
-NodeDataType = TypeVar("NodeDataType")
 class ConsoleClient(Client):
     '''
         Subclassed Client with a timer to periodically check for incoming data,
@@ -50,11 +38,6 @@ class ConsoleClient(Client):
     def event(self, name, data, sender_id):
         ''' Overridden event function. '''
         pass
-
-    def echo(self, text, flags=None, sender_id=None):
-        ''' Overload Client's echo function. '''
-        if ConsoleUI.instance is not None:
-            ConsoleUI.instance.echo(text, flags)
 
     def actnode_changed(self, newact):
         pass
@@ -126,69 +109,6 @@ class ConsoleClient(Client):
                                 'time': time, 'nair': 0, 'nconf_cur': 0, 'nconf_tot': 0,
                                 'nlos_cur': 0, 'nlos_tot': 0}
             self.count += 1
-            
-class Echobox(ScrollView):
-    text = Reactive("")
-
-    async def watch_text(self, text):
-        await self.update(Panel(Text(text), height=max(8, 2 + text.count('\n')), box=box.SIMPLE, style=Style(bgcolor="grey53")))
-
-    def set_text(self, text: str):
-        self.text = text
-
-class Textline(Widget):
-    text = Reactive("")
-    style = Style(bgcolor="grey37")
-
-    def __init__(self, text="", name=None):
-        super().__init__(name)
-        self.text = text
-
-    def render(self) -> RenderableType:
-        return self.text
-
-    def set_text(self, text):
-        self.text = text
-
-class NodeInfo(Widget):
-    table: Union[Reactive[Table], Table] = Reactive(Table())
-
-    def __init__(self, name=None):
-        super().__init__(name)
-        self.table = Table()
-
-        self.regular_style = Style(color='bright_green', bgcolor="bright_black")
-        self.actnode_style = Style(color='bright_yellow', bgcolor="black")
-
-    def render(self) -> RenderableType:
-        return self.table
-
-    def set_nodes(self, nodedict: dict):
-        # add rows to table
-        self.table = Table(title='[bold blue]Nodes', box=box.MINIMAL_DOUBLE_HEAD)
-        self.table.add_column('Node #', header_style=Style(color="magenta"))
-        self.table.add_column('Scenario', header_style=Style(color="magenta"))
-        self.table.add_column('Time', header_style=Style(color="magenta"))
-        self.table.add_column('Aircraft', header_style=Style(color="magenta"))
-        self.table.add_column('Current conflicts', header_style=Style(color="magenta"))
-        self.table.add_column('Total conflicts', header_style=Style(color="magenta"))
-        self.table.add_column('Current LOS', header_style=Style(color="magenta"))
-        self.table.add_column('Total LOS', header_style=Style(color="magenta"))
-
-        for node_id, node in nodedict.items():
-            
-            if bs.net.act == node_id:
-               self.table.add_row(node['num'], node['scenename'], node['time'],
-                                    f'{node["nair"]}',
-                                    f'{node["nconf_cur"]}', f'{node["nconf_tot"]}', 
-                                    f'{node["nlos_cur"]}', f'{node["nlos_tot"]}', 
-                                style=self.actnode_style)
-            else:
-                self.table.add_row(node['num'], node['scenename'], node['time'],
-                                    f'{node["nair"]}',
-                                    f'{node["nconf_cur"]}', f'{node["nconf_tot"]}', 
-                                    f'{node["nlos_cur"]}', f'{node["nlos_tot"]}',
-                                style=self.regular_style)
 
 class Traffic(Widget):
     table: Union[Reactive[Table], Table] = Reactive(Table())
@@ -221,61 +141,6 @@ class Traffic(Widget):
                     row.append(table_value)
                 self.table.add_row(*row, style=Style(color='bright_green' ,bgcolor="bright_black"))
 
-class NodeTree(TreeControl):
-    nodenums = Reactive("")
-    nnodes = Reactive(0)
-
-    def __init__(self, label=None, *args):
-        super().__init__(label, *args)
-        self.nnodes = 0
-        self.original_label = label
-        self.root.tree.guide_style = "green4"
-        self._tree.style = Style(color="deep_sky_blue1")
-
-    def __reinit__(self):
-        # reinitialize tree for new nodes
-        self._tree.label = self.root
-        self.data = {}
-        self.id = NodeID(0)
-        self.nodes: dict[NodeID, TreeNode[NodeDataType]] = {}
-        self._tree = Tree(self.original_label)
-        self.root: TreeNode[NodeDataType] = TreeNode(
-            None, self.id, self, self._tree, self.original_label, {}
-        )
-        self._tree.label = self.root
-        self.nodes[NodeID(self.id)] = self.root
-        self.root.tree.guide_style = "blue"
-        self._tree.style = Style(color="deep_sky_blue1")
-
-    async def handle_tree_click(self, message: TreeClick[dict]):
-        """Called in response to a tree click."""
-        new_active_node = message.node.data.get("node_id")
-        # convert active node string to bytes
-        bs.net.actnode(new_active_node)
-
-    async def watch_nnodes(self, nnodes):
-
-        # reinitialize if nodes exist
-        if list(self.nodes.keys())[1:]:
-            self.__reinit__()
-
-        # reload nodes
-        for node in self.nodenums:
-            node_id = self.node_ids[self.nodenums.index(node)]
-            await self.add(self.root.id, node, {"node_num": node, "node_id": node_id})
-        await self.root.expand()
-
-    def set_nodedict(self, nodedict):
-
-        self.nodenums = []
-        self.node_ids = []
-        for node_id, node in nodedict.items():
-            nodenum, node_id = node['num'], node_id
-            self.nodenums.append(f'Node {nodenum}')
-            self.node_ids.append(node_id)
-        self.nnodes = len(nodedict)
-
-
 class ConsoleUI(App):
     cmdtext: Union[Reactive[str], str] = Reactive("")
     echotext: Union[Reactive[str], str] = Reactive("")
@@ -287,12 +152,7 @@ class ConsoleUI(App):
     nnodes = Reactive(0)
     active_node_num = Reactive(0)
 
-    cmdbox: Textline
-    echobox: Echobox
-    infoline: Textline
-    nodeinfo: NodeInfo
     traffic: Traffic
-    tree: NodeTree
     instance: App
     
     def __init__(self, *args, **kwargs):
@@ -317,34 +177,10 @@ class ConsoleUI(App):
         self.active_node_num = self.nodedict[active_node]['num'] if self.nodedict else 1
         
     async def on_key(self, key: events.Key):
-        if key.key == Keys.ControlH:
-            self.cmdtext = self.cmdtext[:-1]
-        elif key.key == Keys.Delete:
-            self.cmdtext = ""
-        elif key.key == Keys.Enter:
-            self.echotext = self.cmdtext + '\n' + self.echotext
-            bs.stack.stack(self.cmdtext)
+        if key.key == Keys.Delete:
             self.cmdtext = ""
         elif key.key == Keys.Escape:
             await self.action_quit()
-        elif key.key in string.printable:
-            self.cmdtext += key.key
-
-    async def watch_infotext(self, infotext):
-        self.infoline.set_text(f"[black]Current node:[/black] {infotext}")
-
-    async def watch_cmdtext(self, cmdtext):
-        self.cmdbox.set_text(f"[blue]>>[/blue] {cmdtext}")
-        
-    async def watch_nodetimes(self, nodetimes):
-        self.nodeinfo.set_nodes(self.nodedict)
-        self.tree.set_nodedict(self.nodedict)
-    
-    async def watch_nnodes(self, nnodes):
-        await self.nodebody.update(self.nodeinfo)
-
-    async def watch_echotext(self, echotext):
-        self.echobox.set_text(echotext)
 
     async def watch_ntraf(self, ntraf):
         await self.trafbody.update(self.traffic)
@@ -352,41 +188,21 @@ class ConsoleUI(App):
     async def watch_trafsimt(self, trafsimt):
         self.traffic.set_traffic(self.trafdict, self.active_node_num)
     
-    async def watch_active_node_num(self, active_node_num):
-        self.nodeinfo.set_nodes(self.nodedict)
-
     async def on_mount(self, event: events.Mount):
-        self.cmdbox = Textline("[blue]>>[/blue]")
-        self.echobox = Echobox(Panel(Text(), height=8, box=box.SIMPLE, style=Style(bgcolor="grey53")))
-        self.infoline = Textline("[black]Current node: [/black]")
-        self.nodeinfo = NodeInfo(name="nodeinfo")
         self.traffic = Traffic(name="traffic")
-        self.tree = NodeTree("Switch Nodes", {})
 
         await self.bind(Keys.Escape, "quit", "Quit")
         await self.bind(Keys.ControlT, "view.toggle('trafficbody')", "Show traffic")
-        await self.bind(Keys.ControlB, "view.toggle('nodedock')", "Show batch")
 
         await self.view.dock(Footer(), edge="bottom", size=1)
-        await self.view.dock(self.cmdbox, edge="bottom", size=1)
-
-        echorow = DockView()
-        self.treebody = ScrollView(self.tree)
-        await echorow.dock(self.treebody, edge="right", size=20)
-        await echorow.dock(self.echobox, edge="left")
-        
-        await self.view.dock(echorow, edge="bottom", size=8)
-        await self.view.dock(self.infoline, edge="bottom", size=1)
         
         self.trafbody = ScrollView(self.traffic, name="trafficbody")
         await self.view.dock(self.trafbody, edge='top')
 
-        self.nodebody = ScrollView(self.nodeinfo, name="nodeinfobody")
-        await self.view.dock(self.nodebody, edge='top')
-
-        await self.set_focus(self.cmdbox)
+        await self.set_focus(self.trafbody)
 
         self.set_interval(0.2, bs.net.update, name='Network')
+
 
 def start(hostname=None):
     ''' Create and start BlueSky text-based client. '''
@@ -394,7 +210,6 @@ def start(hostname=None):
     bsclient.connect(hostname=hostname, event_port=11000, stream_port=11001)
 
     ConsoleUI.run(log="textual.log")
-
 
 if __name__ == '__main__':
     start()
