@@ -32,6 +32,7 @@ def parse():
     mode.add_argument("--detached", dest="mode", action=setmodegui("sim", detached=True),
                     nargs=0, help="Start only one simulation node, without networking.")
 
+    parser.add_argument("--customserver", dest="serverpath", action="store", default=None, help="Path to custom server file. Ensure that it is inside plugins folder. Server class must be called CustomServer")
 
     parser.add_argument("--configfile", dest="configfile",
                         help="Load an alternative configuration file.")
