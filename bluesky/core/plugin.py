@@ -30,6 +30,7 @@ class Plugin:
         self.module_path = fname.parent.as_posix()
         self.module_name = fname.stem
         self.module_imp = (fname.parent / fname.stem).as_posix().replace('/', '.')
+        self.relative_name = fname.relative_to(Path.cwd()).as_posix().replace('/', '.')[:-3]
         self.plugin_doc   = ''
         self.plugin_name  = ''
         self.plugin_type  = ''
@@ -47,11 +48,16 @@ class Plugin:
             # First check if plugin is already locally imported by another plugin in the same directory
             # In either case update the other import name to avoid double imports
             self.imp = sys.modules.get(self.module_name)
+
+            # also check if the plugin has been imported by another plugin in the same directory
+            if self.imp is None:
+                # In all modules search for relative import from the relative_name             
+                if [plugin_module for plugin_module in sys.modules if self.relative_name == plugin_module]:
+                    self.imp = sys.modules[self.relative_name]
+
             if self.imp:
                 sys.modules[self.module_imp] = self.imp
             else:
-                # self.imp = importlib.import_module(self.module_imp)
-                # sys.modules[self.module_name] = self.imp
                 spec = importlib.util.spec_from_file_location(self.module_name, Path(self.module_path) / (self.module_name + '.py'))
                 self.imp = importlib.util.module_from_spec(spec)
                 sys.modules[self.module_name] = self.imp
