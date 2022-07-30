@@ -1,7 +1,6 @@
 from matplotlib.path import Path
 import json
 import os
-from plugins.asas import ssd
 
 try:
     from rtree.index import Index
