@@ -1,0 +1,88 @@
+# load the map and zoom to it
+00:00:00>VIS MAP TILEDMAP
+00:00:00>PAN 48.20890786168067 16.370391334651632
+00:00:00>ZOOM 10
+
+# change icons to quadcopters
+00:00:00>VIS TRAFFIC QUADTRAFFIC
+
+# HOLD SIM HERE
+00:00:00>HOLD
+
+
+## PCALL A LOT OF ROUTES
+00:00:02>PCALL rogues/R0.scn
+00:00:02>PCALL rogues/R1.scn
+00:00:02>PCALL rogues/R2.scn
+00:00:02>PCALL rogues/R3.scn
+00:00:02>PCALL rogues/R4.scn
+
+
+## PCALL MORE ROUTES
+00:00:05>PCALL rogues/R5.scn
+
+# AT 5 SECONDS ZOOM TO R5
+00:00:05>HOLD
+00:00:05>PAN R5
+00:00:05>ZOOM 100
+
+00:00:10>PCALL rogues/R6.scn
+00:00:10>PCALL rogues/R7.scn
+00:00:10>PCALL rogues/R8.scn
+00:00:10>PCALL rogues/R9.scn
+00:00:10>PCALL rogues/R10.scn
+00:00:10>PCALL rogues/R11.scn
+
+# fastforward to turn example
+00:00:25>FF 610
+00:00:00>PAN 48.20890786168067 16.370391334651632
+00:00:00>ZOOM 10
+
+
+# show a transition from open airspace to constrained
+00:06:10>HOLD
+00:06:10>PAN R9
+00:06:10>ZOOM 100
+
+# after turn zoom out
+00:06:30>ZOOM 10
+00:06:30>PAN 48.20890786168067 16.370391334651632
+00:06:30>FF 400
+
+
+## PCALL MORE ROUTES
+00:09:00>PCALL rogues/R12.scn
+00:09:00>PCALL rogues/R13.scn
+00:09:00>PCALL rogues/R14.scn
+00:09:00>PCALL rogues/R15.scn
+00:09:00>PCALL rogues/R16.scn
+00:09:00>PCALL rogues/R17.scn
+
+# show a turn
+00:10:12>HOLD
+00:10:12>PAN R1
+00:10:12>ZOOM 100
+
+
+
+
+# after turn zoom out
+00:10:39>ZOOM 10
+00:10:39>PAN 48.20890786168067 16.370391334651632
+00:10:39>FF 293
+
+# show a stop hover and climb
+00:15:32>HOLD
+00:15:32>PAN R0
+00:15:32>ZOOM 100
+
+
+# after stop hover and climb zoom put
+00:16:10>ZOOM 10
+00:16:10>PAN 48.20890786168067 16.370391334651632
+00:16:10>FF 600
+
+# Now show a landing
+00:22:10>HOLD
+00:22:10>PAN R5
+00:22:10>ZOOM 100
