@@ -1,0 +1,300 @@
+00:00:00>SCEN live_traf400_clust1500_seed80889
+00:00:00>PCALL FLOW/live/traf400_clust1500_seed80889.scn
+
+00:00:00>SCEN live_traf200_clust2000_seed791714
+00:00:00>PCALL FLOW/live/traf200_clust2000_seed791714.scn
+
+00:00:00>SCEN live_traf350_clust1500_seed791714
+00:00:00>PCALL FLOW/live/traf350_clust1500_seed791714.scn
+
+00:00:00>SCEN live_traf200_clust500_seed889498
+00:00:00>PCALL FLOW/live/traf200_clust500_seed889498.scn
+
+00:00:00>SCEN live_traf200_clust1500_seed791714
+00:00:00>PCALL FLOW/live/traf200_clust1500_seed791714.scn
+
+00:00:00>SCEN live_traf200_clust2500_seed80889
+00:00:00>PCALL FLOW/live/traf200_clust2500_seed80889.scn
+
+00:00:00>SCEN live_traf100_clust1500_seed889498
+00:00:00>PCALL FLOW/live/traf100_clust1500_seed889498.scn
+
+00:00:00>SCEN live_traf150_clust1500_seed80889
+00:00:00>PCALL FLOW/live/traf150_clust1500_seed80889.scn
+
+00:00:00>SCEN live_traf200_clust100_seed80889
+00:00:00>PCALL FLOW/live/traf200_clust100_seed80889.scn
+
+00:00:00>SCEN live_traf50_clust1500_seed102317
+00:00:00>PCALL FLOW/live/traf50_clust1500_seed102317.scn
+
+00:00:00>SCEN live_traf200_clust3000_seed791714
+00:00:00>PCALL FLOW/live/traf200_clust3000_seed791714.scn
+
+00:00:00>SCEN live_traf200_clust100_seed889498
+00:00:00>PCALL FLOW/live/traf200_clust100_seed889498.scn
+
+00:00:00>SCEN live_traf600_clust1500_seed889498
+00:00:00>PCALL FLOW/live/traf600_clust1500_seed889498.scn
+
+00:00:00>SCEN live_traf500_clust1500_seed791714
+00:00:00>PCALL FLOW/live/traf500_clust1500_seed791714.scn
+
+00:00:00>SCEN live_traf150_clust1500_seed114749
+00:00:00>PCALL FLOW/live/traf150_clust1500_seed114749.scn
+
+00:00:00>SCEN live_traf150_clust1500_seed102317
+00:00:00>PCALL FLOW/live/traf150_clust1500_seed102317.scn
+
+00:00:00>SCEN live_traf200_clust1000_seed80889
+00:00:00>PCALL FLOW/live/traf200_clust1000_seed80889.scn
+
+00:00:00>SCEN live_traf450_clust1500_seed791714
+00:00:00>PCALL FLOW/live/traf450_clust1500_seed791714.scn
+
+00:00:00>SCEN live_traf300_clust1500_seed80889
+00:00:00>PCALL FLOW/live/traf300_clust1500_seed80889.scn
+
+00:00:00>SCEN live_traf50_clust1500_seed114749
+00:00:00>PCALL FLOW/live/traf50_clust1500_seed114749.scn
+
+00:00:00>SCEN live_traf600_clust1500_seed80889
+00:00:00>PCALL FLOW/live/traf600_clust1500_seed80889.scn
+
+00:00:00>SCEN live_traf200_clust4000_seed80889
+00:00:00>PCALL FLOW/live/traf200_clust4000_seed80889.scn
+
+00:00:00>SCEN live_traf200_clust500_seed102317
+00:00:00>PCALL FLOW/live/traf200_clust500_seed102317.scn
+
+00:00:00>SCEN live_traf400_clust1500_seed791714
+00:00:00>PCALL FLOW/live/traf400_clust1500_seed791714.scn
+
+00:00:00>SCEN live_traf100_clust1500_seed102317
+00:00:00>PCALL FLOW/live/traf100_clust1500_seed102317.scn
+
+00:00:00>SCEN live_traf200_clust3500_seed791714
+00:00:00>PCALL FLOW/live/traf200_clust3500_seed791714.scn
+
+00:00:00>SCEN live_traf550_clust1500_seed791714
+00:00:00>PCALL FLOW/live/traf550_clust1500_seed791714.scn
+
+00:00:00>SCEN live_traf100_clust1500_seed114749
+00:00:00>PCALL FLOW/live/traf100_clust1500_seed114749.scn
+
+00:00:00>SCEN live_traf200_clust500_seed114749
+00:00:00>PCALL FLOW/live/traf200_clust500_seed114749.scn
+
+00:00:00>SCEN live_traf200_clust3500_seed80889
+00:00:00>PCALL FLOW/live/traf200_clust3500_seed80889.scn
+
+00:00:00>SCEN live_traf350_clust1500_seed80889
+00:00:00>PCALL FLOW/live/traf350_clust1500_seed80889.scn
+
+00:00:00>SCEN live_traf450_clust1500_seed80889
+00:00:00>PCALL FLOW/live/traf450_clust1500_seed80889.scn
+
+00:00:00>SCEN live_traf200_clust1000_seed791714
+00:00:00>PCALL FLOW/live/traf200_clust1000_seed791714.scn
+
+00:00:00>SCEN live_traf150_clust1500_seed889498
+00:00:00>PCALL FLOW/live/traf150_clust1500_seed889498.scn
+
+00:00:00>SCEN live_traf600_clust1500_seed114749
+00:00:00>PCALL FLOW/live/traf600_clust1500_seed114749.scn
+
+00:00:00>SCEN live_traf200_clust100_seed114749
+00:00:00>PCALL FLOW/live/traf200_clust100_seed114749.scn
+
+00:00:00>SCEN live_traf250_clust1500_seed791714
+00:00:00>PCALL FLOW/live/traf250_clust1500_seed791714.scn
+
+00:00:00>SCEN live_traf600_clust1500_seed102317
+00:00:00>PCALL FLOW/live/traf600_clust1500_seed102317.scn
+
+00:00:00>SCEN live_traf200_clust2500_seed791714
+00:00:00>PCALL FLOW/live/traf200_clust2500_seed791714.scn
+
+00:00:00>SCEN live_traf200_clust100_seed102317
+00:00:00>PCALL FLOW/live/traf200_clust100_seed102317.scn
+
+00:00:00>SCEN live_traf200_clust4000_seed791714
+00:00:00>PCALL FLOW/live/traf200_clust4000_seed791714.scn
+
+00:00:00>SCEN live_traf300_clust1500_seed791714
+00:00:00>PCALL FLOW/live/traf300_clust1500_seed791714.scn
+
+00:00:00>SCEN live_traf50_clust1500_seed889498
+00:00:00>PCALL FLOW/live/traf50_clust1500_seed889498.scn
+
+00:00:00>SCEN live_traf100_clust1500_seed80889
+00:00:00>PCALL FLOW/live/traf100_clust1500_seed80889.scn
+
+00:00:00>SCEN live_traf600_clust1500_seed791714
+00:00:00>PCALL FLOW/live/traf600_clust1500_seed791714.scn
+
+00:00:00>SCEN live_traf250_clust1500_seed114749
+00:00:00>PCALL FLOW/live/traf250_clust1500_seed114749.scn
+
+00:00:00>SCEN live_traf200_clust2500_seed102317
+00:00:00>PCALL FLOW/live/traf200_clust2500_seed102317.scn
+
+00:00:00>SCEN live_traf200_clust100_seed791714
+00:00:00>PCALL FLOW/live/traf200_clust100_seed791714.scn
+
+00:00:00>SCEN live_traf200_clust4000_seed102317
+00:00:00>PCALL FLOW/live/traf200_clust4000_seed102317.scn
+
+00:00:00>SCEN live_traf300_clust1500_seed102317
+00:00:00>PCALL FLOW/live/traf300_clust1500_seed102317.scn
+
+00:00:00>SCEN live_traf500_clust1500_seed889498
+00:00:00>PCALL FLOW/live/traf500_clust1500_seed889498.scn
+
+00:00:00>SCEN live_traf200_clust500_seed80889
+00:00:00>PCALL FLOW/live/traf200_clust500_seed80889.scn
+
+00:00:00>SCEN live_traf200_clust1000_seed114749
+00:00:00>PCALL FLOW/live/traf200_clust1000_seed114749.scn
+
+00:00:00>SCEN live_traf200_clust3000_seed889498
+00:00:00>PCALL FLOW/live/traf200_clust3000_seed889498.scn
+
+00:00:00>SCEN live_traf200_clust1000_seed102317
+00:00:00>PCALL FLOW/live/traf200_clust1000_seed102317.scn
+
+00:00:00>SCEN live_traf200_clust4000_seed114749
+00:00:00>PCALL FLOW/live/traf200_clust4000_seed114749.scn
+
+00:00:00>SCEN live_traf300_clust1500_seed114749
+00:00:00>PCALL FLOW/live/traf300_clust1500_seed114749.scn
+
+00:00:00>SCEN live_traf550_clust1500_seed80889
+00:00:00>PCALL FLOW/live/traf550_clust1500_seed80889.scn
+
+00:00:00>SCEN live_traf250_clust1500_seed102317
+00:00:00>PCALL FLOW/live/traf250_clust1500_seed102317.scn
+
+00:00:00>SCEN live_traf200_clust2500_seed114749
+00:00:00>PCALL FLOW/live/traf200_clust2500_seed114749.scn
+
+00:00:00>SCEN live_traf450_clust1500_seed889498
+00:00:00>PCALL FLOW/live/traf450_clust1500_seed889498.scn
+
+00:00:00>SCEN live_traf250_clust1500_seed80889
+00:00:00>PCALL FLOW/live/traf250_clust1500_seed80889.scn
+
+00:00:00>SCEN live_traf350_clust1500_seed889498
+00:00:00>PCALL FLOW/live/traf350_clust1500_seed889498.scn
+
+00:00:00>SCEN live_traf550_clust1500_seed102317
+00:00:00>PCALL FLOW/live/traf550_clust1500_seed102317.scn
+
+00:00:00>SCEN live_traf200_clust3500_seed102317
+00:00:00>PCALL FLOW/live/traf200_clust3500_seed102317.scn
+
+00:00:00>SCEN live_traf400_clust1500_seed114749
+00:00:00>PCALL FLOW/live/traf400_clust1500_seed114749.scn
+
+00:00:00>SCEN live_traf200_clust3000_seed80889
+00:00:00>PCALL FLOW/live/traf200_clust3000_seed80889.scn
+
+00:00:00>SCEN live_traf200_clust2000_seed889498
+00:00:00>PCALL FLOW/live/traf200_clust2000_seed889498.scn
+
+00:00:00>SCEN live_traf200_clust500_seed791714
+00:00:00>PCALL FLOW/live/traf200_clust500_seed791714.scn
+
+00:00:00>SCEN live_traf200_clust1500_seed889498
+00:00:00>PCALL FLOW/live/traf200_clust1500_seed889498.scn
+
+00:00:00>SCEN live_traf400_clust1500_seed102317
+00:00:00>PCALL FLOW/live/traf400_clust1500_seed102317.scn
+
+00:00:00>SCEN live_traf550_clust1500_seed114749
+00:00:00>PCALL FLOW/live/traf550_clust1500_seed114749.scn
+
+00:00:00>SCEN live_traf100_clust1500_seed791714
+00:00:00>PCALL FLOW/live/traf100_clust1500_seed791714.scn
+
+00:00:00>SCEN live_traf200_clust3500_seed114749
+00:00:00>PCALL FLOW/live/traf200_clust3500_seed114749.scn
+
+00:00:00>SCEN live_traf500_clust1500_seed114749
+00:00:00>PCALL FLOW/live/traf500_clust1500_seed114749.scn
+
+00:00:00>SCEN live_traf150_clust1500_seed791714
+00:00:00>PCALL FLOW/live/traf150_clust1500_seed791714.scn
+
+00:00:00>SCEN live_traf200_clust1500_seed80889
+00:00:00>PCALL FLOW/live/traf200_clust1500_seed80889.scn
+
+00:00:00>SCEN live_traf250_clust1500_seed889498
+00:00:00>PCALL FLOW/live/traf250_clust1500_seed889498.scn
+
+00:00:00>SCEN live_traf450_clust1500_seed102317
+00:00:00>PCALL FLOW/live/traf450_clust1500_seed102317.scn
+
+00:00:00>SCEN live_traf200_clust3000_seed114749
+00:00:00>PCALL FLOW/live/traf200_clust3000_seed114749.scn
+
+00:00:00>SCEN live_traf200_clust1000_seed889498
+00:00:00>PCALL FLOW/live/traf200_clust1000_seed889498.scn
+
+00:00:00>SCEN live_traf50_clust1500_seed791714
+00:00:00>PCALL FLOW/live/traf50_clust1500_seed791714.scn
+
+00:00:00>SCEN live_traf200_clust3000_seed102317
+00:00:00>PCALL FLOW/live/traf200_clust3000_seed102317.scn
+
+00:00:00>SCEN live_traf450_clust1500_seed114749
+00:00:00>PCALL FLOW/live/traf450_clust1500_seed114749.scn
+
+00:00:00>SCEN live_traf200_clust2500_seed889498
+00:00:00>PCALL FLOW/live/traf200_clust2500_seed889498.scn
+
+00:00:00>SCEN live_traf200_clust4000_seed889498
+00:00:00>PCALL FLOW/live/traf200_clust4000_seed889498.scn
+
+00:00:00>SCEN live_traf300_clust1500_seed889498
+00:00:00>PCALL FLOW/live/traf300_clust1500_seed889498.scn
+
+00:00:00>SCEN live_traf500_clust1500_seed102317
+00:00:00>PCALL FLOW/live/traf500_clust1500_seed102317.scn
+
+00:00:00>SCEN live_traf200_clust2000_seed80889
+00:00:00>PCALL FLOW/live/traf200_clust2000_seed80889.scn
+
+00:00:00>SCEN live_traf200_clust1500_seed102317
+00:00:00>PCALL FLOW/live/traf200_clust1500_seed102317.scn
+
+00:00:00>SCEN live_traf400_clust1500_seed889498
+00:00:00>PCALL FLOW/live/traf400_clust1500_seed889498.scn
+
+00:00:00>SCEN live_traf50_clust1500_seed80889
+00:00:00>PCALL FLOW/live/traf50_clust1500_seed80889.scn
+
+00:00:00>SCEN live_traf350_clust1500_seed114749
+00:00:00>PCALL FLOW/live/traf350_clust1500_seed114749.scn
+
+00:00:00>SCEN live_traf200_clust2000_seed114749
+00:00:00>PCALL FLOW/live/traf200_clust2000_seed114749.scn
+
+00:00:00>SCEN live_traf200_clust2000_seed102317
+00:00:00>PCALL FLOW/live/traf200_clust2000_seed102317.scn
+
+00:00:00>SCEN live_traf350_clust1500_seed102317
+00:00:00>PCALL FLOW/live/traf350_clust1500_seed102317.scn
+
+00:00:00>SCEN live_traf200_clust3500_seed889498
+00:00:00>PCALL FLOW/live/traf200_clust3500_seed889498.scn
+
+00:00:00>SCEN live_traf500_clust1500_seed80889
+00:00:00>PCALL FLOW/live/traf500_clust1500_seed80889.scn
+
+00:00:00>SCEN live_traf550_clust1500_seed889498
+00:00:00>PCALL FLOW/live/traf550_clust1500_seed889498.scn
+
+00:00:00>SCEN live_traf200_clust1500_seed114749
+00:00:00>PCALL FLOW/live/traf200_clust1500_seed114749.scn
+

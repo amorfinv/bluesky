@@ -1,1759 +1,1620 @@
-00:00:00>SCEN conflict_traf50_clust100_seed791714
-00:00:00>PCALL FLOW/conflict/traf50_clust100_seed791714.scn
-00:00:00>FF
+00:00:00>SCEN conflict_traf550_clust3500_seed80889
+00:00:00>PCALL FLOW/conflict/traf550_clust3500_seed80889.scn
 
-00:00:00>SCEN conflict_traf50_clust100_seed114749
-00:00:00>PCALL FLOW/conflict/traf50_clust100_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf50_clust100_seed80889
-00:00:00>PCALL FLOW/conflict/traf50_clust100_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf50_clust100_seed889498
-00:00:00>PCALL FLOW/conflict/traf50_clust100_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf50_clust100_seed102317
-00:00:00>PCALL FLOW/conflict/traf50_clust100_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf50_clust500_seed791714
-00:00:00>PCALL FLOW/conflict/traf50_clust500_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf50_clust500_seed114749
-00:00:00>PCALL FLOW/conflict/traf50_clust500_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf50_clust500_seed80889
-00:00:00>PCALL FLOW/conflict/traf50_clust500_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf50_clust500_seed889498
-00:00:00>PCALL FLOW/conflict/traf50_clust500_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf50_clust500_seed102317
-00:00:00>PCALL FLOW/conflict/traf50_clust500_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf50_clust1000_seed791714
-00:00:00>PCALL FLOW/conflict/traf50_clust1000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf50_clust1000_seed114749
-00:00:00>PCALL FLOW/conflict/traf50_clust1000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf50_clust1000_seed80889
-00:00:00>PCALL FLOW/conflict/traf50_clust1000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf50_clust1000_seed889498
-00:00:00>PCALL FLOW/conflict/traf50_clust1000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf50_clust1000_seed102317
-00:00:00>PCALL FLOW/conflict/traf50_clust1000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf50_clust2000_seed791714
-00:00:00>PCALL FLOW/conflict/traf50_clust2000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf50_clust2000_seed114749
-00:00:00>PCALL FLOW/conflict/traf50_clust2000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf50_clust2000_seed80889
-00:00:00>PCALL FLOW/conflict/traf50_clust2000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf50_clust2000_seed889498
-00:00:00>PCALL FLOW/conflict/traf50_clust2000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf50_clust2000_seed102317
-00:00:00>PCALL FLOW/conflict/traf50_clust2000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf50_clust2500_seed791714
-00:00:00>PCALL FLOW/conflict/traf50_clust2500_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf50_clust2500_seed114749
-00:00:00>PCALL FLOW/conflict/traf50_clust2500_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf50_clust2500_seed80889
-00:00:00>PCALL FLOW/conflict/traf50_clust2500_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf50_clust2500_seed889498
-00:00:00>PCALL FLOW/conflict/traf50_clust2500_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf50_clust2500_seed102317
-00:00:00>PCALL FLOW/conflict/traf50_clust2500_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf50_clust3000_seed791714
-00:00:00>PCALL FLOW/conflict/traf50_clust3000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf50_clust3000_seed114749
-00:00:00>PCALL FLOW/conflict/traf50_clust3000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf50_clust3000_seed80889
-00:00:00>PCALL FLOW/conflict/traf50_clust3000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf50_clust3000_seed889498
-00:00:00>PCALL FLOW/conflict/traf50_clust3000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf50_clust3000_seed102317
-00:00:00>PCALL FLOW/conflict/traf50_clust3000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf50_clust3500_seed791714
-00:00:00>PCALL FLOW/conflict/traf50_clust3500_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf50_clust3500_seed114749
-00:00:00>PCALL FLOW/conflict/traf50_clust3500_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf50_clust3500_seed80889
-00:00:00>PCALL FLOW/conflict/traf50_clust3500_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf50_clust3500_seed889498
-00:00:00>PCALL FLOW/conflict/traf50_clust3500_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf50_clust3500_seed102317
-00:00:00>PCALL FLOW/conflict/traf50_clust3500_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf50_clust4000_seed791714
-00:00:00>PCALL FLOW/conflict/traf50_clust4000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf50_clust4000_seed114749
-00:00:00>PCALL FLOW/conflict/traf50_clust4000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf50_clust4000_seed80889
-00:00:00>PCALL FLOW/conflict/traf50_clust4000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf50_clust4000_seed889498
-00:00:00>PCALL FLOW/conflict/traf50_clust4000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf50_clust4000_seed102317
-00:00:00>PCALL FLOW/conflict/traf50_clust4000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf100_clust100_seed791714
-00:00:00>PCALL FLOW/conflict/traf100_clust100_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf100_clust100_seed114749
-00:00:00>PCALL FLOW/conflict/traf100_clust100_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf100_clust100_seed80889
-00:00:00>PCALL FLOW/conflict/traf100_clust100_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf100_clust100_seed889498
-00:00:00>PCALL FLOW/conflict/traf100_clust100_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf100_clust100_seed102317
-00:00:00>PCALL FLOW/conflict/traf100_clust100_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf100_clust500_seed791714
-00:00:00>PCALL FLOW/conflict/traf100_clust500_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf100_clust500_seed114749
-00:00:00>PCALL FLOW/conflict/traf100_clust500_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf100_clust500_seed80889
-00:00:00>PCALL FLOW/conflict/traf100_clust500_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf100_clust500_seed889498
-00:00:00>PCALL FLOW/conflict/traf100_clust500_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf100_clust500_seed102317
-00:00:00>PCALL FLOW/conflict/traf100_clust500_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf100_clust1000_seed791714
-00:00:00>PCALL FLOW/conflict/traf100_clust1000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf100_clust1000_seed114749
-00:00:00>PCALL FLOW/conflict/traf100_clust1000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf100_clust1000_seed80889
-00:00:00>PCALL FLOW/conflict/traf100_clust1000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf100_clust1000_seed889498
-00:00:00>PCALL FLOW/conflict/traf100_clust1000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf100_clust1000_seed102317
-00:00:00>PCALL FLOW/conflict/traf100_clust1000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf100_clust2000_seed791714
-00:00:00>PCALL FLOW/conflict/traf100_clust2000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf100_clust2000_seed114749
-00:00:00>PCALL FLOW/conflict/traf100_clust2000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf100_clust2000_seed80889
-00:00:00>PCALL FLOW/conflict/traf100_clust2000_seed80889.scn
-00:00:00>FF
+00:00:00>SCEN conflict_traf400_clust1500_seed80889
+00:00:00>PCALL FLOW/conflict/traf400_clust1500_seed80889.scn
 
 00:00:00>SCEN conflict_traf100_clust2000_seed889498
 00:00:00>PCALL FLOW/conflict/traf100_clust2000_seed889498.scn
-00:00:00>FF
 
-00:00:00>SCEN conflict_traf100_clust2000_seed102317
-00:00:00>PCALL FLOW/conflict/traf100_clust2000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf100_clust2500_seed791714
-00:00:00>PCALL FLOW/conflict/traf100_clust2500_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf100_clust2500_seed114749
-00:00:00>PCALL FLOW/conflict/traf100_clust2500_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf100_clust2500_seed80889
-00:00:00>PCALL FLOW/conflict/traf100_clust2500_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf100_clust2500_seed889498
-00:00:00>PCALL FLOW/conflict/traf100_clust2500_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf100_clust2500_seed102317
-00:00:00>PCALL FLOW/conflict/traf100_clust2500_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf100_clust3000_seed791714
-00:00:00>PCALL FLOW/conflict/traf100_clust3000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf100_clust3000_seed114749
-00:00:00>PCALL FLOW/conflict/traf100_clust3000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf100_clust3000_seed80889
-00:00:00>PCALL FLOW/conflict/traf100_clust3000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf100_clust3000_seed889498
-00:00:00>PCALL FLOW/conflict/traf100_clust3000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf100_clust3000_seed102317
-00:00:00>PCALL FLOW/conflict/traf100_clust3000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf100_clust3500_seed791714
-00:00:00>PCALL FLOW/conflict/traf100_clust3500_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf100_clust3500_seed114749
-00:00:00>PCALL FLOW/conflict/traf100_clust3500_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf100_clust3500_seed80889
-00:00:00>PCALL FLOW/conflict/traf100_clust3500_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf100_clust3500_seed889498
-00:00:00>PCALL FLOW/conflict/traf100_clust3500_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf100_clust3500_seed102317
-00:00:00>PCALL FLOW/conflict/traf100_clust3500_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf100_clust4000_seed791714
-00:00:00>PCALL FLOW/conflict/traf100_clust4000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf100_clust4000_seed114749
-00:00:00>PCALL FLOW/conflict/traf100_clust4000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf100_clust4000_seed80889
-00:00:00>PCALL FLOW/conflict/traf100_clust4000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf100_clust4000_seed889498
-00:00:00>PCALL FLOW/conflict/traf100_clust4000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf100_clust4000_seed102317
-00:00:00>PCALL FLOW/conflict/traf100_clust4000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust100_seed791714
-00:00:00>PCALL FLOW/conflict/traf150_clust100_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust100_seed114749
-00:00:00>PCALL FLOW/conflict/traf150_clust100_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust100_seed80889
-00:00:00>PCALL FLOW/conflict/traf150_clust100_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust100_seed889498
-00:00:00>PCALL FLOW/conflict/traf150_clust100_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust100_seed102317
-00:00:00>PCALL FLOW/conflict/traf150_clust100_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust500_seed791714
-00:00:00>PCALL FLOW/conflict/traf150_clust500_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust500_seed114749
-00:00:00>PCALL FLOW/conflict/traf150_clust500_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust500_seed80889
-00:00:00>PCALL FLOW/conflict/traf150_clust500_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust500_seed889498
-00:00:00>PCALL FLOW/conflict/traf150_clust500_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust500_seed102317
-00:00:00>PCALL FLOW/conflict/traf150_clust500_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust1000_seed791714
-00:00:00>PCALL FLOW/conflict/traf150_clust1000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust1000_seed114749
-00:00:00>PCALL FLOW/conflict/traf150_clust1000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust1000_seed80889
-00:00:00>PCALL FLOW/conflict/traf150_clust1000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust1000_seed889498
-00:00:00>PCALL FLOW/conflict/traf150_clust1000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust1000_seed102317
-00:00:00>PCALL FLOW/conflict/traf150_clust1000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust2000_seed791714
-00:00:00>PCALL FLOW/conflict/traf150_clust2000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust2000_seed114749
-00:00:00>PCALL FLOW/conflict/traf150_clust2000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust2000_seed80889
-00:00:00>PCALL FLOW/conflict/traf150_clust2000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust2000_seed889498
-00:00:00>PCALL FLOW/conflict/traf150_clust2000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust2000_seed102317
-00:00:00>PCALL FLOW/conflict/traf150_clust2000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust2500_seed791714
-00:00:00>PCALL FLOW/conflict/traf150_clust2500_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust2500_seed114749
-00:00:00>PCALL FLOW/conflict/traf150_clust2500_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust2500_seed80889
-00:00:00>PCALL FLOW/conflict/traf150_clust2500_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust2500_seed889498
-00:00:00>PCALL FLOW/conflict/traf150_clust2500_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust2500_seed102317
-00:00:00>PCALL FLOW/conflict/traf150_clust2500_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust3000_seed791714
-00:00:00>PCALL FLOW/conflict/traf150_clust3000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust3000_seed114749
-00:00:00>PCALL FLOW/conflict/traf150_clust3000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust3000_seed80889
-00:00:00>PCALL FLOW/conflict/traf150_clust3000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust3000_seed889498
-00:00:00>PCALL FLOW/conflict/traf150_clust3000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust3000_seed102317
-00:00:00>PCALL FLOW/conflict/traf150_clust3000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust3500_seed791714
-00:00:00>PCALL FLOW/conflict/traf150_clust3500_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust3500_seed114749
-00:00:00>PCALL FLOW/conflict/traf150_clust3500_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust3500_seed80889
-00:00:00>PCALL FLOW/conflict/traf150_clust3500_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust3500_seed889498
-00:00:00>PCALL FLOW/conflict/traf150_clust3500_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust3500_seed102317
-00:00:00>PCALL FLOW/conflict/traf150_clust3500_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust4000_seed791714
-00:00:00>PCALL FLOW/conflict/traf150_clust4000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust4000_seed114749
-00:00:00>PCALL FLOW/conflict/traf150_clust4000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust4000_seed80889
-00:00:00>PCALL FLOW/conflict/traf150_clust4000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust4000_seed889498
-00:00:00>PCALL FLOW/conflict/traf150_clust4000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf150_clust4000_seed102317
-00:00:00>PCALL FLOW/conflict/traf150_clust4000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust100_seed791714
-00:00:00>PCALL FLOW/conflict/traf250_clust100_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust100_seed114749
-00:00:00>PCALL FLOW/conflict/traf250_clust100_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust100_seed80889
-00:00:00>PCALL FLOW/conflict/traf250_clust100_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust100_seed889498
-00:00:00>PCALL FLOW/conflict/traf250_clust100_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust100_seed102317
-00:00:00>PCALL FLOW/conflict/traf250_clust100_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust500_seed791714
-00:00:00>PCALL FLOW/conflict/traf250_clust500_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust500_seed114749
-00:00:00>PCALL FLOW/conflict/traf250_clust500_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust500_seed80889
-00:00:00>PCALL FLOW/conflict/traf250_clust500_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust500_seed889498
-00:00:00>PCALL FLOW/conflict/traf250_clust500_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust500_seed102317
-00:00:00>PCALL FLOW/conflict/traf250_clust500_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust1000_seed791714
-00:00:00>PCALL FLOW/conflict/traf250_clust1000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust1000_seed114749
-00:00:00>PCALL FLOW/conflict/traf250_clust1000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust1000_seed80889
-00:00:00>PCALL FLOW/conflict/traf250_clust1000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust1000_seed889498
-00:00:00>PCALL FLOW/conflict/traf250_clust1000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust1000_seed102317
-00:00:00>PCALL FLOW/conflict/traf250_clust1000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust2000_seed791714
-00:00:00>PCALL FLOW/conflict/traf250_clust2000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust2000_seed114749
-00:00:00>PCALL FLOW/conflict/traf250_clust2000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust2000_seed80889
-00:00:00>PCALL FLOW/conflict/traf250_clust2000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust2000_seed889498
-00:00:00>PCALL FLOW/conflict/traf250_clust2000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust2000_seed102317
-00:00:00>PCALL FLOW/conflict/traf250_clust2000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust2500_seed791714
-00:00:00>PCALL FLOW/conflict/traf250_clust2500_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust2500_seed114749
-00:00:00>PCALL FLOW/conflict/traf250_clust2500_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust2500_seed80889
-00:00:00>PCALL FLOW/conflict/traf250_clust2500_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust2500_seed889498
-00:00:00>PCALL FLOW/conflict/traf250_clust2500_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust2500_seed102317
-00:00:00>PCALL FLOW/conflict/traf250_clust2500_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust3000_seed791714
-00:00:00>PCALL FLOW/conflict/traf250_clust3000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust3000_seed114749
-00:00:00>PCALL FLOW/conflict/traf250_clust3000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust3000_seed80889
-00:00:00>PCALL FLOW/conflict/traf250_clust3000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust3000_seed889498
-00:00:00>PCALL FLOW/conflict/traf250_clust3000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust3000_seed102317
-00:00:00>PCALL FLOW/conflict/traf250_clust3000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust3500_seed791714
-00:00:00>PCALL FLOW/conflict/traf250_clust3500_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust3500_seed114749
-00:00:00>PCALL FLOW/conflict/traf250_clust3500_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust3500_seed80889
-00:00:00>PCALL FLOW/conflict/traf250_clust3500_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust3500_seed889498
-00:00:00>PCALL FLOW/conflict/traf250_clust3500_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust3500_seed102317
-00:00:00>PCALL FLOW/conflict/traf250_clust3500_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust4000_seed791714
-00:00:00>PCALL FLOW/conflict/traf250_clust4000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust4000_seed114749
-00:00:00>PCALL FLOW/conflict/traf250_clust4000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust4000_seed80889
-00:00:00>PCALL FLOW/conflict/traf250_clust4000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust4000_seed889498
-00:00:00>PCALL FLOW/conflict/traf250_clust4000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf250_clust4000_seed102317
-00:00:00>PCALL FLOW/conflict/traf250_clust4000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf300_clust100_seed791714
-00:00:00>PCALL FLOW/conflict/traf300_clust100_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf300_clust100_seed114749
-00:00:00>PCALL FLOW/conflict/traf300_clust100_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf300_clust100_seed80889
-00:00:00>PCALL FLOW/conflict/traf300_clust100_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf300_clust100_seed889498
-00:00:00>PCALL FLOW/conflict/traf300_clust100_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf300_clust100_seed102317
-00:00:00>PCALL FLOW/conflict/traf300_clust100_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf300_clust500_seed791714
-00:00:00>PCALL FLOW/conflict/traf300_clust500_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf300_clust500_seed114749
-00:00:00>PCALL FLOW/conflict/traf300_clust500_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf300_clust500_seed80889
-00:00:00>PCALL FLOW/conflict/traf300_clust500_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf300_clust500_seed889498
-00:00:00>PCALL FLOW/conflict/traf300_clust500_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf300_clust500_seed102317
-00:00:00>PCALL FLOW/conflict/traf300_clust500_seed102317.scn
-00:00:00>FF
+00:00:00>SCEN conflict_traf100_clust500_seed791714
+00:00:00>PCALL FLOW/conflict/traf100_clust500_seed791714.scn
 
 00:00:00>SCEN conflict_traf300_clust1000_seed791714
 00:00:00>PCALL FLOW/conflict/traf300_clust1000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf300_clust1000_seed114749
-00:00:00>PCALL FLOW/conflict/traf300_clust1000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf300_clust1000_seed80889
-00:00:00>PCALL FLOW/conflict/traf300_clust1000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf300_clust1000_seed889498
-00:00:00>PCALL FLOW/conflict/traf300_clust1000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf300_clust1000_seed102317
-00:00:00>PCALL FLOW/conflict/traf300_clust1000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf300_clust2000_seed791714
-00:00:00>PCALL FLOW/conflict/traf300_clust2000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf300_clust2000_seed114749
-00:00:00>PCALL FLOW/conflict/traf300_clust2000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf300_clust2000_seed80889
-00:00:00>PCALL FLOW/conflict/traf300_clust2000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf300_clust2000_seed889498
-00:00:00>PCALL FLOW/conflict/traf300_clust2000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf300_clust2000_seed102317
-00:00:00>PCALL FLOW/conflict/traf300_clust2000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf300_clust2500_seed791714
-00:00:00>PCALL FLOW/conflict/traf300_clust2500_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf300_clust2500_seed114749
-00:00:00>PCALL FLOW/conflict/traf300_clust2500_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf300_clust2500_seed80889
-00:00:00>PCALL FLOW/conflict/traf300_clust2500_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf300_clust2500_seed889498
-00:00:00>PCALL FLOW/conflict/traf300_clust2500_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf300_clust2500_seed102317
-00:00:00>PCALL FLOW/conflict/traf300_clust2500_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf300_clust3000_seed791714
-00:00:00>PCALL FLOW/conflict/traf300_clust3000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf300_clust3000_seed114749
-00:00:00>PCALL FLOW/conflict/traf300_clust3000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf300_clust3000_seed80889
-00:00:00>PCALL FLOW/conflict/traf300_clust3000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf300_clust3000_seed889498
-00:00:00>PCALL FLOW/conflict/traf300_clust3000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf300_clust3000_seed102317
-00:00:00>PCALL FLOW/conflict/traf300_clust3000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf300_clust3500_seed791714
-00:00:00>PCALL FLOW/conflict/traf300_clust3500_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf300_clust3500_seed114749
-00:00:00>PCALL FLOW/conflict/traf300_clust3500_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf300_clust3500_seed80889
-00:00:00>PCALL FLOW/conflict/traf300_clust3500_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf300_clust3500_seed889498
-00:00:00>PCALL FLOW/conflict/traf300_clust3500_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf300_clust3500_seed102317
-00:00:00>PCALL FLOW/conflict/traf300_clust3500_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf300_clust4000_seed791714
-00:00:00>PCALL FLOW/conflict/traf300_clust4000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf300_clust4000_seed114749
-00:00:00>PCALL FLOW/conflict/traf300_clust4000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf300_clust4000_seed80889
-00:00:00>PCALL FLOW/conflict/traf300_clust4000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf300_clust4000_seed889498
-00:00:00>PCALL FLOW/conflict/traf300_clust4000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf300_clust4000_seed102317
-00:00:00>PCALL FLOW/conflict/traf300_clust4000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust100_seed791714
-00:00:00>PCALL FLOW/conflict/traf350_clust100_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust100_seed114749
-00:00:00>PCALL FLOW/conflict/traf350_clust100_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust100_seed80889
-00:00:00>PCALL FLOW/conflict/traf350_clust100_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust100_seed889498
-00:00:00>PCALL FLOW/conflict/traf350_clust100_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust100_seed102317
-00:00:00>PCALL FLOW/conflict/traf350_clust100_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust500_seed791714
-00:00:00>PCALL FLOW/conflict/traf350_clust500_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust500_seed114749
-00:00:00>PCALL FLOW/conflict/traf350_clust500_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust500_seed80889
-00:00:00>PCALL FLOW/conflict/traf350_clust500_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust500_seed889498
-00:00:00>PCALL FLOW/conflict/traf350_clust500_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust500_seed102317
-00:00:00>PCALL FLOW/conflict/traf350_clust500_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust1000_seed791714
-00:00:00>PCALL FLOW/conflict/traf350_clust1000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust1000_seed114749
-00:00:00>PCALL FLOW/conflict/traf350_clust1000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust1000_seed80889
-00:00:00>PCALL FLOW/conflict/traf350_clust1000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust1000_seed889498
-00:00:00>PCALL FLOW/conflict/traf350_clust1000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust1000_seed102317
-00:00:00>PCALL FLOW/conflict/traf350_clust1000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust2000_seed791714
-00:00:00>PCALL FLOW/conflict/traf350_clust2000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust2000_seed114749
-00:00:00>PCALL FLOW/conflict/traf350_clust2000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust2000_seed80889
-00:00:00>PCALL FLOW/conflict/traf350_clust2000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust2000_seed889498
-00:00:00>PCALL FLOW/conflict/traf350_clust2000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust2000_seed102317
-00:00:00>PCALL FLOW/conflict/traf350_clust2000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust2500_seed791714
-00:00:00>PCALL FLOW/conflict/traf350_clust2500_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust2500_seed114749
-00:00:00>PCALL FLOW/conflict/traf350_clust2500_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust2500_seed80889
-00:00:00>PCALL FLOW/conflict/traf350_clust2500_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust2500_seed889498
-00:00:00>PCALL FLOW/conflict/traf350_clust2500_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust2500_seed102317
-00:00:00>PCALL FLOW/conflict/traf350_clust2500_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust3000_seed791714
-00:00:00>PCALL FLOW/conflict/traf350_clust3000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust3000_seed114749
-00:00:00>PCALL FLOW/conflict/traf350_clust3000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust3000_seed80889
-00:00:00>PCALL FLOW/conflict/traf350_clust3000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust3000_seed889498
-00:00:00>PCALL FLOW/conflict/traf350_clust3000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust3000_seed102317
-00:00:00>PCALL FLOW/conflict/traf350_clust3000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust3500_seed791714
-00:00:00>PCALL FLOW/conflict/traf350_clust3500_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust3500_seed114749
-00:00:00>PCALL FLOW/conflict/traf350_clust3500_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust3500_seed80889
-00:00:00>PCALL FLOW/conflict/traf350_clust3500_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust3500_seed889498
-00:00:00>PCALL FLOW/conflict/traf350_clust3500_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust3500_seed102317
-00:00:00>PCALL FLOW/conflict/traf350_clust3500_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust4000_seed791714
-00:00:00>PCALL FLOW/conflict/traf350_clust4000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust4000_seed114749
-00:00:00>PCALL FLOW/conflict/traf350_clust4000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust4000_seed80889
-00:00:00>PCALL FLOW/conflict/traf350_clust4000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust4000_seed889498
-00:00:00>PCALL FLOW/conflict/traf350_clust4000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf350_clust4000_seed102317
-00:00:00>PCALL FLOW/conflict/traf350_clust4000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust100_seed791714
-00:00:00>PCALL FLOW/conflict/traf400_clust100_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust100_seed114749
-00:00:00>PCALL FLOW/conflict/traf400_clust100_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust100_seed80889
-00:00:00>PCALL FLOW/conflict/traf400_clust100_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust100_seed889498
-00:00:00>PCALL FLOW/conflict/traf400_clust100_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust100_seed102317
-00:00:00>PCALL FLOW/conflict/traf400_clust100_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust500_seed791714
-00:00:00>PCALL FLOW/conflict/traf400_clust500_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust500_seed114749
-00:00:00>PCALL FLOW/conflict/traf400_clust500_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust500_seed80889
-00:00:00>PCALL FLOW/conflict/traf400_clust500_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust500_seed889498
-00:00:00>PCALL FLOW/conflict/traf400_clust500_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust500_seed102317
-00:00:00>PCALL FLOW/conflict/traf400_clust500_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust1000_seed791714
-00:00:00>PCALL FLOW/conflict/traf400_clust1000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust1000_seed114749
-00:00:00>PCALL FLOW/conflict/traf400_clust1000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust1000_seed80889
-00:00:00>PCALL FLOW/conflict/traf400_clust1000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust1000_seed889498
-00:00:00>PCALL FLOW/conflict/traf400_clust1000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust1000_seed102317
-00:00:00>PCALL FLOW/conflict/traf400_clust1000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust2000_seed791714
-00:00:00>PCALL FLOW/conflict/traf400_clust2000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust2000_seed114749
-00:00:00>PCALL FLOW/conflict/traf400_clust2000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust2000_seed80889
-00:00:00>PCALL FLOW/conflict/traf400_clust2000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust2000_seed889498
-00:00:00>PCALL FLOW/conflict/traf400_clust2000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust2000_seed102317
-00:00:00>PCALL FLOW/conflict/traf400_clust2000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust2500_seed791714
-00:00:00>PCALL FLOW/conflict/traf400_clust2500_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust2500_seed114749
-00:00:00>PCALL FLOW/conflict/traf400_clust2500_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust2500_seed80889
-00:00:00>PCALL FLOW/conflict/traf400_clust2500_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust2500_seed889498
-00:00:00>PCALL FLOW/conflict/traf400_clust2500_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust2500_seed102317
-00:00:00>PCALL FLOW/conflict/traf400_clust2500_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust3000_seed791714
-00:00:00>PCALL FLOW/conflict/traf400_clust3000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust3000_seed114749
-00:00:00>PCALL FLOW/conflict/traf400_clust3000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust3000_seed80889
-00:00:00>PCALL FLOW/conflict/traf400_clust3000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust3000_seed889498
-00:00:00>PCALL FLOW/conflict/traf400_clust3000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust3000_seed102317
-00:00:00>PCALL FLOW/conflict/traf400_clust3000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust3500_seed791714
-00:00:00>PCALL FLOW/conflict/traf400_clust3500_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust3500_seed114749
-00:00:00>PCALL FLOW/conflict/traf400_clust3500_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust3500_seed80889
-00:00:00>PCALL FLOW/conflict/traf400_clust3500_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust3500_seed889498
-00:00:00>PCALL FLOW/conflict/traf400_clust3500_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust3500_seed102317
-00:00:00>PCALL FLOW/conflict/traf400_clust3500_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust4000_seed791714
-00:00:00>PCALL FLOW/conflict/traf400_clust4000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust4000_seed114749
-00:00:00>PCALL FLOW/conflict/traf400_clust4000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust4000_seed80889
-00:00:00>PCALL FLOW/conflict/traf400_clust4000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust4000_seed889498
-00:00:00>PCALL FLOW/conflict/traf400_clust4000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf400_clust4000_seed102317
-00:00:00>PCALL FLOW/conflict/traf400_clust4000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf450_clust100_seed791714
-00:00:00>PCALL FLOW/conflict/traf450_clust100_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf450_clust100_seed114749
-00:00:00>PCALL FLOW/conflict/traf450_clust100_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf450_clust100_seed80889
-00:00:00>PCALL FLOW/conflict/traf450_clust100_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf450_clust100_seed889498
-00:00:00>PCALL FLOW/conflict/traf450_clust100_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf450_clust100_seed102317
-00:00:00>PCALL FLOW/conflict/traf450_clust100_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf450_clust500_seed791714
-00:00:00>PCALL FLOW/conflict/traf450_clust500_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf450_clust500_seed114749
-00:00:00>PCALL FLOW/conflict/traf450_clust500_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf450_clust500_seed80889
-00:00:00>PCALL FLOW/conflict/traf450_clust500_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf450_clust500_seed889498
-00:00:00>PCALL FLOW/conflict/traf450_clust500_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf450_clust500_seed102317
-00:00:00>PCALL FLOW/conflict/traf450_clust500_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf450_clust1000_seed791714
-00:00:00>PCALL FLOW/conflict/traf450_clust1000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf450_clust1000_seed114749
-00:00:00>PCALL FLOW/conflict/traf450_clust1000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf450_clust1000_seed80889
-00:00:00>PCALL FLOW/conflict/traf450_clust1000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf450_clust1000_seed889498
-00:00:00>PCALL FLOW/conflict/traf450_clust1000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf450_clust1000_seed102317
-00:00:00>PCALL FLOW/conflict/traf450_clust1000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf450_clust2000_seed791714
-00:00:00>PCALL FLOW/conflict/traf450_clust2000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf450_clust2000_seed114749
-00:00:00>PCALL FLOW/conflict/traf450_clust2000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf450_clust2000_seed80889
-00:00:00>PCALL FLOW/conflict/traf450_clust2000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf450_clust2000_seed889498
-00:00:00>PCALL FLOW/conflict/traf450_clust2000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf450_clust2000_seed102317
-00:00:00>PCALL FLOW/conflict/traf450_clust2000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf450_clust2500_seed791714
-00:00:00>PCALL FLOW/conflict/traf450_clust2500_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf450_clust2500_seed114749
-00:00:00>PCALL FLOW/conflict/traf450_clust2500_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf450_clust2500_seed80889
-00:00:00>PCALL FLOW/conflict/traf450_clust2500_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf450_clust2500_seed889498
-00:00:00>PCALL FLOW/conflict/traf450_clust2500_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf450_clust2500_seed102317
-00:00:00>PCALL FLOW/conflict/traf450_clust2500_seed102317.scn
-00:00:00>FF
 
 00:00:00>SCEN conflict_traf450_clust3000_seed791714
 00:00:00>PCALL FLOW/conflict/traf450_clust3000_seed791714.scn
-00:00:00>FF
 
-00:00:00>SCEN conflict_traf450_clust3000_seed114749
-00:00:00>PCALL FLOW/conflict/traf450_clust3000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf450_clust3000_seed80889
-00:00:00>PCALL FLOW/conflict/traf450_clust3000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf450_clust3000_seed889498
-00:00:00>PCALL FLOW/conflict/traf450_clust3000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf450_clust3000_seed102317
-00:00:00>PCALL FLOW/conflict/traf450_clust3000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf450_clust3500_seed791714
-00:00:00>PCALL FLOW/conflict/traf450_clust3500_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf450_clust3500_seed114749
-00:00:00>PCALL FLOW/conflict/traf450_clust3500_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf450_clust3500_seed80889
-00:00:00>PCALL FLOW/conflict/traf450_clust3500_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf450_clust3500_seed889498
-00:00:00>PCALL FLOW/conflict/traf450_clust3500_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf450_clust3500_seed102317
-00:00:00>PCALL FLOW/conflict/traf450_clust3500_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf450_clust4000_seed791714
-00:00:00>PCALL FLOW/conflict/traf450_clust4000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf450_clust4000_seed114749
-00:00:00>PCALL FLOW/conflict/traf450_clust4000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf450_clust4000_seed80889
-00:00:00>PCALL FLOW/conflict/traf450_clust4000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf450_clust4000_seed889498
-00:00:00>PCALL FLOW/conflict/traf450_clust4000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf450_clust4000_seed102317
-00:00:00>PCALL FLOW/conflict/traf450_clust4000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust100_seed791714
-00:00:00>PCALL FLOW/conflict/traf500_clust100_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust100_seed114749
-00:00:00>PCALL FLOW/conflict/traf500_clust100_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust100_seed80889
-00:00:00>PCALL FLOW/conflict/traf500_clust100_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust100_seed889498
-00:00:00>PCALL FLOW/conflict/traf500_clust100_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust100_seed102317
-00:00:00>PCALL FLOW/conflict/traf500_clust100_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust500_seed791714
-00:00:00>PCALL FLOW/conflict/traf500_clust500_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust500_seed114749
-00:00:00>PCALL FLOW/conflict/traf500_clust500_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust500_seed80889
-00:00:00>PCALL FLOW/conflict/traf500_clust500_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust500_seed889498
-00:00:00>PCALL FLOW/conflict/traf500_clust500_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust500_seed102317
-00:00:00>PCALL FLOW/conflict/traf500_clust500_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust1000_seed791714
-00:00:00>PCALL FLOW/conflict/traf500_clust1000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust1000_seed114749
-00:00:00>PCALL FLOW/conflict/traf500_clust1000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust1000_seed80889
-00:00:00>PCALL FLOW/conflict/traf500_clust1000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust1000_seed889498
-00:00:00>PCALL FLOW/conflict/traf500_clust1000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust1000_seed102317
-00:00:00>PCALL FLOW/conflict/traf500_clust1000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust2000_seed791714
-00:00:00>PCALL FLOW/conflict/traf500_clust2000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust2000_seed114749
-00:00:00>PCALL FLOW/conflict/traf500_clust2000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust2000_seed80889
-00:00:00>PCALL FLOW/conflict/traf500_clust2000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust2000_seed889498
-00:00:00>PCALL FLOW/conflict/traf500_clust2000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust2000_seed102317
-00:00:00>PCALL FLOW/conflict/traf500_clust2000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust2500_seed791714
-00:00:00>PCALL FLOW/conflict/traf500_clust2500_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust2500_seed114749
-00:00:00>PCALL FLOW/conflict/traf500_clust2500_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust2500_seed80889
-00:00:00>PCALL FLOW/conflict/traf500_clust2500_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust2500_seed889498
-00:00:00>PCALL FLOW/conflict/traf500_clust2500_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust2500_seed102317
-00:00:00>PCALL FLOW/conflict/traf500_clust2500_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust3000_seed791714
-00:00:00>PCALL FLOW/conflict/traf500_clust3000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust3000_seed114749
-00:00:00>PCALL FLOW/conflict/traf500_clust3000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust3000_seed80889
-00:00:00>PCALL FLOW/conflict/traf500_clust3000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust3000_seed889498
-00:00:00>PCALL FLOW/conflict/traf500_clust3000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust3000_seed102317
-00:00:00>PCALL FLOW/conflict/traf500_clust3000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust3500_seed791714
-00:00:00>PCALL FLOW/conflict/traf500_clust3500_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust3500_seed114749
-00:00:00>PCALL FLOW/conflict/traf500_clust3500_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust3500_seed80889
-00:00:00>PCALL FLOW/conflict/traf500_clust3500_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust3500_seed889498
-00:00:00>PCALL FLOW/conflict/traf500_clust3500_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust3500_seed102317
-00:00:00>PCALL FLOW/conflict/traf500_clust3500_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust4000_seed791714
-00:00:00>PCALL FLOW/conflict/traf500_clust4000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust4000_seed114749
-00:00:00>PCALL FLOW/conflict/traf500_clust4000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust4000_seed80889
-00:00:00>PCALL FLOW/conflict/traf500_clust4000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust4000_seed889498
-00:00:00>PCALL FLOW/conflict/traf500_clust4000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf500_clust4000_seed102317
-00:00:00>PCALL FLOW/conflict/traf500_clust4000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust100_seed791714
-00:00:00>PCALL FLOW/conflict/traf550_clust100_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust100_seed114749
-00:00:00>PCALL FLOW/conflict/traf550_clust100_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust100_seed80889
-00:00:00>PCALL FLOW/conflict/traf550_clust100_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust100_seed889498
-00:00:00>PCALL FLOW/conflict/traf550_clust100_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust100_seed102317
-00:00:00>PCALL FLOW/conflict/traf550_clust100_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust500_seed791714
-00:00:00>PCALL FLOW/conflict/traf550_clust500_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust500_seed114749
-00:00:00>PCALL FLOW/conflict/traf550_clust500_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust500_seed80889
-00:00:00>PCALL FLOW/conflict/traf550_clust500_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust500_seed889498
-00:00:00>PCALL FLOW/conflict/traf550_clust500_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust500_seed102317
-00:00:00>PCALL FLOW/conflict/traf550_clust500_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust1000_seed791714
-00:00:00>PCALL FLOW/conflict/traf550_clust1000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust1000_seed114749
-00:00:00>PCALL FLOW/conflict/traf550_clust1000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust1000_seed80889
-00:00:00>PCALL FLOW/conflict/traf550_clust1000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust1000_seed889498
-00:00:00>PCALL FLOW/conflict/traf550_clust1000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust1000_seed102317
-00:00:00>PCALL FLOW/conflict/traf550_clust1000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust2000_seed791714
-00:00:00>PCALL FLOW/conflict/traf550_clust2000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust2000_seed114749
-00:00:00>PCALL FLOW/conflict/traf550_clust2000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust2000_seed80889
-00:00:00>PCALL FLOW/conflict/traf550_clust2000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust2000_seed889498
-00:00:00>PCALL FLOW/conflict/traf550_clust2000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust2000_seed102317
-00:00:00>PCALL FLOW/conflict/traf550_clust2000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust2500_seed791714
-00:00:00>PCALL FLOW/conflict/traf550_clust2500_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust2500_seed114749
-00:00:00>PCALL FLOW/conflict/traf550_clust2500_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust2500_seed80889
-00:00:00>PCALL FLOW/conflict/traf550_clust2500_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust2500_seed889498
-00:00:00>PCALL FLOW/conflict/traf550_clust2500_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust2500_seed102317
-00:00:00>PCALL FLOW/conflict/traf550_clust2500_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust3000_seed791714
-00:00:00>PCALL FLOW/conflict/traf550_clust3000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust3000_seed114749
-00:00:00>PCALL FLOW/conflict/traf550_clust3000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust3000_seed80889
-00:00:00>PCALL FLOW/conflict/traf550_clust3000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust3000_seed889498
-00:00:00>PCALL FLOW/conflict/traf550_clust3000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust3000_seed102317
-00:00:00>PCALL FLOW/conflict/traf550_clust3000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust3500_seed791714
-00:00:00>PCALL FLOW/conflict/traf550_clust3500_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust3500_seed114749
-00:00:00>PCALL FLOW/conflict/traf550_clust3500_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust3500_seed80889
-00:00:00>PCALL FLOW/conflict/traf550_clust3500_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust3500_seed889498
-00:00:00>PCALL FLOW/conflict/traf550_clust3500_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust3500_seed102317
-00:00:00>PCALL FLOW/conflict/traf550_clust3500_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust4000_seed791714
-00:00:00>PCALL FLOW/conflict/traf550_clust4000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust4000_seed114749
-00:00:00>PCALL FLOW/conflict/traf550_clust4000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust4000_seed80889
-00:00:00>PCALL FLOW/conflict/traf550_clust4000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust4000_seed889498
-00:00:00>PCALL FLOW/conflict/traf550_clust4000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf550_clust4000_seed102317
-00:00:00>PCALL FLOW/conflict/traf550_clust4000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf600_clust100_seed791714
-00:00:00>PCALL FLOW/conflict/traf600_clust100_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf600_clust100_seed114749
-00:00:00>PCALL FLOW/conflict/traf600_clust100_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf600_clust100_seed80889
-00:00:00>PCALL FLOW/conflict/traf600_clust100_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf600_clust100_seed889498
-00:00:00>PCALL FLOW/conflict/traf600_clust100_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf600_clust100_seed102317
-00:00:00>PCALL FLOW/conflict/traf600_clust100_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf600_clust500_seed791714
-00:00:00>PCALL FLOW/conflict/traf600_clust500_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf600_clust500_seed114749
-00:00:00>PCALL FLOW/conflict/traf600_clust500_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf600_clust500_seed80889
-00:00:00>PCALL FLOW/conflict/traf600_clust500_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf600_clust500_seed889498
-00:00:00>PCALL FLOW/conflict/traf600_clust500_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf600_clust500_seed102317
-00:00:00>PCALL FLOW/conflict/traf600_clust500_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf600_clust1000_seed791714
-00:00:00>PCALL FLOW/conflict/traf600_clust1000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf600_clust1000_seed114749
-00:00:00>PCALL FLOW/conflict/traf600_clust1000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf600_clust1000_seed80889
-00:00:00>PCALL FLOW/conflict/traf600_clust1000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf600_clust1000_seed889498
-00:00:00>PCALL FLOW/conflict/traf600_clust1000_seed889498.scn
-00:00:00>FF
+00:00:00>SCEN conflict_traf200_clust2000_seed791714
+00:00:00>PCALL FLOW/conflict/traf200_clust2000_seed791714.scn
 
 00:00:00>SCEN conflict_traf600_clust1000_seed102317
 00:00:00>PCALL FLOW/conflict/traf600_clust1000_seed102317.scn
-00:00:00>FF
 
-00:00:00>SCEN conflict_traf600_clust2000_seed791714
-00:00:00>PCALL FLOW/conflict/traf600_clust2000_seed791714.scn
-00:00:00>FF
+00:00:00>SCEN conflict_traf600_clust100_seed791714
+00:00:00>PCALL FLOW/conflict/traf600_clust100_seed791714.scn
 
-00:00:00>SCEN conflict_traf600_clust2000_seed114749
-00:00:00>PCALL FLOW/conflict/traf600_clust2000_seed114749.scn
-00:00:00>FF
+00:00:00>SCEN conflict_traf150_clust3000_seed102317
+00:00:00>PCALL FLOW/conflict/traf150_clust3000_seed102317.scn
 
-00:00:00>SCEN conflict_traf600_clust2000_seed80889
-00:00:00>PCALL FLOW/conflict/traf600_clust2000_seed80889.scn
-00:00:00>FF
+00:00:00>SCEN conflict_traf250_clust100_seed114749
+00:00:00>PCALL FLOW/conflict/traf250_clust100_seed114749.scn
 
-00:00:00>SCEN conflict_traf600_clust2000_seed889498
-00:00:00>PCALL FLOW/conflict/traf600_clust2000_seed889498.scn
-00:00:00>FF
+00:00:00>SCEN conflict_traf50_clust3000_seed114749
+00:00:00>PCALL FLOW/conflict/traf50_clust3000_seed114749.scn
 
-00:00:00>SCEN conflict_traf600_clust2000_seed102317
-00:00:00>PCALL FLOW/conflict/traf600_clust2000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf600_clust2500_seed791714
-00:00:00>PCALL FLOW/conflict/traf600_clust2500_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf600_clust2500_seed114749
-00:00:00>PCALL FLOW/conflict/traf600_clust2500_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf600_clust2500_seed80889
-00:00:00>PCALL FLOW/conflict/traf600_clust2500_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf600_clust2500_seed889498
-00:00:00>PCALL FLOW/conflict/traf600_clust2500_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf600_clust2500_seed102317
-00:00:00>PCALL FLOW/conflict/traf600_clust2500_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf600_clust3000_seed791714
-00:00:00>PCALL FLOW/conflict/traf600_clust3000_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf600_clust3000_seed114749
-00:00:00>PCALL FLOW/conflict/traf600_clust3000_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf600_clust3000_seed80889
-00:00:00>PCALL FLOW/conflict/traf600_clust3000_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf600_clust3000_seed889498
-00:00:00>PCALL FLOW/conflict/traf600_clust3000_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf600_clust3000_seed102317
-00:00:00>PCALL FLOW/conflict/traf600_clust3000_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf600_clust3500_seed791714
-00:00:00>PCALL FLOW/conflict/traf600_clust3500_seed791714.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf600_clust3500_seed114749
-00:00:00>PCALL FLOW/conflict/traf600_clust3500_seed114749.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf600_clust3500_seed80889
-00:00:00>PCALL FLOW/conflict/traf600_clust3500_seed80889.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf600_clust3500_seed889498
-00:00:00>PCALL FLOW/conflict/traf600_clust3500_seed889498.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf600_clust3500_seed102317
-00:00:00>PCALL FLOW/conflict/traf600_clust3500_seed102317.scn
-00:00:00>FF
-
-00:00:00>SCEN conflict_traf600_clust4000_seed791714
-00:00:00>PCALL FLOW/conflict/traf600_clust4000_seed791714.scn
-00:00:00>FF
+00:00:00>SCEN conflict_traf50_clust100_seed889498
+00:00:00>PCALL FLOW/conflict/traf50_clust100_seed889498.scn
 
 00:00:00>SCEN conflict_traf600_clust4000_seed114749
 00:00:00>PCALL FLOW/conflict/traf600_clust4000_seed114749.scn
-00:00:00>FF
 
-00:00:00>SCEN conflict_traf600_clust4000_seed80889
-00:00:00>PCALL FLOW/conflict/traf600_clust4000_seed80889.scn
-00:00:00>FF
+00:00:00>SCEN conflict_traf250_clust4000_seed791714
+00:00:00>PCALL FLOW/conflict/traf250_clust4000_seed791714.scn
 
-00:00:00>SCEN conflict_traf600_clust4000_seed889498
-00:00:00>PCALL FLOW/conflict/traf600_clust4000_seed889498.scn
-00:00:00>FF
+00:00:00>SCEN conflict_traf400_clust3500_seed791714
+00:00:00>PCALL FLOW/conflict/traf400_clust3500_seed791714.scn
+
+00:00:00>SCEN conflict_traf350_clust1500_seed791714
+00:00:00>PCALL FLOW/conflict/traf350_clust1500_seed791714.scn
+
+00:00:00>SCEN conflict_traf150_clust2500_seed889498
+00:00:00>PCALL FLOW/conflict/traf150_clust2500_seed889498.scn
+
+00:00:00>SCEN conflict_traf550_clust500_seed114749
+00:00:00>PCALL FLOW/conflict/traf550_clust500_seed114749.scn
+
+00:00:00>SCEN conflict_traf150_clust4000_seed889498
+00:00:00>PCALL FLOW/conflict/traf150_clust4000_seed889498.scn
+
+00:00:00>SCEN conflict_traf50_clust1000_seed889498
+00:00:00>PCALL FLOW/conflict/traf50_clust1000_seed889498.scn
+
+00:00:00>SCEN conflict_traf500_clust1000_seed80889
+00:00:00>PCALL FLOW/conflict/traf500_clust1000_seed80889.scn
+
+00:00:00>SCEN conflict_traf450_clust3000_seed80889
+00:00:00>PCALL FLOW/conflict/traf450_clust3000_seed80889.scn
+
+00:00:00>SCEN conflict_traf100_clust3500_seed102317
+00:00:00>PCALL FLOW/conflict/traf100_clust3500_seed102317.scn
+
+00:00:00>SCEN conflict_traf600_clust2500_seed114749
+00:00:00>PCALL FLOW/conflict/traf600_clust2500_seed114749.scn
+
+00:00:00>SCEN conflict_traf250_clust2500_seed791714
+00:00:00>PCALL FLOW/conflict/traf250_clust2500_seed791714.scn
+
+00:00:00>SCEN conflict_traf200_clust500_seed889498
+00:00:00>PCALL FLOW/conflict/traf200_clust500_seed889498.scn
+
+00:00:00>SCEN conflict_traf300_clust4000_seed791714
+00:00:00>PCALL FLOW/conflict/traf300_clust4000_seed791714.scn
+
+00:00:00>SCEN conflict_traf550_clust500_seed102317
+00:00:00>PCALL FLOW/conflict/traf550_clust500_seed102317.scn
+
+00:00:00>SCEN conflict_traf50_clust1000_seed80889
+00:00:00>PCALL FLOW/conflict/traf50_clust1000_seed80889.scn
+
+00:00:00>SCEN conflict_traf100_clust3500_seed114749
+00:00:00>PCALL FLOW/conflict/traf100_clust3500_seed114749.scn
+
+00:00:00>SCEN conflict_traf550_clust3500_seed791714
+00:00:00>PCALL FLOW/conflict/traf550_clust3500_seed791714.scn
+
+00:00:00>SCEN conflict_traf600_clust2500_seed102317
+00:00:00>PCALL FLOW/conflict/traf600_clust2500_seed102317.scn
+
+00:00:00>SCEN conflict_traf200_clust1500_seed791714
+00:00:00>PCALL FLOW/conflict/traf200_clust1500_seed791714.scn
+
+00:00:00>SCEN conflict_traf600_clust100_seed80889
+00:00:00>PCALL FLOW/conflict/traf600_clust100_seed80889.scn
+
+00:00:00>SCEN conflict_traf250_clust100_seed102317
+00:00:00>PCALL FLOW/conflict/traf250_clust100_seed102317.scn
+
+00:00:00>SCEN conflict_traf50_clust3000_seed102317
+00:00:00>PCALL FLOW/conflict/traf50_clust3000_seed102317.scn
 
 00:00:00>SCEN conflict_traf600_clust4000_seed102317
 00:00:00>PCALL FLOW/conflict/traf600_clust4000_seed102317.scn
-00:00:00>FF
+
+00:00:00>SCEN conflict_traf100_clust3000_seed80889
+00:00:00>PCALL FLOW/conflict/traf100_clust3000_seed80889.scn
+
+00:00:00>SCEN conflict_traf500_clust100_seed889498
+00:00:00>PCALL FLOW/conflict/traf500_clust100_seed889498.scn
+
+00:00:00>SCEN conflict_traf200_clust2500_seed80889
+00:00:00>PCALL FLOW/conflict/traf200_clust2500_seed80889.scn
+
+00:00:00>SCEN conflict_traf100_clust1500_seed889498
+00:00:00>PCALL FLOW/conflict/traf100_clust1500_seed889498.scn
+
+00:00:00>SCEN conflict_traf300_clust2500_seed791714
+00:00:00>PCALL FLOW/conflict/traf300_clust2500_seed791714.scn
+
+00:00:00>SCEN conflict_traf450_clust500_seed791714
+00:00:00>PCALL FLOW/conflict/traf450_clust500_seed791714.scn
+
+00:00:00>SCEN conflict_traf300_clust2000_seed80889
+00:00:00>PCALL FLOW/conflict/traf300_clust2000_seed80889.scn
+
+00:00:00>SCEN conflict_traf50_clust2500_seed889498
+00:00:00>PCALL FLOW/conflict/traf50_clust2500_seed889498.scn
+
+00:00:00>SCEN conflict_traf150_clust1500_seed80889
+00:00:00>PCALL FLOW/conflict/traf150_clust1500_seed80889.scn
+
+00:00:00>SCEN conflict_traf200_clust100_seed80889
+00:00:00>PCALL FLOW/conflict/traf200_clust100_seed80889.scn
+
+00:00:00>SCEN conflict_traf250_clust1000_seed791714
+00:00:00>PCALL FLOW/conflict/traf250_clust1000_seed791714.scn
+
+00:00:00>SCEN conflict_traf600_clust1000_seed114749
+00:00:00>PCALL FLOW/conflict/traf600_clust1000_seed114749.scn
+
+00:00:00>SCEN conflict_traf500_clust3000_seed791714
+00:00:00>PCALL FLOW/conflict/traf500_clust3000_seed791714.scn
+
+00:00:00>SCEN conflict_traf150_clust3000_seed114749
+00:00:00>PCALL FLOW/conflict/traf150_clust3000_seed114749.scn
+
+00:00:00>SCEN conflict_traf350_clust100_seed791714
+00:00:00>PCALL FLOW/conflict/traf350_clust100_seed791714.scn
+
+00:00:00>SCEN conflict_traf250_clust500_seed80889
+00:00:00>PCALL FLOW/conflict/traf250_clust500_seed80889.scn
+
+00:00:00>SCEN conflict_traf350_clust2000_seed791714
+00:00:00>PCALL FLOW/conflict/traf350_clust2000_seed791714.scn
+
+00:00:00>SCEN conflict_traf600_clust3000_seed889498
+00:00:00>PCALL FLOW/conflict/traf600_clust3000_seed889498.scn
+
+00:00:00>SCEN conflict_traf550_clust4000_seed80889
+00:00:00>PCALL FLOW/conflict/traf550_clust4000_seed80889.scn
+
+00:00:00>SCEN conflict_traf50_clust4000_seed889498
+00:00:00>PCALL FLOW/conflict/traf50_clust4000_seed889498.scn
+
+00:00:00>SCEN conflict_traf150_clust1000_seed889498
+00:00:00>PCALL FLOW/conflict/traf150_clust1000_seed889498.scn
+
+00:00:00>SCEN conflict_traf50_clust1500_seed102317
+00:00:00>PCALL FLOW/conflict/traf50_clust1500_seed102317.scn
+
+00:00:00>SCEN conflict_traf250_clust4000_seed80889
+00:00:00>PCALL FLOW/conflict/traf250_clust4000_seed80889.scn
+
+00:00:00>SCEN conflict_traf100_clust3000_seed889498
+00:00:00>PCALL FLOW/conflict/traf100_clust3000_seed889498.scn
+
+00:00:00>SCEN conflict_traf450_clust2000_seed791714
+00:00:00>PCALL FLOW/conflict/traf450_clust2000_seed791714.scn
+
+00:00:00>SCEN conflict_traf450_clust100_seed791714
+00:00:00>PCALL FLOW/conflict/traf450_clust100_seed791714.scn
+
+00:00:00>SCEN conflict_traf100_clust1000_seed114749
+00:00:00>PCALL FLOW/conflict/traf100_clust1000_seed114749.scn
+
+00:00:00>SCEN conflict_traf150_clust2000_seed102317
+00:00:00>PCALL FLOW/conflict/traf150_clust2000_seed102317.scn
+
+00:00:00>SCEN conflict_traf350_clust500_seed791714
+00:00:00>PCALL FLOW/conflict/traf350_clust500_seed791714.scn
+
+00:00:00>SCEN conflict_traf550_clust1000_seed791714
+00:00:00>PCALL FLOW/conflict/traf550_clust1000_seed791714.scn
+
+00:00:00>SCEN conflict_traf200_clust3000_seed791714
+00:00:00>PCALL FLOW/conflict/traf200_clust3000_seed791714.scn
+
+00:00:00>SCEN conflict_traf400_clust2000_seed80889
+00:00:00>PCALL FLOW/conflict/traf400_clust2000_seed80889.scn
+
+00:00:00>SCEN conflict_traf500_clust2500_seed80889
+00:00:00>PCALL FLOW/conflict/traf500_clust2500_seed80889.scn
+
+00:00:00>SCEN conflict_traf50_clust2000_seed114749
+00:00:00>PCALL FLOW/conflict/traf50_clust2000_seed114749.scn
+
+00:00:00>SCEN conflict_traf100_clust4000_seed102317
+00:00:00>PCALL FLOW/conflict/traf100_clust4000_seed102317.scn
+
+00:00:00>SCEN conflict_traf550_clust100_seed102317
+00:00:00>PCALL FLOW/conflict/traf550_clust100_seed102317.scn
+
+00:00:00>SCEN conflict_traf400_clust2500_seed791714
+00:00:00>PCALL FLOW/conflict/traf400_clust2500_seed791714.scn
+
+00:00:00>SCEN conflict_traf200_clust100_seed889498
+00:00:00>PCALL FLOW/conflict/traf200_clust100_seed889498.scn
+
+00:00:00>SCEN conflict_traf600_clust1500_seed889498
+00:00:00>PCALL FLOW/conflict/traf600_clust1500_seed889498.scn
+
+00:00:00>SCEN conflict_traf600_clust3000_seed80889
+00:00:00>PCALL FLOW/conflict/traf600_clust3000_seed80889.scn
+
+00:00:00>SCEN conflict_traf150_clust3500_seed889498
+00:00:00>PCALL FLOW/conflict/traf150_clust3500_seed889498.scn
+
+00:00:00>SCEN conflict_traf400_clust4000_seed791714
+00:00:00>PCALL FLOW/conflict/traf400_clust4000_seed791714.scn
+
+00:00:00>SCEN conflict_traf500_clust500_seed889498
+00:00:00>PCALL FLOW/conflict/traf500_clust500_seed889498.scn
+
+00:00:00>SCEN conflict_traf250_clust3500_seed791714
+00:00:00>PCALL FLOW/conflict/traf250_clust3500_seed791714.scn
+
+00:00:00>SCEN conflict_traf250_clust500_seed102317
+00:00:00>PCALL FLOW/conflict/traf250_clust500_seed102317.scn
+
+00:00:00>SCEN conflict_traf600_clust3500_seed114749
+00:00:00>PCALL FLOW/conflict/traf600_clust3500_seed114749.scn
+
+00:00:00>SCEN conflict_traf500_clust1500_seed791714
+00:00:00>PCALL FLOW/conflict/traf500_clust1500_seed791714.scn
+
+00:00:00>SCEN conflict_traf150_clust1500_seed114749
+00:00:00>PCALL FLOW/conflict/traf150_clust1500_seed114749.scn
+
+00:00:00>SCEN conflict_traf100_clust2500_seed102317
+00:00:00>PCALL FLOW/conflict/traf100_clust2500_seed102317.scn
+
+00:00:00>SCEN conflict_traf350_clust3000_seed80889
+00:00:00>PCALL FLOW/conflict/traf350_clust3000_seed80889.scn
+
+00:00:00>SCEN conflict_traf250_clust500_seed114749
+00:00:00>PCALL FLOW/conflict/traf250_clust500_seed114749.scn
+
+00:00:00>SCEN conflict_traf600_clust3500_seed102317
+00:00:00>PCALL FLOW/conflict/traf600_clust3500_seed102317.scn
+
+00:00:00>SCEN conflict_traf50_clust500_seed889498
+00:00:00>PCALL FLOW/conflict/traf50_clust500_seed889498.scn
+
+00:00:00>SCEN conflict_traf550_clust2500_seed791714
+00:00:00>PCALL FLOW/conflict/traf550_clust2500_seed791714.scn
+
+00:00:00>SCEN conflict_traf150_clust1500_seed102317
+00:00:00>PCALL FLOW/conflict/traf150_clust1500_seed102317.scn
+
+00:00:00>SCEN conflict_traf100_clust2500_seed114749
+00:00:00>PCALL FLOW/conflict/traf100_clust2500_seed114749.scn
+
+00:00:00>SCEN conflict_traf200_clust1000_seed80889
+00:00:00>PCALL FLOW/conflict/traf200_clust1000_seed80889.scn
+
+00:00:00>SCEN conflict_traf500_clust500_seed80889
+00:00:00>PCALL FLOW/conflict/traf500_clust500_seed80889.scn
+
+00:00:00>SCEN conflict_traf550_clust100_seed80889
+00:00:00>PCALL FLOW/conflict/traf550_clust100_seed80889.scn
+
+00:00:00>SCEN conflict_traf50_clust2500_seed80889
+00:00:00>PCALL FLOW/conflict/traf50_clust2500_seed80889.scn
+
+00:00:00>SCEN conflict_traf550_clust4000_seed791714
+00:00:00>PCALL FLOW/conflict/traf550_clust4000_seed791714.scn
+
+00:00:00>SCEN conflict_traf50_clust2000_seed102317
+00:00:00>PCALL FLOW/conflict/traf50_clust2000_seed102317.scn
+
+00:00:00>SCEN conflict_traf100_clust4000_seed114749
+00:00:00>PCALL FLOW/conflict/traf100_clust4000_seed114749.scn
+
+00:00:00>SCEN conflict_traf300_clust3500_seed791714
+00:00:00>PCALL FLOW/conflict/traf300_clust3500_seed791714.scn
+
+00:00:00>SCEN conflict_traf450_clust1500_seed791714
+00:00:00>PCALL FLOW/conflict/traf450_clust1500_seed791714.scn
+
+00:00:00>SCEN conflict_traf550_clust100_seed114749
+00:00:00>PCALL FLOW/conflict/traf550_clust100_seed114749.scn
+
+00:00:00>SCEN conflict_traf100_clust100_seed791714
+00:00:00>PCALL FLOW/conflict/traf100_clust100_seed791714.scn
+
+00:00:00>SCEN conflict_traf50_clust3500_seed889498
+00:00:00>PCALL FLOW/conflict/traf50_clust3500_seed889498.scn
+
+00:00:00>SCEN conflict_traf100_clust500_seed80889
+00:00:00>PCALL FLOW/conflict/traf100_clust500_seed80889.scn
+
+00:00:00>SCEN conflict_traf100_clust1000_seed102317
+00:00:00>PCALL FLOW/conflict/traf100_clust1000_seed102317.scn
+
+00:00:00>SCEN conflict_traf150_clust2000_seed114749
+00:00:00>PCALL FLOW/conflict/traf150_clust2000_seed114749.scn
+
+00:00:00>SCEN conflict_traf500_clust2000_seed791714
+00:00:00>PCALL FLOW/conflict/traf500_clust2000_seed791714.scn
+
+00:00:00>SCEN conflict_traf150_clust2000_seed80889
+00:00:00>PCALL FLOW/conflict/traf150_clust2000_seed80889.scn
+
+00:00:00>SCEN conflict_traf300_clust1500_seed80889
+00:00:00>PCALL FLOW/conflict/traf300_clust1500_seed80889.scn
+
+00:00:00>SCEN conflict_traf50_clust1500_seed114749
+00:00:00>PCALL FLOW/conflict/traf50_clust1500_seed114749.scn
+
+00:00:00>SCEN conflict_traf150_clust100_seed80889
+00:00:00>PCALL FLOW/conflict/traf150_clust100_seed80889.scn
+
+00:00:00>SCEN conflict_traf600_clust500_seed791714
+00:00:00>PCALL FLOW/conflict/traf600_clust500_seed791714.scn
+
+00:00:00>SCEN conflict_traf400_clust1000_seed791714
+00:00:00>PCALL FLOW/conflict/traf400_clust1000_seed791714.scn
+
+00:00:00>SCEN conflict_traf350_clust3000_seed791714
+00:00:00>PCALL FLOW/conflict/traf350_clust3000_seed791714.scn
+
+00:00:00>SCEN conflict_traf250_clust3500_seed80889
+00:00:00>PCALL FLOW/conflict/traf250_clust3500_seed80889.scn
+
+00:00:00>SCEN conflict_traf600_clust2000_seed889498
+00:00:00>PCALL FLOW/conflict/traf600_clust2000_seed889498.scn
+
+00:00:00>SCEN conflict_traf450_clust2000_seed80889
+00:00:00>PCALL FLOW/conflict/traf450_clust2000_seed80889.scn
+
+00:00:00>SCEN conflict_traf600_clust1500_seed80889
+00:00:00>PCALL FLOW/conflict/traf600_clust1500_seed80889.scn
+
+00:00:00>SCEN conflict_traf50_clust2500_seed102317
+00:00:00>PCALL FLOW/conflict/traf50_clust2500_seed102317.scn
+
+00:00:00>SCEN conflict_traf300_clust500_seed791714
+00:00:00>PCALL FLOW/conflict/traf300_clust500_seed791714.scn
+
+00:00:00>SCEN conflict_traf450_clust1000_seed791714
+00:00:00>PCALL FLOW/conflict/traf450_clust1000_seed791714.scn
+
+00:00:00>SCEN conflict_traf300_clust3000_seed791714
+00:00:00>PCALL FLOW/conflict/traf300_clust3000_seed791714.scn
+
+00:00:00>SCEN conflict_traf400_clust100_seed791714
+00:00:00>PCALL FLOW/conflict/traf400_clust100_seed791714.scn
+
+00:00:00>SCEN conflict_traf200_clust4000_seed80889
+00:00:00>PCALL FLOW/conflict/traf200_clust4000_seed80889.scn
+
+00:00:00>SCEN conflict_traf100_clust2000_seed114749
+00:00:00>PCALL FLOW/conflict/traf100_clust2000_seed114749.scn
+
+00:00:00>SCEN conflict_traf150_clust1000_seed102317
+00:00:00>PCALL FLOW/conflict/traf150_clust1000_seed102317.scn
+
+00:00:00>SCEN conflict_traf550_clust2000_seed791714
+00:00:00>PCALL FLOW/conflict/traf550_clust2000_seed791714.scn
+
+00:00:00>SCEN conflict_traf50_clust4000_seed102317
+00:00:00>PCALL FLOW/conflict/traf50_clust4000_seed102317.scn
+
+00:00:00>SCEN conflict_traf600_clust3000_seed102317
+00:00:00>PCALL FLOW/conflict/traf600_clust3000_seed102317.scn
+
+00:00:00>SCEN conflict_traf50_clust1000_seed114749
+00:00:00>PCALL FLOW/conflict/traf50_clust1000_seed114749.scn
+
+00:00:00>SCEN conflict_traf500_clust4000_seed791714
+00:00:00>PCALL FLOW/conflict/traf500_clust4000_seed791714.scn
+
+00:00:00>SCEN conflict_traf150_clust4000_seed114749
+00:00:00>PCALL FLOW/conflict/traf150_clust4000_seed114749.scn
+
+00:00:00>SCEN conflict_traf200_clust500_seed102317
+00:00:00>PCALL FLOW/conflict/traf200_clust500_seed102317.scn
+
+00:00:00>SCEN conflict_traf550_clust500_seed889498
+00:00:00>PCALL FLOW/conflict/traf550_clust500_seed889498.scn
+
+00:00:00>SCEN conflict_traf600_clust2500_seed889498
+00:00:00>PCALL FLOW/conflict/traf600_clust2500_seed889498.scn
+
+00:00:00>SCEN conflict_traf350_clust3500_seed791714
+00:00:00>PCALL FLOW/conflict/traf350_clust3500_seed791714.scn
+
+00:00:00>SCEN conflict_traf400_clust1500_seed791714
+00:00:00>PCALL FLOW/conflict/traf400_clust1500_seed791714.scn
+
+00:00:00>SCEN conflict_traf600_clust4000_seed889498
+00:00:00>PCALL FLOW/conflict/traf600_clust4000_seed889498.scn
+
+00:00:00>SCEN conflict_traf50_clust3000_seed889498
+00:00:00>PCALL FLOW/conflict/traf50_clust3000_seed889498.scn
+
+00:00:00>SCEN conflict_traf50_clust100_seed114749
+00:00:00>PCALL FLOW/conflict/traf50_clust100_seed114749.scn
+
+00:00:00>SCEN conflict_traf250_clust100_seed889498
+00:00:00>PCALL FLOW/conflict/traf250_clust100_seed889498.scn
+
+00:00:00>SCEN conflict_traf500_clust100_seed102317
+00:00:00>PCALL FLOW/conflict/traf500_clust100_seed102317.scn
+
+00:00:00>SCEN conflict_traf500_clust2500_seed791714
+00:00:00>PCALL FLOW/conflict/traf500_clust2500_seed791714.scn
+
+00:00:00>SCEN conflict_traf150_clust2500_seed114749
+00:00:00>PCALL FLOW/conflict/traf150_clust2500_seed114749.scn
+
+00:00:00>SCEN conflict_traf100_clust1500_seed102317
+00:00:00>PCALL FLOW/conflict/traf100_clust1500_seed102317.scn
+
+00:00:00>SCEN conflict_traf550_clust2500_seed80889
+00:00:00>PCALL FLOW/conflict/traf550_clust2500_seed80889.scn
+
+00:00:00>SCEN conflict_traf500_clust100_seed114749
+00:00:00>PCALL FLOW/conflict/traf500_clust100_seed114749.scn
+
+00:00:00>SCEN conflict_traf450_clust4000_seed791714
+00:00:00>PCALL FLOW/conflict/traf450_clust4000_seed791714.scn
+
+00:00:00>SCEN conflict_traf50_clust100_seed102317
+00:00:00>PCALL FLOW/conflict/traf50_clust100_seed102317.scn
+
+00:00:00>SCEN conflict_traf200_clust3500_seed791714
+00:00:00>PCALL FLOW/conflict/traf200_clust3500_seed791714.scn
+
+00:00:00>SCEN conflict_traf550_clust1500_seed791714
+00:00:00>PCALL FLOW/conflict/traf550_clust1500_seed791714.scn
+
+00:00:00>SCEN conflict_traf150_clust2500_seed102317
+00:00:00>PCALL FLOW/conflict/traf150_clust2500_seed102317.scn
+
+00:00:00>SCEN conflict_traf100_clust1500_seed114749
+00:00:00>PCALL FLOW/conflict/traf100_clust1500_seed114749.scn
+
+00:00:00>SCEN conflict_traf250_clust1000_seed80889
+00:00:00>PCALL FLOW/conflict/traf250_clust1000_seed80889.scn
+
+00:00:00>SCEN conflict_traf50_clust1000_seed102317
+00:00:00>PCALL FLOW/conflict/traf50_clust1000_seed102317.scn
+
+00:00:00>SCEN conflict_traf200_clust500_seed114749
+00:00:00>PCALL FLOW/conflict/traf200_clust500_seed114749.scn
+
+00:00:00>SCEN conflict_traf150_clust4000_seed102317
+00:00:00>PCALL FLOW/conflict/traf150_clust4000_seed102317.scn
+
+00:00:00>SCEN conflict_traf450_clust2500_seed791714
+00:00:00>PCALL FLOW/conflict/traf450_clust2500_seed791714.scn
+
+00:00:00>SCEN conflict_traf300_clust3000_seed80889
+00:00:00>PCALL FLOW/conflict/traf300_clust3000_seed80889.scn
+
+00:00:00>SCEN conflict_traf100_clust3500_seed889498
+00:00:00>PCALL FLOW/conflict/traf100_clust3500_seed889498.scn
+
+00:00:00>SCEN conflict_traf200_clust3500_seed80889
+00:00:00>PCALL FLOW/conflict/traf200_clust3500_seed80889.scn
+
+00:00:00>SCEN conflict_traf100_clust2000_seed102317
+00:00:00>PCALL FLOW/conflict/traf100_clust2000_seed102317.scn
+
+00:00:00>SCEN conflict_traf150_clust1000_seed114749
+00:00:00>PCALL FLOW/conflict/traf150_clust1000_seed114749.scn
+
+00:00:00>SCEN conflict_traf450_clust100_seed80889
+00:00:00>PCALL FLOW/conflict/traf450_clust100_seed80889.scn
+
+00:00:00>SCEN conflict_traf50_clust4000_seed114749
+00:00:00>PCALL FLOW/conflict/traf50_clust4000_seed114749.scn
+
+00:00:00>SCEN conflict_traf500_clust1000_seed791714
+00:00:00>PCALL FLOW/conflict/traf500_clust1000_seed791714.scn
+
+00:00:00>SCEN conflict_traf600_clust3000_seed114749
+00:00:00>PCALL FLOW/conflict/traf600_clust3000_seed114749.scn
+
+00:00:00>SCEN conflict_traf250_clust3000_seed791714
+00:00:00>PCALL FLOW/conflict/traf250_clust3000_seed791714.scn
+
+00:00:00>SCEN conflict_traf350_clust1500_seed80889
+00:00:00>PCALL FLOW/conflict/traf350_clust1500_seed80889.scn
+
+00:00:00>SCEN conflict_traf100_clust2000_seed80889
+00:00:00>PCALL FLOW/conflict/traf100_clust2000_seed80889.scn
+
+00:00:00>SCEN conflict_traf50_clust2500_seed114749
+00:00:00>PCALL FLOW/conflict/traf50_clust2500_seed114749.scn
+
+00:00:00>SCEN conflict_traf400_clust500_seed80889
+00:00:00>PCALL FLOW/conflict/traf400_clust500_seed80889.scn
+
+00:00:00>SCEN conflict_traf150_clust3000_seed889498
+00:00:00>PCALL FLOW/conflict/traf150_clust3000_seed889498.scn
+
+00:00:00>SCEN conflict_traf600_clust1000_seed889498
+00:00:00>PCALL FLOW/conflict/traf600_clust1000_seed889498.scn
+
+00:00:00>SCEN conflict_traf400_clust2000_seed791714
+00:00:00>PCALL FLOW/conflict/traf400_clust2000_seed791714.scn
+
+00:00:00>SCEN conflict_traf150_clust100_seed791714
+00:00:00>PCALL FLOW/conflict/traf150_clust100_seed791714.scn
+
+00:00:00>SCEN conflict_traf50_clust3500_seed102317
+00:00:00>PCALL FLOW/conflict/traf50_clust3500_seed102317.scn
+
+00:00:00>SCEN conflict_traf300_clust2000_seed791714
+00:00:00>PCALL FLOW/conflict/traf300_clust2000_seed791714.scn
+
+00:00:00>SCEN conflict_traf100_clust1000_seed889498
+00:00:00>PCALL FLOW/conflict/traf100_clust1000_seed889498.scn
+
+00:00:00>SCEN conflict_traf50_clust4000_seed80889
+00:00:00>PCALL FLOW/conflict/traf50_clust4000_seed80889.scn
+
+00:00:00>SCEN conflict_traf150_clust500_seed791714
+00:00:00>PCALL FLOW/conflict/traf150_clust500_seed791714.scn
+
+00:00:00>SCEN conflict_traf600_clust2000_seed80889
+00:00:00>PCALL FLOW/conflict/traf600_clust2000_seed80889.scn
+
+00:00:00>SCEN conflict_traf450_clust1500_seed80889
+00:00:00>PCALL FLOW/conflict/traf450_clust1500_seed80889.scn
+
+00:00:00>SCEN conflict_traf500_clust3500_seed80889
+00:00:00>PCALL FLOW/conflict/traf500_clust3500_seed80889.scn
+
+00:00:00>SCEN conflict_traf200_clust1000_seed791714
+00:00:00>PCALL FLOW/conflict/traf200_clust1000_seed791714.scn
+
+00:00:00>SCEN conflict_traf600_clust2000_seed102317
+00:00:00>PCALL FLOW/conflict/traf600_clust2000_seed102317.scn
+
+00:00:00>SCEN conflict_traf550_clust3000_seed791714
+00:00:00>PCALL FLOW/conflict/traf550_clust3000_seed791714.scn
+
+00:00:00>SCEN conflict_traf100_clust3000_seed114749
+00:00:00>PCALL FLOW/conflict/traf100_clust3000_seed114749.scn
+
+00:00:00>SCEN conflict_traf400_clust3000_seed80889
+00:00:00>PCALL FLOW/conflict/traf400_clust3000_seed80889.scn
+
+00:00:00>SCEN conflict_traf150_clust1500_seed889498
+00:00:00>PCALL FLOW/conflict/traf150_clust1500_seed889498.scn
+
+00:00:00>SCEN conflict_traf50_clust500_seed102317
+00:00:00>PCALL FLOW/conflict/traf50_clust500_seed102317.scn
+
+00:00:00>SCEN conflict_traf550_clust1000_seed80889
+00:00:00>PCALL FLOW/conflict/traf550_clust1000_seed80889.scn
+
+00:00:00>SCEN conflict_traf600_clust3500_seed889498
+00:00:00>PCALL FLOW/conflict/traf600_clust3500_seed889498.scn
+
+00:00:00>SCEN conflict_traf500_clust500_seed114749
+00:00:00>PCALL FLOW/conflict/traf500_clust500_seed114749.scn
+
+00:00:00>SCEN conflict_traf350_clust2500_seed791714
+00:00:00>PCALL FLOW/conflict/traf350_clust2500_seed791714.scn
+
+00:00:00>SCEN conflict_traf50_clust2000_seed889498
+00:00:00>PCALL FLOW/conflict/traf50_clust2000_seed889498.scn
+
+00:00:00>SCEN conflict_traf350_clust4000_seed791714
+00:00:00>PCALL FLOW/conflict/traf350_clust4000_seed791714.scn
+
+00:00:00>SCEN conflict_traf150_clust3500_seed114749
+00:00:00>PCALL FLOW/conflict/traf150_clust3500_seed114749.scn
+
+00:00:00>SCEN conflict_traf500_clust3500_seed791714
+00:00:00>PCALL FLOW/conflict/traf500_clust3500_seed791714.scn
+
+00:00:00>SCEN conflict_traf600_clust1500_seed114749
+00:00:00>PCALL FLOW/conflict/traf600_clust1500_seed114749.scn
+
+00:00:00>SCEN conflict_traf200_clust100_seed114749
+00:00:00>PCALL FLOW/conflict/traf200_clust100_seed114749.scn
+
+00:00:00>SCEN conflict_traf250_clust1500_seed791714
+00:00:00>PCALL FLOW/conflict/traf250_clust1500_seed791714.scn
+
+00:00:00>SCEN conflict_traf100_clust4000_seed889498
+00:00:00>PCALL FLOW/conflict/traf100_clust4000_seed889498.scn
+
+00:00:00>SCEN conflict_traf250_clust2500_seed80889
+00:00:00>PCALL FLOW/conflict/traf250_clust2500_seed80889.scn
+
+00:00:00>SCEN conflict_traf550_clust100_seed889498
+00:00:00>PCALL FLOW/conflict/traf550_clust100_seed889498.scn
+
+00:00:00>SCEN conflict_traf150_clust3000_seed80889
+00:00:00>PCALL FLOW/conflict/traf150_clust3000_seed80889.scn
+
+00:00:00>SCEN conflict_traf150_clust3500_seed102317
+00:00:00>PCALL FLOW/conflict/traf150_clust3500_seed102317.scn
+
+00:00:00>SCEN conflict_traf350_clust500_seed80889
+00:00:00>PCALL FLOW/conflict/traf350_clust500_seed80889.scn
+
+00:00:00>SCEN conflict_traf600_clust1500_seed102317
+00:00:00>PCALL FLOW/conflict/traf600_clust1500_seed102317.scn
+
+00:00:00>SCEN conflict_traf200_clust2500_seed791714
+00:00:00>PCALL FLOW/conflict/traf200_clust2500_seed791714.scn
+
+00:00:00>SCEN conflict_traf200_clust100_seed102317
+00:00:00>PCALL FLOW/conflict/traf200_clust100_seed102317.scn
+
+00:00:00>SCEN conflict_traf300_clust100_seed80889
+00:00:00>PCALL FLOW/conflict/traf300_clust100_seed80889.scn
+
+00:00:00>SCEN conflict_traf200_clust4000_seed791714
+00:00:00>PCALL FLOW/conflict/traf200_clust4000_seed791714.scn
+
+00:00:00>SCEN conflict_traf500_clust500_seed102317
+00:00:00>PCALL FLOW/conflict/traf500_clust500_seed102317.scn
+
+00:00:00>SCEN conflict_traf450_clust3500_seed791714
+00:00:00>PCALL FLOW/conflict/traf450_clust3500_seed791714.scn
+
+00:00:00>SCEN conflict_traf300_clust1500_seed791714
+00:00:00>PCALL FLOW/conflict/traf300_clust1500_seed791714.scn
+
+00:00:00>SCEN conflict_traf100_clust2500_seed889498
+00:00:00>PCALL FLOW/conflict/traf100_clust2500_seed889498.scn
+
+00:00:00>SCEN conflict_traf50_clust500_seed114749
+00:00:00>PCALL FLOW/conflict/traf50_clust500_seed114749.scn
+
+00:00:00>SCEN conflict_traf250_clust500_seed889498
+00:00:00>PCALL FLOW/conflict/traf250_clust500_seed889498.scn
+
+00:00:00>SCEN conflict_traf500_clust4000_seed80889
+00:00:00>PCALL FLOW/conflict/traf500_clust4000_seed80889.scn
+
+00:00:00>SCEN conflict_traf50_clust1500_seed889498
+00:00:00>PCALL FLOW/conflict/traf50_clust1500_seed889498.scn
+
+00:00:00>SCEN conflict_traf50_clust100_seed80889
+00:00:00>PCALL FLOW/conflict/traf50_clust100_seed80889.scn
+
+00:00:00>SCEN conflict_traf250_clust2000_seed791714
+00:00:00>PCALL FLOW/conflict/traf250_clust2000_seed791714.scn
+
+00:00:00>SCEN conflict_traf600_clust2000_seed114749
+00:00:00>PCALL FLOW/conflict/traf600_clust2000_seed114749.scn
+
+00:00:00>SCEN conflict_traf50_clust3500_seed80889
+00:00:00>PCALL FLOW/conflict/traf50_clust3500_seed80889.scn
+
+00:00:00>SCEN conflict_traf100_clust3000_seed102317
+00:00:00>PCALL FLOW/conflict/traf100_clust3000_seed102317.scn
+
+00:00:00>SCEN conflict_traf300_clust100_seed791714
+00:00:00>PCALL FLOW/conflict/traf300_clust100_seed791714.scn
+
+00:00:00>SCEN conflict_traf50_clust3500_seed114749
+00:00:00>PCALL FLOW/conflict/traf50_clust3500_seed114749.scn
+
+00:00:00>SCEN conflict_traf100_clust1500_seed80889
+00:00:00>PCALL FLOW/conflict/traf100_clust1500_seed80889.scn
+
+00:00:00>SCEN conflict_traf350_clust2000_seed80889
+00:00:00>PCALL FLOW/conflict/traf350_clust2000_seed80889.scn
+
+00:00:00>SCEN conflict_traf150_clust2000_seed889498
+00:00:00>PCALL FLOW/conflict/traf150_clust2000_seed889498.scn
+
+00:00:00>SCEN conflict_traf400_clust500_seed791714
+00:00:00>PCALL FLOW/conflict/traf400_clust500_seed791714.scn
+
+00:00:00>SCEN conflict_traf350_clust1000_seed791714
+00:00:00>PCALL FLOW/conflict/traf350_clust1000_seed791714.scn
+
+00:00:00>SCEN conflict_traf400_clust3000_seed791714
+00:00:00>PCALL FLOW/conflict/traf400_clust3000_seed791714.scn
+
+00:00:00>SCEN conflict_traf350_clust4000_seed114749
+00:00:00>PCALL FLOW/conflict/traf350_clust4000_seed114749.scn
+
+00:00:00>SCEN conflict_traf400_clust4000_seed80889
+00:00:00>PCALL FLOW/conflict/traf400_clust4000_seed80889.scn
+
+00:00:00>SCEN conflict_traf600_clust500_seed80889
+00:00:00>PCALL FLOW/conflict/traf600_clust500_seed80889.scn
+
+00:00:00>SCEN conflict_traf400_clust2500_seed889498
+00:00:00>PCALL FLOW/conflict/traf400_clust2500_seed889498.scn
+
+00:00:00>SCEN conflict_traf600_clust1500_seed791714
+00:00:00>PCALL FLOW/conflict/traf600_clust1500_seed791714.scn
+
+00:00:00>SCEN conflict_traf250_clust1500_seed114749
+00:00:00>PCALL FLOW/conflict/traf250_clust1500_seed114749.scn
+
+00:00:00>SCEN conflict_traf200_clust2500_seed102317
+00:00:00>PCALL FLOW/conflict/traf200_clust2500_seed102317.scn
+
+00:00:00>SCEN conflict_traf200_clust100_seed791714
+00:00:00>PCALL FLOW/conflict/traf200_clust100_seed791714.scn
+
+00:00:00>SCEN conflict_traf150_clust3500_seed791714
+00:00:00>PCALL FLOW/conflict/traf150_clust3500_seed791714.scn
+
+00:00:00>SCEN conflict_traf500_clust3500_seed114749
+00:00:00>PCALL FLOW/conflict/traf500_clust3500_seed114749.scn
+
+00:00:00>SCEN conflict_traf150_clust3500_seed80889
+00:00:00>PCALL FLOW/conflict/traf150_clust3500_seed80889.scn
+
+00:00:00>SCEN conflict_traf400_clust4000_seed889498
+00:00:00>PCALL FLOW/conflict/traf400_clust4000_seed889498.scn
+
+00:00:00>SCEN conflict_traf200_clust4000_seed102317
+00:00:00>PCALL FLOW/conflict/traf200_clust4000_seed102317.scn
+
+00:00:00>SCEN conflict_traf300_clust1500_seed102317
+00:00:00>PCALL FLOW/conflict/traf300_clust1500_seed102317.scn
+
+00:00:00>SCEN conflict_traf350_clust2500_seed114749
+00:00:00>PCALL FLOW/conflict/traf350_clust2500_seed114749.scn
+
+00:00:00>SCEN conflict_traf450_clust3500_seed102317
+00:00:00>PCALL FLOW/conflict/traf450_clust3500_seed102317.scn
+
+00:00:00>SCEN conflict_traf500_clust500_seed791714
+00:00:00>PCALL FLOW/conflict/traf500_clust500_seed791714.scn
+
+00:00:00>SCEN conflict_traf250_clust2000_seed80889
+00:00:00>PCALL FLOW/conflict/traf250_clust2000_seed80889.scn
+
+00:00:00>SCEN conflict_traf250_clust3500_seed889498
+00:00:00>PCALL FLOW/conflict/traf250_clust3500_seed889498.scn
+
+00:00:00>SCEN conflict_traf500_clust1500_seed889498
+00:00:00>PCALL FLOW/conflict/traf500_clust1500_seed889498.scn
+
+00:00:00>SCEN conflict_traf200_clust500_seed80889
+00:00:00>PCALL FLOW/conflict/traf200_clust500_seed80889.scn
+
+00:00:00>SCEN conflict_traf350_clust2500_seed80889
+00:00:00>PCALL FLOW/conflict/traf350_clust2500_seed80889.scn
+
+00:00:00>SCEN conflict_traf100_clust1000_seed80889
+00:00:00>PCALL FLOW/conflict/traf100_clust1000_seed80889.scn
+
+00:00:00>SCEN conflict_traf150_clust500_seed114749
+00:00:00>PCALL FLOW/conflict/traf150_clust500_seed114749.scn
+
+00:00:00>SCEN conflict_traf550_clust3000_seed114749
+00:00:00>PCALL FLOW/conflict/traf550_clust3000_seed114749.scn
+
+00:00:00>SCEN conflict_traf300_clust100_seed102317
+00:00:00>PCALL FLOW/conflict/traf300_clust100_seed102317.scn
+
+00:00:00>SCEN conflict_traf100_clust3000_seed791714
+00:00:00>PCALL FLOW/conflict/traf100_clust3000_seed791714.scn
+
+00:00:00>SCEN conflict_traf200_clust1000_seed114749
+00:00:00>PCALL FLOW/conflict/traf200_clust1000_seed114749.scn
+
+00:00:00>SCEN conflict_traf250_clust2000_seed102317
+00:00:00>PCALL FLOW/conflict/traf250_clust2000_seed102317.scn
+
+00:00:00>SCEN conflict_traf450_clust2000_seed889498
+00:00:00>PCALL FLOW/conflict/traf450_clust2000_seed889498.scn
+
+00:00:00>SCEN conflict_traf450_clust100_seed889498
+00:00:00>PCALL FLOW/conflict/traf450_clust100_seed889498.scn
+
+00:00:00>SCEN conflict_traf50_clust3000_seed80889
+00:00:00>PCALL FLOW/conflict/traf50_clust3000_seed80889.scn
+
+00:00:00>SCEN conflict_traf550_clust1000_seed889498
+00:00:00>PCALL FLOW/conflict/traf550_clust1000_seed889498.scn
+
+00:00:00>SCEN conflict_traf350_clust500_seed889498
+00:00:00>PCALL FLOW/conflict/traf350_clust500_seed889498.scn
+
+00:00:00>SCEN conflict_traf200_clust3000_seed889498
+00:00:00>PCALL FLOW/conflict/traf200_clust3000_seed889498.scn
+
+00:00:00>SCEN conflict_traf400_clust3000_seed102317
+00:00:00>PCALL FLOW/conflict/traf400_clust3000_seed102317.scn
+
+00:00:00>SCEN conflict_traf400_clust500_seed102317
+00:00:00>PCALL FLOW/conflict/traf400_clust500_seed102317.scn
+
+00:00:00>SCEN conflict_traf250_clust100_seed80889
+00:00:00>PCALL FLOW/conflict/traf250_clust100_seed80889.scn
+
+00:00:00>SCEN conflict_traf350_clust1000_seed102317
+00:00:00>PCALL FLOW/conflict/traf350_clust1000_seed102317.scn
+
+00:00:00>SCEN conflict_traf300_clust2000_seed114749
+00:00:00>PCALL FLOW/conflict/traf300_clust2000_seed114749.scn
+
+00:00:00>SCEN conflict_traf100_clust100_seed889498
+00:00:00>PCALL FLOW/conflict/traf100_clust100_seed889498.scn
+
+00:00:00>SCEN conflict_traf500_clust3000_seed80889
+00:00:00>PCALL FLOW/conflict/traf500_clust3000_seed80889.scn
+
+00:00:00>SCEN conflict_traf50_clust3500_seed791714
+00:00:00>PCALL FLOW/conflict/traf50_clust3500_seed791714.scn
+
+00:00:00>SCEN conflict_traf400_clust3000_seed114749
+00:00:00>PCALL FLOW/conflict/traf400_clust3000_seed114749.scn
+
+00:00:00>SCEN conflict_traf400_clust500_seed114749
+00:00:00>PCALL FLOW/conflict/traf400_clust500_seed114749.scn
+
+00:00:00>SCEN conflict_traf350_clust1000_seed114749
+00:00:00>PCALL FLOW/conflict/traf350_clust1000_seed114749.scn
+
+00:00:00>SCEN conflict_traf300_clust2000_seed102317
+00:00:00>PCALL FLOW/conflict/traf300_clust2000_seed102317.scn
+
+00:00:00>SCEN conflict_traf450_clust1000_seed80889
+00:00:00>PCALL FLOW/conflict/traf450_clust1000_seed80889.scn
+
+00:00:00>SCEN conflict_traf500_clust2000_seed889498
+00:00:00>PCALL FLOW/conflict/traf500_clust2000_seed889498.scn
+
+00:00:00>SCEN conflict_traf600_clust2500_seed80889
+00:00:00>PCALL FLOW/conflict/traf600_clust2500_seed80889.scn
+
+00:00:00>SCEN conflict_traf150_clust500_seed102317
+00:00:00>PCALL FLOW/conflict/traf150_clust500_seed102317.scn
+
+00:00:00>SCEN conflict_traf600_clust500_seed889498
+00:00:00>PCALL FLOW/conflict/traf600_clust500_seed889498.scn
+
+00:00:00>SCEN conflict_traf400_clust1000_seed889498
+00:00:00>PCALL FLOW/conflict/traf400_clust1000_seed889498.scn
+
+00:00:00>SCEN conflict_traf350_clust3000_seed889498
+00:00:00>PCALL FLOW/conflict/traf350_clust3000_seed889498.scn
+
+00:00:00>SCEN conflict_traf550_clust3000_seed102317
+00:00:00>PCALL FLOW/conflict/traf550_clust3000_seed102317.scn
+
+00:00:00>SCEN conflict_traf300_clust100_seed114749
+00:00:00>PCALL FLOW/conflict/traf300_clust100_seed114749.scn
+
+00:00:00>SCEN conflict_traf200_clust1000_seed102317
+00:00:00>PCALL FLOW/conflict/traf200_clust1000_seed102317.scn
+
+00:00:00>SCEN conflict_traf250_clust2000_seed114749
+00:00:00>PCALL FLOW/conflict/traf250_clust2000_seed114749.scn
+
+00:00:00>SCEN conflict_traf600_clust2000_seed791714
+00:00:00>PCALL FLOW/conflict/traf600_clust2000_seed791714.scn
+
+00:00:00>SCEN conflict_traf200_clust4000_seed114749
+00:00:00>PCALL FLOW/conflict/traf200_clust4000_seed114749.scn
+
+00:00:00>SCEN conflict_traf50_clust500_seed791714
+00:00:00>PCALL FLOW/conflict/traf50_clust500_seed791714.scn
+
+00:00:00>SCEN conflict_traf150_clust4000_seed80889
+00:00:00>PCALL FLOW/conflict/traf150_clust4000_seed80889.scn
+
+00:00:00>SCEN conflict_traf550_clust2500_seed889498
+00:00:00>PCALL FLOW/conflict/traf550_clust2500_seed889498.scn
+
+00:00:00>SCEN conflict_traf300_clust1500_seed114749
+00:00:00>PCALL FLOW/conflict/traf300_clust1500_seed114749.scn
+
+00:00:00>SCEN conflict_traf350_clust2500_seed102317
+00:00:00>PCALL FLOW/conflict/traf350_clust2500_seed102317.scn
+
+00:00:00>SCEN conflict_traf450_clust3500_seed114749
+00:00:00>PCALL FLOW/conflict/traf450_clust3500_seed114749.scn
+
+00:00:00>SCEN conflict_traf550_clust1500_seed80889
+00:00:00>PCALL FLOW/conflict/traf550_clust1500_seed80889.scn
+
+00:00:00>SCEN conflict_traf550_clust4000_seed889498
+00:00:00>PCALL FLOW/conflict/traf550_clust4000_seed889498.scn
+
+00:00:00>SCEN conflict_traf350_clust4000_seed102317
+00:00:00>PCALL FLOW/conflict/traf350_clust4000_seed102317.scn
+
+00:00:00>SCEN conflict_traf250_clust1500_seed102317
+00:00:00>PCALL FLOW/conflict/traf250_clust1500_seed102317.scn
+
+00:00:00>SCEN conflict_traf200_clust2500_seed114749
+00:00:00>PCALL FLOW/conflict/traf200_clust2500_seed114749.scn
+
+00:00:00>SCEN conflict_traf500_clust3500_seed102317
+00:00:00>PCALL FLOW/conflict/traf500_clust3500_seed102317.scn
+
+00:00:00>SCEN conflict_traf300_clust3500_seed889498
+00:00:00>PCALL FLOW/conflict/traf300_clust3500_seed889498.scn
+
+00:00:00>SCEN conflict_traf450_clust1500_seed889498
+00:00:00>PCALL FLOW/conflict/traf450_clust1500_seed889498.scn
+
+00:00:00>SCEN conflict_traf400_clust3500_seed80889
+00:00:00>PCALL FLOW/conflict/traf400_clust3500_seed80889.scn
+
+00:00:00>SCEN conflict_traf450_clust4000_seed102317
+00:00:00>PCALL FLOW/conflict/traf450_clust4000_seed102317.scn
+
+00:00:00>SCEN conflict_traf50_clust100_seed791714
+00:00:00>PCALL FLOW/conflict/traf50_clust100_seed791714.scn
+
+00:00:00>SCEN conflict_traf300_clust3500_seed80889
+00:00:00>PCALL FLOW/conflict/traf300_clust3500_seed80889.scn
+
+00:00:00>SCEN conflict_traf250_clust4000_seed889498
+00:00:00>PCALL FLOW/conflict/traf250_clust4000_seed889498.scn
+
+00:00:00>SCEN conflict_traf500_clust100_seed80889
+00:00:00>PCALL FLOW/conflict/traf500_clust100_seed80889.scn
+
+00:00:00>SCEN conflict_traf400_clust3500_seed889498
+00:00:00>PCALL FLOW/conflict/traf400_clust3500_seed889498.scn
+
+00:00:00>SCEN conflict_traf250_clust1500_seed80889
+00:00:00>PCALL FLOW/conflict/traf250_clust1500_seed80889.scn
+
+00:00:00>SCEN conflict_traf350_clust1500_seed889498
+00:00:00>PCALL FLOW/conflict/traf350_clust1500_seed889498.scn
+
+00:00:00>SCEN conflict_traf550_clust1500_seed102317
+00:00:00>PCALL FLOW/conflict/traf550_clust1500_seed102317.scn
+
+00:00:00>SCEN conflict_traf500_clust2500_seed114749
+00:00:00>PCALL FLOW/conflict/traf500_clust2500_seed114749.scn
+
+00:00:00>SCEN conflict_traf150_clust2500_seed791714
+00:00:00>PCALL FLOW/conflict/traf150_clust2500_seed791714.scn
+
+00:00:00>SCEN conflict_traf200_clust3500_seed102317
+00:00:00>PCALL FLOW/conflict/traf200_clust3500_seed102317.scn
+
+00:00:00>SCEN conflict_traf50_clust1000_seed791714
+00:00:00>PCALL FLOW/conflict/traf50_clust1000_seed791714.scn
+
+00:00:00>SCEN conflict_traf500_clust4000_seed114749
+00:00:00>PCALL FLOW/conflict/traf500_clust4000_seed114749.scn
+
+00:00:00>SCEN conflict_traf150_clust4000_seed791714
+00:00:00>PCALL FLOW/conflict/traf150_clust4000_seed791714.scn
+
+00:00:00>SCEN conflict_traf400_clust1500_seed114749
+00:00:00>PCALL FLOW/conflict/traf400_clust1500_seed114749.scn
+
+00:00:00>SCEN conflict_traf450_clust2500_seed102317
+00:00:00>PCALL FLOW/conflict/traf450_clust2500_seed102317.scn
+
+00:00:00>SCEN conflict_traf550_clust500_seed80889
+00:00:00>PCALL FLOW/conflict/traf550_clust500_seed80889.scn
+
+00:00:00>SCEN conflict_traf350_clust3500_seed114749
+00:00:00>PCALL FLOW/conflict/traf350_clust3500_seed114749.scn
+
+00:00:00>SCEN conflict_traf250_clust2500_seed889498
+00:00:00>PCALL FLOW/conflict/traf250_clust2500_seed889498.scn
+
+00:00:00>SCEN conflict_traf100_clust100_seed80889
+00:00:00>PCALL FLOW/conflict/traf100_clust100_seed80889.scn
+
+00:00:00>SCEN conflict_traf400_clust100_seed114749
+00:00:00>PCALL FLOW/conflict/traf400_clust100_seed114749.scn
+
+00:00:00>SCEN conflict_traf250_clust3000_seed102317
+00:00:00>PCALL FLOW/conflict/traf250_clust3000_seed102317.scn
+
+00:00:00>SCEN conflict_traf100_clust2000_seed791714
+00:00:00>PCALL FLOW/conflict/traf100_clust2000_seed791714.scn
+
+00:00:00>SCEN conflict_traf500_clust1000_seed102317
+00:00:00>PCALL FLOW/conflict/traf500_clust1000_seed102317.scn
+
+00:00:00>SCEN conflict_traf550_clust2000_seed114749
+00:00:00>PCALL FLOW/conflict/traf550_clust2000_seed114749.scn
+
+00:00:00>SCEN conflict_traf300_clust1000_seed889498
+00:00:00>PCALL FLOW/conflict/traf300_clust1000_seed889498.scn
+
+00:00:00>SCEN conflict_traf100_clust500_seed889498
+00:00:00>PCALL FLOW/conflict/traf100_clust500_seed889498.scn
+
+00:00:00>SCEN conflict_traf450_clust3000_seed889498
+00:00:00>PCALL FLOW/conflict/traf450_clust3000_seed889498.scn
+
+00:00:00>SCEN conflict_traf300_clust500_seed114749
+00:00:00>PCALL FLOW/conflict/traf300_clust500_seed114749.scn
+
+00:00:00>SCEN conflict_traf100_clust2500_seed80889
+00:00:00>PCALL FLOW/conflict/traf100_clust2500_seed80889.scn
+
+00:00:00>SCEN conflict_traf350_clust1000_seed80889
+00:00:00>PCALL FLOW/conflict/traf350_clust1000_seed80889.scn
+
+00:00:00>SCEN conflict_traf200_clust3000_seed80889
+00:00:00>PCALL FLOW/conflict/traf200_clust3000_seed80889.scn
+
+00:00:00>SCEN conflict_traf200_clust2000_seed889498
+00:00:00>PCALL FLOW/conflict/traf200_clust2000_seed889498.scn
+
+00:00:00>SCEN conflict_traf600_clust100_seed889498
+00:00:00>PCALL FLOW/conflict/traf600_clust100_seed889498.scn
+
+00:00:00>SCEN conflict_traf300_clust3000_seed114749
+00:00:00>PCALL FLOW/conflict/traf300_clust3000_seed114749.scn
+
+00:00:00>SCEN conflict_traf150_clust100_seed102317
+00:00:00>PCALL FLOW/conflict/traf150_clust100_seed102317.scn
+
+00:00:00>SCEN conflict_traf450_clust1000_seed114749
+00:00:00>PCALL FLOW/conflict/traf450_clust1000_seed114749.scn
+
+00:00:00>SCEN conflict_traf150_clust500_seed80889
+00:00:00>PCALL FLOW/conflict/traf150_clust500_seed80889.scn
+
+00:00:00>SCEN conflict_traf400_clust2000_seed102317
+00:00:00>PCALL FLOW/conflict/traf400_clust2000_seed102317.scn
+
+00:00:00>SCEN conflict_traf450_clust500_seed889498
+00:00:00>PCALL FLOW/conflict/traf450_clust500_seed889498.scn
+
+00:00:00>SCEN conflict_traf300_clust500_seed102317
+00:00:00>PCALL FLOW/conflict/traf300_clust500_seed102317.scn
+
+00:00:00>SCEN conflict_traf50_clust2500_seed791714
+00:00:00>PCALL FLOW/conflict/traf50_clust2500_seed791714.scn
+
+00:00:00>SCEN conflict_traf300_clust3000_seed102317
+00:00:00>PCALL FLOW/conflict/traf300_clust3000_seed102317.scn
+
+00:00:00>SCEN conflict_traf150_clust100_seed114749
+00:00:00>PCALL FLOW/conflict/traf150_clust100_seed114749.scn
+
+00:00:00>SCEN conflict_traf450_clust1000_seed102317
+00:00:00>PCALL FLOW/conflict/traf450_clust1000_seed102317.scn
+
+00:00:00>SCEN conflict_traf400_clust2000_seed114749
+00:00:00>PCALL FLOW/conflict/traf400_clust2000_seed114749.scn
+
+00:00:00>SCEN conflict_traf250_clust1000_seed889498
+00:00:00>PCALL FLOW/conflict/traf250_clust1000_seed889498.scn
+
+00:00:00>SCEN conflict_traf500_clust3000_seed889498
+00:00:00>PCALL FLOW/conflict/traf500_clust3000_seed889498.scn
+
+00:00:00>SCEN conflict_traf400_clust100_seed102317
+00:00:00>PCALL FLOW/conflict/traf400_clust100_seed102317.scn
+
+00:00:00>SCEN conflict_traf350_clust100_seed889498
+00:00:00>PCALL FLOW/conflict/traf350_clust100_seed889498.scn
+
+00:00:00>SCEN conflict_traf600_clust1000_seed80889
+00:00:00>PCALL FLOW/conflict/traf600_clust1000_seed80889.scn
+
+00:00:00>SCEN conflict_traf350_clust2000_seed889498
+00:00:00>PCALL FLOW/conflict/traf350_clust2000_seed889498.scn
+
+00:00:00>SCEN conflict_traf450_clust2500_seed80889
+00:00:00>PCALL FLOW/conflict/traf450_clust2500_seed80889.scn
+
+00:00:00>SCEN conflict_traf600_clust3000_seed791714
+00:00:00>PCALL FLOW/conflict/traf600_clust3000_seed791714.scn
+
+00:00:00>SCEN conflict_traf250_clust3000_seed114749
+00:00:00>PCALL FLOW/conflict/traf250_clust3000_seed114749.scn
+
+00:00:00>SCEN conflict_traf150_clust1000_seed791714
+00:00:00>PCALL FLOW/conflict/traf150_clust1000_seed791714.scn
+
+00:00:00>SCEN conflict_traf50_clust4000_seed791714
+00:00:00>PCALL FLOW/conflict/traf50_clust4000_seed791714.scn
+
+00:00:00>SCEN conflict_traf500_clust1000_seed114749
+00:00:00>PCALL FLOW/conflict/traf500_clust1000_seed114749.scn
+
+00:00:00>SCEN conflict_traf550_clust2000_seed102317
+00:00:00>PCALL FLOW/conflict/traf550_clust2000_seed102317.scn
+
+00:00:00>SCEN conflict_traf500_clust4000_seed102317
+00:00:00>PCALL FLOW/conflict/traf500_clust4000_seed102317.scn
+
+00:00:00>SCEN conflict_traf200_clust500_seed791714
+00:00:00>PCALL FLOW/conflict/traf200_clust500_seed791714.scn
+
+00:00:00>SCEN conflict_traf550_clust2000_seed80889
+00:00:00>PCALL FLOW/conflict/traf550_clust2000_seed80889.scn
+
+00:00:00>SCEN conflict_traf300_clust4000_seed889498
+00:00:00>PCALL FLOW/conflict/traf300_clust4000_seed889498.scn
+
+00:00:00>SCEN conflict_traf550_clust3500_seed889498
+00:00:00>PCALL FLOW/conflict/traf550_clust3500_seed889498.scn
+
+00:00:00>SCEN conflict_traf200_clust1500_seed889498
+00:00:00>PCALL FLOW/conflict/traf200_clust1500_seed889498.scn
+
+00:00:00>SCEN conflict_traf400_clust1500_seed102317
+00:00:00>PCALL FLOW/conflict/traf400_clust1500_seed102317.scn
+
+00:00:00>SCEN conflict_traf450_clust2500_seed114749
+00:00:00>PCALL FLOW/conflict/traf450_clust2500_seed114749.scn
+
+00:00:00>SCEN conflict_traf350_clust3500_seed102317
+00:00:00>PCALL FLOW/conflict/traf350_clust3500_seed102317.scn
+
+00:00:00>SCEN conflict_traf450_clust4000_seed114749
+00:00:00>PCALL FLOW/conflict/traf450_clust4000_seed114749.scn
+
+00:00:00>SCEN conflict_traf500_clust100_seed791714
+00:00:00>PCALL FLOW/conflict/traf500_clust100_seed791714.scn
+
+00:00:00>SCEN conflict_traf550_clust1500_seed114749
+00:00:00>PCALL FLOW/conflict/traf550_clust1500_seed114749.scn
+
+00:00:00>SCEN conflict_traf500_clust2500_seed102317
+00:00:00>PCALL FLOW/conflict/traf500_clust2500_seed102317.scn
+
+00:00:00>SCEN conflict_traf100_clust1500_seed791714
+00:00:00>PCALL FLOW/conflict/traf100_clust1500_seed791714.scn
+
+00:00:00>SCEN conflict_traf200_clust3500_seed114749
+00:00:00>PCALL FLOW/conflict/traf200_clust3500_seed114749.scn
+
+00:00:00>SCEN conflict_traf300_clust4000_seed80889
+00:00:00>PCALL FLOW/conflict/traf300_clust4000_seed80889.scn
+
+00:00:00>SCEN conflict_traf300_clust2500_seed889498
+00:00:00>PCALL FLOW/conflict/traf300_clust2500_seed889498.scn
+
+00:00:00>SCEN conflict_traf400_clust4000_seed114749
+00:00:00>PCALL FLOW/conflict/traf400_clust4000_seed114749.scn
+
+00:00:00>SCEN conflict_traf550_clust2500_seed102317
+00:00:00>PCALL FLOW/conflict/traf550_clust2500_seed102317.scn
+
+00:00:00>SCEN conflict_traf500_clust1500_seed114749
+00:00:00>PCALL FLOW/conflict/traf500_clust1500_seed114749.scn
+
+00:00:00>SCEN conflict_traf150_clust1500_seed791714
+00:00:00>PCALL FLOW/conflict/traf150_clust1500_seed791714.scn
+
+00:00:00>SCEN conflict_traf50_clust2000_seed80889
+00:00:00>PCALL FLOW/conflict/traf50_clust2000_seed80889.scn
+
+00:00:00>SCEN conflict_traf250_clust3500_seed114749
+00:00:00>PCALL FLOW/conflict/traf250_clust3500_seed114749.scn
+
+00:00:00>SCEN conflict_traf600_clust3500_seed791714
+00:00:00>PCALL FLOW/conflict/traf600_clust3500_seed791714.scn
+
+00:00:00>SCEN conflict_traf600_clust4000_seed80889
+00:00:00>PCALL FLOW/conflict/traf600_clust4000_seed80889.scn
+
+00:00:00>SCEN conflict_traf350_clust2500_seed889498
+00:00:00>PCALL FLOW/conflict/traf350_clust2500_seed889498.scn
+
+00:00:00>SCEN conflict_traf50_clust2000_seed791714
+00:00:00>PCALL FLOW/conflict/traf50_clust2000_seed791714.scn
+
+00:00:00>SCEN conflict_traf550_clust4000_seed102317
+00:00:00>PCALL FLOW/conflict/traf550_clust4000_seed102317.scn
+
+00:00:00>SCEN conflict_traf200_clust1500_seed80889
+00:00:00>PCALL FLOW/conflict/traf200_clust1500_seed80889.scn
+
+00:00:00>SCEN conflict_traf350_clust4000_seed889498
+00:00:00>PCALL FLOW/conflict/traf350_clust4000_seed889498.scn
+
+00:00:00>SCEN conflict_traf500_clust3500_seed889498
+00:00:00>PCALL FLOW/conflict/traf500_clust3500_seed889498.scn
+
+00:00:00>SCEN conflict_traf250_clust1500_seed889498
+00:00:00>PCALL FLOW/conflict/traf250_clust1500_seed889498.scn
+
+00:00:00>SCEN conflict_traf350_clust3500_seed80889
+00:00:00>PCALL FLOW/conflict/traf350_clust3500_seed80889.scn
+
+00:00:00>SCEN conflict_traf400_clust2500_seed114749
+00:00:00>PCALL FLOW/conflict/traf400_clust2500_seed114749.scn
+
+00:00:00>SCEN conflict_traf450_clust1500_seed102317
+00:00:00>PCALL FLOW/conflict/traf450_clust1500_seed102317.scn
+
+00:00:00>SCEN conflict_traf300_clust3500_seed102317
+00:00:00>PCALL FLOW/conflict/traf300_clust3500_seed102317.scn
+
+00:00:00>SCEN conflict_traf450_clust500_seed80889
+00:00:00>PCALL FLOW/conflict/traf450_clust500_seed80889.scn
+
+00:00:00>SCEN conflict_traf100_clust100_seed102317
+00:00:00>PCALL FLOW/conflict/traf100_clust100_seed102317.scn
+
+00:00:00>SCEN conflict_traf250_clust3000_seed80889
+00:00:00>PCALL FLOW/conflict/traf250_clust3000_seed80889.scn
+
+00:00:00>SCEN conflict_traf300_clust1000_seed80889
+00:00:00>PCALL FLOW/conflict/traf300_clust1000_seed80889.scn
+
+00:00:00>SCEN conflict_traf300_clust2000_seed889498
+00:00:00>PCALL FLOW/conflict/traf300_clust2000_seed889498.scn
+
+00:00:00>SCEN conflict_traf150_clust2500_seed80889
+00:00:00>PCALL FLOW/conflict/traf150_clust2500_seed80889.scn
+
+00:00:00>SCEN conflict_traf200_clust3000_seed114749
+00:00:00>PCALL FLOW/conflict/traf200_clust3000_seed114749.scn
+
+00:00:00>SCEN conflict_traf350_clust500_seed114749
+00:00:00>PCALL FLOW/conflict/traf350_clust500_seed114749.scn
+
+00:00:00>SCEN conflict_traf100_clust1000_seed791714
+00:00:00>PCALL FLOW/conflict/traf100_clust1000_seed791714.scn
+
+00:00:00>SCEN conflict_traf500_clust2000_seed102317
+00:00:00>PCALL FLOW/conflict/traf500_clust2000_seed102317.scn
+
+00:00:00>SCEN conflict_traf550_clust1000_seed114749
+00:00:00>PCALL FLOW/conflict/traf550_clust1000_seed114749.scn
+
+00:00:00>SCEN conflict_traf150_clust500_seed889498
+00:00:00>PCALL FLOW/conflict/traf150_clust500_seed889498.scn
+
+00:00:00>SCEN conflict_traf600_clust500_seed102317
+00:00:00>PCALL FLOW/conflict/traf600_clust500_seed102317.scn
+
+00:00:00>SCEN conflict_traf350_clust3000_seed102317
+00:00:00>PCALL FLOW/conflict/traf350_clust3000_seed102317.scn
+
+00:00:00>SCEN conflict_traf450_clust100_seed114749
+00:00:00>PCALL FLOW/conflict/traf450_clust100_seed114749.scn
+
+00:00:00>SCEN conflict_traf450_clust2000_seed114749
+00:00:00>PCALL FLOW/conflict/traf450_clust2000_seed114749.scn
+
+00:00:00>SCEN conflict_traf400_clust1000_seed102317
+00:00:00>PCALL FLOW/conflict/traf400_clust1000_seed102317.scn
+
+00:00:00>SCEN conflict_traf200_clust1000_seed889498
+00:00:00>PCALL FLOW/conflict/traf200_clust1000_seed889498.scn
+
+00:00:00>SCEN conflict_traf400_clust100_seed80889
+00:00:00>PCALL FLOW/conflict/traf400_clust100_seed80889.scn
+
+00:00:00>SCEN conflict_traf550_clust3000_seed889498
+00:00:00>PCALL FLOW/conflict/traf550_clust3000_seed889498.scn
+
+00:00:00>SCEN conflict_traf600_clust500_seed114749
+00:00:00>PCALL FLOW/conflict/traf600_clust500_seed114749.scn
+
+00:00:00>SCEN conflict_traf50_clust1500_seed791714
+00:00:00>PCALL FLOW/conflict/traf50_clust1500_seed791714.scn
+
+00:00:00>SCEN conflict_traf400_clust2500_seed80889
+00:00:00>PCALL FLOW/conflict/traf400_clust2500_seed80889.scn
+
+00:00:00>SCEN conflict_traf250_clust2000_seed889498
+00:00:00>PCALL FLOW/conflict/traf250_clust2000_seed889498.scn
+
+00:00:00>SCEN conflict_traf300_clust100_seed889498
+00:00:00>PCALL FLOW/conflict/traf300_clust100_seed889498.scn
+
+00:00:00>SCEN conflict_traf350_clust3000_seed114749
+00:00:00>PCALL FLOW/conflict/traf350_clust3000_seed114749.scn
+
+00:00:00>SCEN conflict_traf450_clust100_seed102317
+00:00:00>PCALL FLOW/conflict/traf450_clust100_seed102317.scn
+
+00:00:00>SCEN conflict_traf450_clust2000_seed102317
+00:00:00>PCALL FLOW/conflict/traf450_clust2000_seed102317.scn
+
+00:00:00>SCEN conflict_traf400_clust1000_seed114749
+00:00:00>PCALL FLOW/conflict/traf400_clust1000_seed114749.scn
+
+00:00:00>SCEN conflict_traf100_clust100_seed114749
+00:00:00>PCALL FLOW/conflict/traf100_clust100_seed114749.scn
+
+00:00:00>SCEN conflict_traf200_clust3000_seed102317
+00:00:00>PCALL FLOW/conflict/traf200_clust3000_seed102317.scn
+
+00:00:00>SCEN conflict_traf150_clust2000_seed791714
+00:00:00>PCALL FLOW/conflict/traf150_clust2000_seed791714.scn
+
+00:00:00>SCEN conflict_traf350_clust500_seed102317
+00:00:00>PCALL FLOW/conflict/traf350_clust500_seed102317.scn
+
+00:00:00>SCEN conflict_traf500_clust2000_seed114749
+00:00:00>PCALL FLOW/conflict/traf500_clust2000_seed114749.scn
+
+00:00:00>SCEN conflict_traf550_clust1000_seed102317
+00:00:00>PCALL FLOW/conflict/traf550_clust1000_seed102317.scn
+
+00:00:00>SCEN conflict_traf350_clust1000_seed889498
+00:00:00>PCALL FLOW/conflict/traf350_clust1000_seed889498.scn
+
+00:00:00>SCEN conflict_traf400_clust500_seed889498
+00:00:00>PCALL FLOW/conflict/traf400_clust500_seed889498.scn
+
+00:00:00>SCEN conflict_traf400_clust3000_seed889498
+00:00:00>PCALL FLOW/conflict/traf400_clust3000_seed889498.scn
+
+00:00:00>SCEN conflict_traf350_clust4000_seed80889
+00:00:00>PCALL FLOW/conflict/traf350_clust4000_seed80889.scn
+
+00:00:00>SCEN conflict_traf550_clust4000_seed114749
+00:00:00>PCALL FLOW/conflict/traf550_clust4000_seed114749.scn
+
+00:00:00>SCEN conflict_traf100_clust4000_seed791714
+00:00:00>PCALL FLOW/conflict/traf100_clust4000_seed791714.scn
+
+00:00:00>SCEN conflict_traf400_clust2500_seed102317
+00:00:00>PCALL FLOW/conflict/traf400_clust2500_seed102317.scn
+
+00:00:00>SCEN conflict_traf450_clust1500_seed114749
+00:00:00>PCALL FLOW/conflict/traf450_clust1500_seed114749.scn
+
+00:00:00>SCEN conflict_traf550_clust100_seed791714
+00:00:00>PCALL FLOW/conflict/traf550_clust100_seed791714.scn
+
+00:00:00>SCEN conflict_traf300_clust3500_seed114749
+00:00:00>PCALL FLOW/conflict/traf300_clust3500_seed114749.scn
+
+00:00:00>SCEN conflict_traf200_clust2500_seed889498
+00:00:00>PCALL FLOW/conflict/traf200_clust2500_seed889498.scn
+
+00:00:00>SCEN conflict_traf400_clust4000_seed102317
+00:00:00>PCALL FLOW/conflict/traf400_clust4000_seed102317.scn
+
+00:00:00>SCEN conflict_traf600_clust3500_seed80889
+00:00:00>PCALL FLOW/conflict/traf600_clust3500_seed80889.scn
+
+00:00:00>SCEN conflict_traf200_clust4000_seed889498
+00:00:00>PCALL FLOW/conflict/traf200_clust4000_seed889498.scn
+
+00:00:00>SCEN conflict_traf500_clust2000_seed80889
+00:00:00>PCALL FLOW/conflict/traf500_clust2000_seed80889.scn
+
+00:00:00>SCEN conflict_traf450_clust3500_seed889498
+00:00:00>PCALL FLOW/conflict/traf450_clust3500_seed889498.scn
+
+00:00:00>SCEN conflict_traf300_clust1500_seed889498
+00:00:00>PCALL FLOW/conflict/traf300_clust1500_seed889498.scn
+
+00:00:00>SCEN conflict_traf550_clust2500_seed114749
+00:00:00>PCALL FLOW/conflict/traf550_clust2500_seed114749.scn
+
+00:00:00>SCEN conflict_traf500_clust1500_seed102317
+00:00:00>PCALL FLOW/conflict/traf500_clust1500_seed102317.scn
+
+00:00:00>SCEN conflict_traf100_clust2500_seed791714
+00:00:00>PCALL FLOW/conflict/traf100_clust2500_seed791714.scn
+
+00:00:00>SCEN conflict_traf250_clust3500_seed102317
+00:00:00>PCALL FLOW/conflict/traf250_clust3500_seed102317.scn
+
+00:00:00>SCEN conflict_traf250_clust500_seed791714
+00:00:00>PCALL FLOW/conflict/traf250_clust500_seed791714.scn
+
+00:00:00>SCEN conflict_traf200_clust2000_seed80889
+00:00:00>PCALL FLOW/conflict/traf200_clust2000_seed80889.scn
+
+00:00:00>SCEN conflict_traf500_clust4000_seed889498
+00:00:00>PCALL FLOW/conflict/traf500_clust4000_seed889498.scn
+
+00:00:00>SCEN conflict_traf300_clust4000_seed102317
+00:00:00>PCALL FLOW/conflict/traf300_clust4000_seed102317.scn
+
+00:00:00>SCEN conflict_traf550_clust500_seed791714
+00:00:00>PCALL FLOW/conflict/traf550_clust500_seed791714.scn
+
+00:00:00>SCEN conflict_traf350_clust100_seed80889
+00:00:00>PCALL FLOW/conflict/traf350_clust100_seed80889.scn
+
+00:00:00>SCEN conflict_traf600_clust2500_seed791714
+00:00:00>PCALL FLOW/conflict/traf600_clust2500_seed791714.scn
+
+00:00:00>SCEN conflict_traf250_clust2500_seed114749
+00:00:00>PCALL FLOW/conflict/traf250_clust2500_seed114749.scn
+
+00:00:00>SCEN conflict_traf200_clust1500_seed102317
+00:00:00>PCALL FLOW/conflict/traf200_clust1500_seed102317.scn
+
+00:00:00>SCEN conflict_traf550_clust3500_seed102317
+00:00:00>PCALL FLOW/conflict/traf550_clust3500_seed102317.scn
+
+00:00:00>SCEN conflict_traf350_clust3500_seed889498
+00:00:00>PCALL FLOW/conflict/traf350_clust3500_seed889498.scn
+
+00:00:00>SCEN conflict_traf100_clust3500_seed80889
+00:00:00>PCALL FLOW/conflict/traf100_clust3500_seed80889.scn
+
+00:00:00>SCEN conflict_traf400_clust1500_seed889498
+00:00:00>PCALL FLOW/conflict/traf400_clust1500_seed889498.scn
+
+00:00:00>SCEN conflict_traf600_clust4000_seed791714
+00:00:00>PCALL FLOW/conflict/traf600_clust4000_seed791714.scn
+
+00:00:00>SCEN conflict_traf250_clust4000_seed114749
+00:00:00>PCALL FLOW/conflict/traf250_clust4000_seed114749.scn
+
+00:00:00>SCEN conflict_traf250_clust100_seed791714
+00:00:00>PCALL FLOW/conflict/traf250_clust100_seed791714.scn
+
+00:00:00>SCEN conflict_traf50_clust3000_seed791714
+00:00:00>PCALL FLOW/conflict/traf50_clust3000_seed791714.scn
+
+00:00:00>SCEN conflict_traf300_clust500_seed80889
+00:00:00>PCALL FLOW/conflict/traf300_clust500_seed80889.scn
+
+00:00:00>SCEN conflict_traf500_clust2500_seed889498
+00:00:00>PCALL FLOW/conflict/traf500_clust2500_seed889498.scn
+
+00:00:00>SCEN conflict_traf450_clust4000_seed80889
+00:00:00>PCALL FLOW/conflict/traf450_clust4000_seed80889.scn
+
+00:00:00>SCEN conflict_traf300_clust2500_seed102317
+00:00:00>PCALL FLOW/conflict/traf300_clust2500_seed102317.scn
+
+00:00:00>SCEN conflict_traf50_clust1500_seed80889
+00:00:00>PCALL FLOW/conflict/traf50_clust1500_seed80889.scn
+
+00:00:00>SCEN conflict_traf350_clust1500_seed114749
+00:00:00>PCALL FLOW/conflict/traf350_clust1500_seed114749.scn
+
+00:00:00>SCEN conflict_traf400_clust3500_seed114749
+00:00:00>PCALL FLOW/conflict/traf400_clust3500_seed114749.scn
+
+00:00:00>SCEN conflict_traf450_clust500_seed102317
+00:00:00>PCALL FLOW/conflict/traf450_clust500_seed102317.scn
+
+00:00:00>SCEN conflict_traf300_clust500_seed889498
+00:00:00>PCALL FLOW/conflict/traf300_clust500_seed889498.scn
+
+00:00:00>SCEN conflict_traf450_clust1000_seed889498
+00:00:00>PCALL FLOW/conflict/traf450_clust1000_seed889498.scn
+
+00:00:00>SCEN conflict_traf300_clust3000_seed889498
+00:00:00>PCALL FLOW/conflict/traf300_clust3000_seed889498.scn
+
+00:00:00>SCEN conflict_traf500_clust3000_seed102317
+00:00:00>PCALL FLOW/conflict/traf500_clust3000_seed102317.scn
+
+00:00:00>SCEN conflict_traf50_clust500_seed80889
+00:00:00>PCALL FLOW/conflict/traf50_clust500_seed80889.scn
+
+00:00:00>SCEN conflict_traf600_clust100_seed114749
+00:00:00>PCALL FLOW/conflict/traf600_clust100_seed114749.scn
+
+00:00:00>SCEN conflict_traf200_clust2000_seed114749
+00:00:00>PCALL FLOW/conflict/traf200_clust2000_seed114749.scn
+
+00:00:00>SCEN conflict_traf250_clust1000_seed102317
+00:00:00>PCALL FLOW/conflict/traf250_clust1000_seed102317.scn
+
+00:00:00>SCEN conflict_traf400_clust100_seed889498
+00:00:00>PCALL FLOW/conflict/traf400_clust100_seed889498.scn
+
+00:00:00>SCEN conflict_traf350_clust100_seed102317
+00:00:00>PCALL FLOW/conflict/traf350_clust100_seed102317.scn
+
+00:00:00>SCEN conflict_traf450_clust3000_seed114749
+00:00:00>PCALL FLOW/conflict/traf450_clust3000_seed114749.scn
+
+00:00:00>SCEN conflict_traf100_clust500_seed114749
+00:00:00>PCALL FLOW/conflict/traf100_clust500_seed114749.scn
+
+00:00:00>SCEN conflict_traf350_clust2000_seed102317
+00:00:00>PCALL FLOW/conflict/traf350_clust2000_seed102317.scn
+
+00:00:00>SCEN conflict_traf300_clust1000_seed114749
+00:00:00>PCALL FLOW/conflict/traf300_clust1000_seed114749.scn
+
+00:00:00>SCEN conflict_traf550_clust2000_seed889498
+00:00:00>PCALL FLOW/conflict/traf550_clust2000_seed889498.scn
+
+00:00:00>SCEN conflict_traf150_clust1000_seed80889
+00:00:00>PCALL FLOW/conflict/traf150_clust1000_seed80889.scn
+
+00:00:00>SCEN conflict_traf300_clust2500_seed80889
+00:00:00>PCALL FLOW/conflict/traf300_clust2500_seed80889.scn
+
+00:00:00>SCEN conflict_traf350_clust100_seed114749
+00:00:00>PCALL FLOW/conflict/traf350_clust100_seed114749.scn
+
+00:00:00>SCEN conflict_traf500_clust1000_seed889498
+00:00:00>PCALL FLOW/conflict/traf500_clust1000_seed889498.scn
+
+00:00:00>SCEN conflict_traf250_clust3000_seed889498
+00:00:00>PCALL FLOW/conflict/traf250_clust3000_seed889498.scn
+
+00:00:00>SCEN conflict_traf450_clust3000_seed102317
+00:00:00>PCALL FLOW/conflict/traf450_clust3000_seed102317.scn
+
+00:00:00>SCEN conflict_traf100_clust500_seed102317
+00:00:00>PCALL FLOW/conflict/traf100_clust500_seed102317.scn
+
+00:00:00>SCEN conflict_traf350_clust2000_seed114749
+00:00:00>PCALL FLOW/conflict/traf350_clust2000_seed114749.scn
+
+00:00:00>SCEN conflict_traf300_clust1000_seed102317
+00:00:00>PCALL FLOW/conflict/traf300_clust1000_seed102317.scn
+
+00:00:00>SCEN conflict_traf400_clust1000_seed80889
+00:00:00>PCALL FLOW/conflict/traf400_clust1000_seed80889.scn
+
+00:00:00>SCEN conflict_traf450_clust500_seed114749
+00:00:00>PCALL FLOW/conflict/traf450_clust500_seed114749.scn
+
+00:00:00>SCEN conflict_traf500_clust3000_seed114749
+00:00:00>PCALL FLOW/conflict/traf500_clust3000_seed114749.scn
+
+00:00:00>SCEN conflict_traf150_clust3000_seed791714
+00:00:00>PCALL FLOW/conflict/traf150_clust3000_seed791714.scn
+
+00:00:00>SCEN conflict_traf600_clust100_seed102317
+00:00:00>PCALL FLOW/conflict/traf600_clust100_seed102317.scn
+
+00:00:00>SCEN conflict_traf200_clust2000_seed102317
+00:00:00>PCALL FLOW/conflict/traf200_clust2000_seed102317.scn
+
+00:00:00>SCEN conflict_traf250_clust1000_seed114749
+00:00:00>PCALL FLOW/conflict/traf250_clust1000_seed114749.scn
+
+00:00:00>SCEN conflict_traf600_clust1000_seed791714
+00:00:00>PCALL FLOW/conflict/traf600_clust1000_seed791714.scn
+
+00:00:00>SCEN conflict_traf550_clust3000_seed80889
+00:00:00>PCALL FLOW/conflict/traf550_clust3000_seed80889.scn
+
+00:00:00>SCEN conflict_traf400_clust2000_seed889498
+00:00:00>PCALL FLOW/conflict/traf400_clust2000_seed889498.scn
+
+00:00:00>SCEN conflict_traf150_clust100_seed889498
+00:00:00>PCALL FLOW/conflict/traf150_clust100_seed889498.scn
+
+00:00:00>SCEN conflict_traf450_clust3500_seed80889
+00:00:00>PCALL FLOW/conflict/traf450_clust3500_seed80889.scn
+
+00:00:00>SCEN conflict_traf450_clust4000_seed889498
+00:00:00>PCALL FLOW/conflict/traf450_clust4000_seed889498.scn
+
+00:00:00>SCEN conflict_traf250_clust4000_seed102317
+00:00:00>PCALL FLOW/conflict/traf250_clust4000_seed102317.scn
+
+00:00:00>SCEN conflict_traf300_clust2500_seed114749
+00:00:00>PCALL FLOW/conflict/traf300_clust2500_seed114749.scn
+
+00:00:00>SCEN conflict_traf350_clust1500_seed102317
+00:00:00>PCALL FLOW/conflict/traf350_clust1500_seed102317.scn
+
+00:00:00>SCEN conflict_traf400_clust3500_seed102317
+00:00:00>PCALL FLOW/conflict/traf400_clust3500_seed102317.scn
+
+00:00:00>SCEN conflict_traf200_clust3500_seed889498
+00:00:00>PCALL FLOW/conflict/traf200_clust3500_seed889498.scn
+
+00:00:00>SCEN conflict_traf500_clust1500_seed80889
+00:00:00>PCALL FLOW/conflict/traf500_clust1500_seed80889.scn
+
+00:00:00>SCEN conflict_traf550_clust1500_seed889498
+00:00:00>PCALL FLOW/conflict/traf550_clust1500_seed889498.scn
+
+00:00:00>SCEN conflict_traf300_clust4000_seed114749
+00:00:00>PCALL FLOW/conflict/traf300_clust4000_seed114749.scn
+
+00:00:00>SCEN conflict_traf100_clust4000_seed80889
+00:00:00>PCALL FLOW/conflict/traf100_clust4000_seed80889.scn
+
+00:00:00>SCEN conflict_traf450_clust2500_seed889498
+00:00:00>PCALL FLOW/conflict/traf450_clust2500_seed889498.scn
+
+00:00:00>SCEN conflict_traf250_clust2500_seed102317
+00:00:00>PCALL FLOW/conflict/traf250_clust2500_seed102317.scn
+
+00:00:00>SCEN conflict_traf200_clust1500_seed114749
+00:00:00>PCALL FLOW/conflict/traf200_clust1500_seed114749.scn
+
+00:00:00>SCEN conflict_traf100_clust3500_seed791714
+00:00:00>PCALL FLOW/conflict/traf100_clust3500_seed791714.scn
+
+00:00:00>SCEN conflict_traf550_clust3500_seed114749
+00:00:00>PCALL FLOW/conflict/traf550_clust3500_seed114749.scn
+
