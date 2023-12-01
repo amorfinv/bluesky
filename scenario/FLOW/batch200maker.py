@@ -11,7 +11,7 @@ live_lines = []
 # step 1 go through one folder
 for file_name in files_in_dir:
 
-    if 'traf200_' in file_name or 'clust1500_' in file_name:
+    if 'clust4500_' in file_name:
         pass
     else:
         continue
