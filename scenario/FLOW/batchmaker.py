@@ -1,6 +1,6 @@
 import os
 
-folders = ['conflict', 'intrusion', 'live']
+folders = ['conflict', 'intrusion', 'live', 'baseline']
 batches = {folder:[] for folder in folders}
 
 for folder in folders:

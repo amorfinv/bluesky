@@ -1,0 +1,23 @@
+00:00:00>SCEN conflict_traf100_clust4000_seed825078_CROFF
+00:00:00>PCALL FLOW/testing/conflict/traf100_clust4000_seed825078.scn
+
+00:00:00>SCEN conflict_traf100_clust500_seed748180_CROFF
+00:00:00>PCALL FLOW/testing/conflict/traf100_clust500_seed748180.scn
+
+00:00:00>SCEN intrusion_traf100_clust4000_seed825078_CROFF
+00:00:00>PCALL FLOW/testing/intrusion/traf100_clust4000_seed825078.scn
+
+00:00:00>SCEN intrusion_traf100_clust500_seed748180_CROFF
+00:00:00>PCALL FLOW/testing/intrusion/traf100_clust500_seed748180.scn
+
+00:00:00>SCEN live_traf100_clust4000_seed825078_CROFF
+00:00:00>PCALL FLOW/testing/live/traf100_clust4000_seed825078.scn
+
+00:00:00>SCEN live_traf100_clust500_seed748180_CROFF
+00:00:00>PCALL FLOW/testing/live/traf100_clust500_seed748180.scn
+
+00:00:00>SCEN baseline_traf100_clust4000_seed825078_CROFF
+00:00:00>PCALL FLOW/testing/baseline/traf100_clust4000_seed825078.scn
+
+00:00:00>SCEN baseline_traf100_clust500_seed748180_CROFF
+00:00:00>PCALL FLOW/testing/baseline/traf100_clust500_seed748180.scn
