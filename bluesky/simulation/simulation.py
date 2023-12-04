@@ -298,6 +298,3 @@ class Simulation:
         ''' Set random seed for this simulation. '''
         seed(value)
         np.random.seed(value)
-
-        print(bs.stack.get_scenname)
-        print(f'SEED SET TO {value}')
