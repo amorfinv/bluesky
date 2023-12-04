@@ -6,13 +6,13 @@ batches = {folder:[] for folder in folders}
 for folder in folders:
 
     # get list of files
-    files_in_dir = os.listdir(folder)
+    files_in_dir = os.listdir('testing/' + folder)
     
     # step 1 go through one folder
     for file_name in files_in_dir:
 
-        lines = f'00:00:00>SCEN {folder}_{file_name[:-4]}\n' + \
-                f'00:00:00>PCALL FLOW/{folder}/{file_name}\n'
+        lines = f'00:00:00>SCEN {folder}_{file_name[:-4]}_CROFF\n' + \
+                f'00:00:00>PCALL FLOW/testing/{folder}/{file_name}\n'
         
         batches[folder].append(lines)
 
@@ -32,10 +32,3 @@ lines = '\n'.join(general_lines)
 with open(f'batch.scn', 'w') as file:
     file.write(lines + '\n')  # Add a newline after each string
 
-
-# also create a batch just for the 200 case
-
-
-
-
-print(batches)
