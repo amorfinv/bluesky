@@ -2,7 +2,7 @@ import os
 
 scn_folder = 'observation'
 
-folders = ['conflict', 'intrusion', 'live']
+folders = ['conflict', 'intrusion']
 batches = {folder:[] for folder in folders}
 
 for case_folder in folders:
