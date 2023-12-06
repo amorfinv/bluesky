@@ -6,12 +6,12 @@ batches = {folder:[] for folder in folders}
 for folder in folders:
 
     # get list of files
-    files_in_dir = os.listdir('testing/' + folder)
+    files_in_dir = os.listdir('testingCR/' + folder)
     
     # step 1 go through one folder
     for file_name in files_in_dir:
 
-        lines = f'00:00:00>SCEN {folder}_{file_name[:-4]}_CROFF\n' + \
+        lines = f'00:00:00>SCEN {folder}_{file_name[:-4]}_CRON\n' + \
                 f'00:00:00>PCALL FLOW/testing/{folder}/{file_name}\n'
         
         batches[folder].append(lines)
