@@ -1,12 +1,12 @@
 import os
 
-folders = ['conflict', 'intrusion', 'live', 'baseline']
+folders = ['conflict', 'intrusion', 'live']
 batches = {folder:[] for folder in folders}
 
 for folder in folders:
 
     # get list of files
-    files_in_dir = os.listdir('testingCR/' + folder)
+    files_in_dir = os.listdir('observation/' + folder)
     
     # step 1 go through one folder
     for file_name in files_in_dir:
