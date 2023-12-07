@@ -1,135 +1,135 @@
 00:00:00>SCEN baseline_traf100_clust2500_seed102890_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf100_clust2500_seed102890.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf100_clust2500_seed102890.scn
 
 00:00:00>SCEN baseline_traf250_clust2500_seed825078_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf250_clust2500_seed825078.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf250_clust2500_seed825078.scn
 
 00:00:00>SCEN baseline_traf350_clust2500_seed824289_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf350_clust2500_seed824289.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf350_clust2500_seed824289.scn
 
 00:00:00>SCEN baseline_traf200_clust2500_seed824289_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf200_clust2500_seed824289.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf200_clust2500_seed824289.scn
 
 00:00:00>SCEN baseline_traf300_clust2500_seed825078_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf300_clust2500_seed825078.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf300_clust2500_seed825078.scn
 
 00:00:00>SCEN baseline_traf400_clust2500_seed825078_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf400_clust2500_seed825078.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf400_clust2500_seed825078.scn
 
 00:00:00>SCEN baseline_traf150_clust2500_seed748180_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf150_clust2500_seed748180.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf150_clust2500_seed748180.scn
 
 00:00:00>SCEN baseline_traf150_clust2500_seed466213_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf150_clust2500_seed466213.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf150_clust2500_seed466213.scn
 
 00:00:00>SCEN baseline_traf500_clust2500_seed824289_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf500_clust2500_seed824289.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf500_clust2500_seed824289.scn
 
 00:00:00>SCEN baseline_traf450_clust2500_seed824289_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf450_clust2500_seed824289.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf450_clust2500_seed824289.scn
 
 00:00:00>SCEN baseline_traf500_clust2500_seed825078_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf500_clust2500_seed825078.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf500_clust2500_seed825078.scn
 
 00:00:00>SCEN baseline_traf400_clust2500_seed824289_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf400_clust2500_seed824289.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf400_clust2500_seed824289.scn
 
 00:00:00>SCEN baseline_traf100_clust2500_seed466213_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf100_clust2500_seed466213.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf100_clust2500_seed466213.scn
 
 00:00:00>SCEN baseline_traf100_clust2500_seed748180_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf100_clust2500_seed748180.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf100_clust2500_seed748180.scn
 
 00:00:00>SCEN baseline_traf450_clust2500_seed825078_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf450_clust2500_seed825078.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf450_clust2500_seed825078.scn
 
 00:00:00>SCEN baseline_traf350_clust2500_seed825078_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf350_clust2500_seed825078.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf350_clust2500_seed825078.scn
 
 00:00:00>SCEN baseline_traf250_clust2500_seed824289_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf250_clust2500_seed824289.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf250_clust2500_seed824289.scn
 
 00:00:00>SCEN baseline_traf300_clust2500_seed824289_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf300_clust2500_seed824289.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf300_clust2500_seed824289.scn
 
 00:00:00>SCEN baseline_traf200_clust2500_seed825078_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf200_clust2500_seed825078.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf200_clust2500_seed825078.scn
 
 00:00:00>SCEN baseline_traf150_clust2500_seed102890_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf150_clust2500_seed102890.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf150_clust2500_seed102890.scn
 
 00:00:00>SCEN baseline_traf250_clust2500_seed466213_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf250_clust2500_seed466213.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf250_clust2500_seed466213.scn
 
 00:00:00>SCEN baseline_traf250_clust2500_seed748180_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf250_clust2500_seed748180.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf250_clust2500_seed748180.scn
 
 00:00:00>SCEN baseline_traf450_clust2500_seed102890_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf450_clust2500_seed102890.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf450_clust2500_seed102890.scn
 
 00:00:00>SCEN baseline_traf300_clust2500_seed748180_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf300_clust2500_seed748180.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf300_clust2500_seed748180.scn
 
 00:00:00>SCEN baseline_traf500_clust2500_seed102890_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf500_clust2500_seed102890.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf500_clust2500_seed102890.scn
 
 00:00:00>SCEN baseline_traf300_clust2500_seed466213_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf300_clust2500_seed466213.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf300_clust2500_seed466213.scn
 
 00:00:00>SCEN baseline_traf400_clust2500_seed466213_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf400_clust2500_seed466213.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf400_clust2500_seed466213.scn
 
 00:00:00>SCEN baseline_traf150_clust2500_seed825078_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf150_clust2500_seed825078.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf150_clust2500_seed825078.scn
 
 00:00:00>SCEN baseline_traf400_clust2500_seed748180_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf400_clust2500_seed748180.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf400_clust2500_seed748180.scn
 
 00:00:00>SCEN baseline_traf200_clust2500_seed102890_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf200_clust2500_seed102890.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf200_clust2500_seed102890.scn
 
 00:00:00>SCEN baseline_traf350_clust2500_seed102890_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf350_clust2500_seed102890.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf350_clust2500_seed102890.scn
 
 00:00:00>SCEN baseline_traf100_clust2500_seed824289_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf100_clust2500_seed824289.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf100_clust2500_seed824289.scn
 
 00:00:00>SCEN baseline_traf150_clust2500_seed824289_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf150_clust2500_seed824289.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf150_clust2500_seed824289.scn
 
 00:00:00>SCEN baseline_traf500_clust2500_seed466213_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf500_clust2500_seed466213.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf500_clust2500_seed466213.scn
 
 00:00:00>SCEN baseline_traf500_clust2500_seed748180_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf500_clust2500_seed748180.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf500_clust2500_seed748180.scn
 
 00:00:00>SCEN baseline_traf300_clust2500_seed102890_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf300_clust2500_seed102890.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf300_clust2500_seed102890.scn
 
 00:00:00>SCEN baseline_traf450_clust2500_seed748180_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf450_clust2500_seed748180.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf450_clust2500_seed748180.scn
 
 00:00:00>SCEN baseline_traf250_clust2500_seed102890_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf250_clust2500_seed102890.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf250_clust2500_seed102890.scn
 
 00:00:00>SCEN baseline_traf100_clust2500_seed825078_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf100_clust2500_seed825078.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf100_clust2500_seed825078.scn
 
 00:00:00>SCEN baseline_traf450_clust2500_seed466213_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf450_clust2500_seed466213.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf450_clust2500_seed466213.scn
 
 00:00:00>SCEN baseline_traf350_clust2500_seed466213_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf350_clust2500_seed466213.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf350_clust2500_seed466213.scn
 
 00:00:00>SCEN baseline_traf350_clust2500_seed748180_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf350_clust2500_seed748180.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf350_clust2500_seed748180.scn
 
 00:00:00>SCEN baseline_traf200_clust2500_seed748180_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf200_clust2500_seed748180.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf200_clust2500_seed748180.scn
 
 00:00:00>SCEN baseline_traf400_clust2500_seed102890_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf400_clust2500_seed102890.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf400_clust2500_seed102890.scn
 
 00:00:00>SCEN baseline_traf200_clust2500_seed466213_CRON
-00:00:00>PCALL FLOW/testing/baseline/traf200_clust2500_seed466213.scn
+00:00:00>PCALL FLOW/testingCR/baseline/traf200_clust2500_seed466213.scn
 
