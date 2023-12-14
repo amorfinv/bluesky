@@ -1,6 +1,6 @@
 import os
 
-scn_folder = 'testingt30'
+scn_folder = 'testing'
 
 folders = ['baseline', 'live', 'conflict', 'intrusion']
 batches = {folder:[] for folder in folders}
