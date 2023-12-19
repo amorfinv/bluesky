@@ -1,6 +1,6 @@
 import os
 
-scn_folder = 'testing'
+scn_folder = 'CRON/testingreplan50'
 
 folders = ['baseline', 'live', 'conflict', 'intrusion']
 batches = {folder:[] for folder in folders}
@@ -13,7 +13,7 @@ for case_folder in folders:
     # step 1 go through one folder
     for file_name in files_in_dir:
 
-        lines = f'00:00:00>SCEN {case_folder}_{file_name[:-4]}_CROFF\n' + \
+        lines = f'00:00:00>SCEN {case_folder}_{file_name[:-4]}_CRON\n' + \
                 f'00:00:00>PCALL FLOW/{scn_folder}/{case_folder}/{file_name}\n'
         
         batches[case_folder].append(lines)
