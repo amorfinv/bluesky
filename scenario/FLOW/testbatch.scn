@@ -1,23 +1,23 @@
 00:00:00>SCEN baseline_traf100_clust2500_seed102890_CROFF
-00:00:00>PCALL FLOW/testing/baseline/traf100_clust2500_seed102890.scn
+00:00:00>PCALL FLOW/CRON/baseline/traf100_clust2500_seed102890.scn
 
 00:00:00>SCEN baseline_traf250_clust2500_seed825078_CROFF
-00:00:00>PCALL FLOW/testing/baseline/traf250_clust2500_seed825078.scn
+00:00:00>PCALL FLOW/CRON/baseline/traf250_clust2500_seed825078.scn
 
 00:00:00>SCEN conflict_traf100_clust2500_seed102890_CROFF
-00:00:00>PCALL FLOW/testing/conflict/traf100_clust2500_seed102890.scn
+00:00:00>PCALL FLOW/CRON/testingreplan50/conflict/traf100_clust2500_seed102890.scn
 
 00:00:00>SCEN conflict_traf250_clust2500_seed825078_CROFF
-00:00:00>PCALL FLOW/testing/conflict/traf250_clust2500_seed825078.scn
+00:00:00>PCALL FLOW/CRON/testingreplan50/conflict/traf250_clust2500_seed825078.scn
 
 00:00:00>SCEN intrusion_traf100_clust2500_seed102890_CROFF
-00:00:00>PCALL FLOW/testing/intrusion/traf100_clust2500_seed102890.scn
+00:00:00>PCALL FLOW/CRON/testingreplan50/intrusion/traf100_clust2500_seed102890.scn
 
 00:00:00>SCEN intrusion_traf250_clust2500_seed825078_CROFF
-00:00:00>PCALL FLOW/testing/intrusion/traf250_clust2500_seed825078.scn
+00:00:00>PCALL FLOW/CRON/testingreplan50/intrusion/traf250_clust2500_seed825078.scn
 
 00:00:00>SCEN live_traf100_clust2500_seed102890_CROFF
-00:00:00>PCALL FLOW/testing/live/traf100_clust2500_seed102890.scn
+00:00:00>PCALL FLOW/CRON/testingreplan50/live/traf100_clust2500_seed102890.scn
 
 00:00:00>SCEN live_traf250_clust2500_seed825078_CROFF
-00:00:00>PCALL FLOW/testing/live/traf250_clust2500_seed825078.scn
+00:00:00>PCALL FLOW/CRON/testingreplan50/live/traf250_clust2500_seed825078.scn
