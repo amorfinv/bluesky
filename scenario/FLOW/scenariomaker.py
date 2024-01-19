@@ -1,6 +1,6 @@
 from itertools import product
 
-scen_dir = 'parameter_tuning'
+scen_dir = 'graph_weights'
 
 experiment_cases = {
     'concepts' : {
@@ -16,18 +16,24 @@ experiment_cases = {
         '2500',
     },
     'replanlimit':[
-        '0',
-        '15',
-        '30',
+#        '0',
+#        '15',
+#        '30',
         '60',
-        '120',
-        '360',
+ #       '120',
+ #       '360',
     ],
     'replanratio':[
         '0.25',
         '0.5',
-        '0.75',
-        '1',
+#        '0.75',
+#        '1',
+    ],
+    'graphweights':[
+        '1-1.5-2',
+        '1-2-4',
+        '1-3-9',
+        '1-10-100',
     ],
     'seeds': [
         '748180',
@@ -35,7 +41,7 @@ experiment_cases = {
         '102890',
         '824289',
         '466213'
-    ]
+    ],
 }
 
 exp_cases = list(
@@ -45,16 +51,19 @@ exp_cases = list(
         experiment_cases['clusters'],
         experiment_cases['replanlimit'],
         experiment_cases['replanratio'],
+        experiment_cases['graphweights'],
         experiment_cases['seeds'],
     )
 )
 
 # LOG processing for indivdual experiments
 filenames = []
-for concept, density, cluster, replanlimit, replanratio, seed in exp_cases:
+for concept, density, cluster, replanlimit, replanratio, graph_weights, seed in exp_cases:
 
     cluster_plugin = experiment_cases['concepts'][concept]
-
+    
+    low_weight, medium_weight, high_weight = graph_weights.split('-')
+    
     # different flow control
     flow_control = 'RANDOMFLOWCONTROL' if concept == 'random' else 'FLOWCONTROL'
     
@@ -66,6 +75,7 @@ for concept, density, cluster, replanlimit, replanratio, seed in exp_cases:
         'ENABLEFLOWCONTROL',
         'streetsenable',
         'STOPSIMT 7200',
+        f'SETGRAPHWEIGHTS {low_weight},{medium_weight},{high_weight}',
         'ASAS ON',
         'CDMETHOD M2CD',
         f'REPLANLIMIT {replanlimit}',
@@ -90,7 +100,7 @@ for concept, density, cluster, replanlimit, replanratio, seed in exp_cases:
     lines = '\n'.join(lines)
 
     # create a filename
-    filename = f'{concept}_traf{density}_clust{cluster}_replanlimit{replanlimit}_replanratio{replanratio}_seed{seed}.scn'
+    filename = f'{concept}_traf{density}_clust{cluster}_replanlimit{replanlimit}_replanratio{replanratio}_graphweights{graph_weights}_seed{seed}.scn'
 
     # write the file
     with open(f'{scen_dir}/{filename}', 'w') as file:
