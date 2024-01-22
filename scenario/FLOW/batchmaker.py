@@ -2,7 +2,7 @@ import os
 
 scn_folder = 'CROFF/testingreplan50'
 
-folders = ['live', 'conflict', 'intrusion', 'random']
+folders = ['live', 'conflict', 'intrusion']
 batches = {folder:[] for folder in folders}
 
 for case_folder in folders:
@@ -24,8 +24,8 @@ general_lines = []
 for folder in folders:
     lines = '\n'.join(batches[folder])
     # Open the file in write mode and write each string from the list
-    with open(f'{folder}batch.scn', 'w') as file:
-        file.write(lines + '\n')  # Add a newline after each string
+    # with open(f'{folder}batch.scn', 'w') as file:
+    #     file.write(lines + '\n')  # Add a newline after each string
     
     general_lines.append(lines)
 
