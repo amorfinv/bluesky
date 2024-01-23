@@ -2,7 +2,7 @@ import os
 
 scn_folder = 'CROFF/testingreplan50'
 
-folders = ['live', 'conflict', 'intrusion']
+folders = ['live', 'conflict', 'intrusion', 'random']
 batches = {folder:[] for folder in folders}
 
 for case_folder in folders:
