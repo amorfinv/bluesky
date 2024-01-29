@@ -21,7 +21,14 @@ experiment_cases = {
         '500',
     },
     'clusters' : {
+        '1000',
+        '1500',
+        '2000',
         '2500',
+        '3000',
+        '3500',
+        '4000',
+        '4500',
     },
     'replanlimit':[
 #        '0',
@@ -77,8 +84,13 @@ for concept, density, cluster, replanlimit, replanratio, graph_weights, seed in 
     
     # make a file for this case
     lines = [
+        f'SEED {seed}',
+        'PLUGIN LOAD TRAFFICSPAWNER',
+        'PLUGIN LOAD STREETS',
+        'PLUGIN LOAD M2CD',
+        'PLUGIN LOAD M2CR',
+        'PLUGIN LOAD CDRLogger',
         f'PLUGIN LOAD {cluster_plugin}',
-        'FF',
         'streetsenable',
         'STOPSIMT 18000',
         f'SETGRAPHWEIGHTS {low_weight},{medium_weight},{high_weight}',
@@ -88,14 +100,15 @@ for concept, density, cluster, replanlimit, replanratio, graph_weights, seed in 
         'STARTCDRLOGS',
         'STARTCLUSTERLOG',
         f'trafficnumber {density}',
-        f'SEED {seed}',
         f'SETCLUSTERDISTANCE {cluster}',
         'CASMACHTHR 0',
     ]
 
     if concept in ['conflict', 'intrusion']:
         lines.append('SETOBSERVATIONTIME 600')
-
+    
+    # add the fast forward
+    lines.append('FF')
     # add the prefix to all lines
     lines = ['00:00:00.00>' + line for line in lines]
 
