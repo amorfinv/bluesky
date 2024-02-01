@@ -7,6 +7,8 @@ from urllib.request import urlopen
 from urllib.error import URLError
 import numpy as np
 import gzip
+from PIL import Image, UnidentifiedImageError
+from io import BytesIO
 
 try:
     from PyQt5.Qt import Qt
@@ -78,10 +80,19 @@ class Tile:
                     if url_request.status == 204:
                         # if no content load a blank tile
                         self.image = QImage(256, 256, QImage.Format.Format_ARGB32)
-                        self.image.fill(qRgba(255,255,255,0))
+                        self.image.fill(qRgba(255,255,255,0)) 
 
                     else:
                         data = url_request.read()
+
+                        # check also for invalid images
+                        try:
+                            image_check = Image.open(BytesIO(data))
+                        except UnidentifiedImageError:
+                            self.image = QImage(256, 256, QImage.Format.Format_ARGB32)
+                            self.image.fill(qRgba(255,255,255,0)) 
+                            break
+                        image_check.close()
 
                         if url_request.headers['Content-Encoding'] == 'gzip':
                             # There is a chance that data may come as a gzip so decompress
