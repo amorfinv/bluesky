@@ -1,0 +1,1080 @@
+00:00:00>SCEN intrusion_traf200_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf200_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf200_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf200_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf200_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf200_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf200_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf200_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf200_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf200_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf200_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf200_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf200_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf200_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf200_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf200_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf200_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf200_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf200_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf200_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf200_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf200_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf200_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf200_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf200_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf200_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf200_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf200_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf200_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf200_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf200_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf200_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf200_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf200_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf200_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf200_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf200_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf200_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf200_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf200_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf200_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf100_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf100_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf100_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf100_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf100_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf100_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf100_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf100_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf100_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf100_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf100_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf100_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf100_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf100_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf100_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf100_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf100_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf100_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf100_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf100_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf100_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf100_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf100_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf100_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf100_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf100_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf100_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf100_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf100_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf100_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf100_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf100_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf100_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf100_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf100_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf100_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf100_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf100_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf100_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf100_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf100_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf500_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf500_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf500_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf500_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf500_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf500_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf500_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf500_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf500_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf500_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf500_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf500_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf500_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf500_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf500_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf500_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf500_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf500_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf500_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf500_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf500_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf500_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf500_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf500_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf500_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf500_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf500_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf500_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf500_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf500_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf500_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf500_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf500_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf500_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf500_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf500_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf500_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf500_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf500_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf500_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf500_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf400_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf400_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf400_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf400_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf400_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf400_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf400_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf400_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf400_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf400_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf400_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf400_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf400_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf400_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf400_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf400_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf400_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf400_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf400_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf400_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf400_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf400_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf400_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf400_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf400_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf400_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf400_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf400_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf400_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf400_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf400_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf400_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf400_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf400_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf400_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf400_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf400_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf400_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf400_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf400_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf400_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf250_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf250_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf250_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf250_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf250_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf250_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf250_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf250_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf250_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf250_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf250_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf250_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf250_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf250_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf250_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf250_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf250_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf250_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf250_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf250_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf250_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf250_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf250_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf250_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf250_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf250_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf250_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf250_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf250_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf250_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf250_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf250_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf250_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf250_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf250_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf250_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf250_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf250_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf250_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf250_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf250_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf450_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf450_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf450_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf450_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf450_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf450_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf450_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf450_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf450_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf450_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf450_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf450_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf450_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf450_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf450_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf450_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf450_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf450_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf450_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf450_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf450_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf450_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf450_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf450_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf450_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf450_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf450_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf450_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf450_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf450_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf450_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf450_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf450_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf450_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf450_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf450_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf450_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf450_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf450_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf450_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf450_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf150_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf150_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf150_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf150_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf150_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf150_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf150_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf150_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf150_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf150_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf150_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf150_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf150_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf150_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf150_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf150_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf150_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf150_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf150_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf150_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf150_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf150_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf150_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf150_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf150_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf150_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf150_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf150_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf150_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf150_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf150_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf150_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf150_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf150_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf150_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf150_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf150_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf150_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf150_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf150_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf150_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf350_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf350_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf350_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf350_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf350_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf350_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf350_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf350_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf350_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf350_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf350_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf350_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf350_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf350_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf350_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf350_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf350_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf350_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf350_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf350_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf350_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf350_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf350_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf350_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf350_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf350_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf350_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf350_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf350_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf350_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf350_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf350_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf350_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf350_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf350_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf350_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf350_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf350_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf350_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf350_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf350_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf300_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf300_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf300_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf300_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf300_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust2000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf300_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf300_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf300_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf300_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf300_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust4000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf300_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf300_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf300_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf300_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf300_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust4500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf300_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf300_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf300_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf300_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf300_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust1000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf300_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf300_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf300_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf300_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf300_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust1500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf300_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf300_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf300_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf300_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf300_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust3000_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf300_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf300_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf300_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf300_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf300_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust2500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+
+00:00:00>SCEN intrusion_traf300_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed102317.scn
+
+00:00:00>SCEN intrusion_traf300_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed114749.scn
+
+00:00:00>SCEN intrusion_traf300_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed791714.scn
+
+00:00:00>SCEN intrusion_traf300_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed80889.scn
+
+00:00:00>SCEN intrusion_traf300_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498_CROFF
+00:00:00>PCALL FLOW/observations/intrusion_traf300_clust3500_replanlimit60_replanratio0.5_graphweights1-1.5-2_seed889498.scn
+

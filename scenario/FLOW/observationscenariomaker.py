@@ -1,12 +1,12 @@
 from itertools import product
 
-scen_dir = 'observationredo'
+scen_dir = 'observations'
 
 experiment_cases = {
     'concepts' : {
-        'conflict'  : 'CONFLICTCLUSTERING',
+        # 'conflict'  : 'CONFLICTCLUSTERING',
         'intrusion' : 'INTRUSIONCLUSTERING',
-        'live'      : 'LIVECLUSTERING',
+        # 'live'      : 'LIVECLUSTERING',
         # 'random'    : 'RANDOMCLUSTERING'
     },
     'densities' : {
@@ -85,14 +85,8 @@ for concept, density, cluster, replanlimit, replanratio, graph_weights, seed in 
     # make a file for this case
     lines = [
         f'SEED {seed}',
-        'PLUGIN LOAD TRAFFICSPAWNER',
-        'PLUGIN LOAD STREETS',
-        'PLUGIN LOAD M2CD',
-        'PLUGIN LOAD M2CR',
-        'PLUGIN LOAD CDRLogger',
-        f'PLUGIN LOAD {cluster_plugin}',
         'streetsenable',
-        'STOPSIMT 18000',
+        'STOPSIMT 1800',
         f'SETGRAPHWEIGHTS {low_weight},{medium_weight},{high_weight}',
         'ASAS ON',
         'CDMETHOD M2CD',
@@ -137,6 +131,6 @@ for filename in filenames:
 
 # create a general batch
 lines = '\n'.join(batch_lines)
-with open(f'batch.scn', 'w') as file:
+with open(f'intrusionbatch.scn', 'w') as file:
     file.write(lines + '\n')  # Add a newline after each string
 
