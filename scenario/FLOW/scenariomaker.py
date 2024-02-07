@@ -10,10 +10,20 @@ experiment_cases = {
         # 'random'    : 'RANDOMCLUSTERING'
     },
     'densities' : {
+        '100',
+        '150',
+        '200',
+        '250',
         '300',
+        '350',
+        '400',
+        '450',
+        '500',
     },
     'clusters' : {
+        '1000',
         '2500',
+        '4000',
     },
     'replanlimit':[
 #        '0',
@@ -24,16 +34,16 @@ experiment_cases = {
  #       '360',
     ],
     'replanratio':[
-        '0.25',
+        # '0.25',
         '0.5',
 #        '0.75',
 #        '1',
     ],
     'graphweights':[
-        '1-1.5-2',
+        # '1-1.5-2',
         '1-2-4',
-        '1-3-9',
-        '1-10-100',
+        # '1-3-9',
+        # '1-10-100',
     ],
     'seeds': [
         '748180',
@@ -69,9 +79,14 @@ for concept, density, cluster, replanlimit, replanratio, graph_weights, seed in 
     
     # make a file for this case
     lines = [
+        f'SEED {seed}',
+        'PLUGIN LOAD TRAFFICSPAWNER',
+        'PLUGIN LOAD STREETS',
+        'PLUGIN LOAD M2CD',
+        'PLUGIN LOAD M2CR',
+        'PLUGIN LOAD CDRLogger',
         f'PLUGIN LOAD {cluster_plugin}',
         f'PLUGIN LOAD {flow_control}',
-        'FF',
         'ENABLEFLOWCONTROL',
         'streetsenable',
         'STOPSIMT 7200',
@@ -85,13 +100,15 @@ for concept, density, cluster, replanlimit, replanratio, graph_weights, seed in 
         'STARTCLUSTERLOG',
         'STARTFLOWLOG',
         f'trafficnumber {density}',
-        f'SEED {seed}',
         f'SETCLUSTERDISTANCE {cluster}',
         'CASMACHTHR 0',
     ]
 
     if concept in ['conflict', 'intrusion']:
         lines.append('SETOBSERVATIONTIME 600')
+
+    # add the fast forward
+    lines.append('FF')
 
     # add the prefix to all lines
     lines = ['00:00:00.00>' + line for line in lines]
