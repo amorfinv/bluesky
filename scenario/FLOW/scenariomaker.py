@@ -1,12 +1,12 @@
 from itertools import product
 
-scen_dir = 'graph_weights'
+scen_dir = 'test_density'
 
 experiment_cases = {
     'concepts' : {
         'conflict'  : 'CONFLICTCLUSTERING',
-        'intrusion' : 'INTRUSIONCLUSTERING',
-        'live'      : 'LIVECLUSTERING',
+#        'intrusion' : 'INTRUSIONCLUSTERING',
+#        'live'      : 'LIVECLUSTERING',
         # 'random'    : 'RANDOMCLUSTERING'
     },
     'densities' : {
@@ -80,13 +80,6 @@ for concept, density, cluster, replanlimit, replanratio, graph_weights, seed in 
     # make a file for this case
     lines = [
         f'SEED {seed}',
-        'PLUGIN LOAD TRAFFICSPAWNER',
-        'PLUGIN LOAD STREETS',
-        'PLUGIN LOAD M2CD',
-        'PLUGIN LOAD M2CR',
-        'PLUGIN LOAD CDRLogger',
-        f'PLUGIN LOAD {cluster_plugin}',
-        f'PLUGIN LOAD {flow_control}',
         'ENABLEFLOWCONTROL',
         'streetsenable',
         'STOPSIMT 7200',
