@@ -26,24 +26,30 @@ experiment_cases = {
         '4000',
     },
     'replanlimit':[
-       '0',
-       '15',
-       '30',
-        # '60',
-       '120',
-       '360',
+        '0',
+        '15',
+        '30',
+        '60',
+        '120',
+        '360',
     ],
     'replanratio':[
+        '0.1',
         '0.25',
-        # '0.5',
-       '0.75',
-       '1',
+        '0.5',
+        '0.75',
+        '1',
     ],
     'graphweights':[
+        '1-1.1-1.2',
+        '1-1.25-1.5',
         '1-1.5-2',
-        # '1-2-4',
+        '1-2-4',
         '1-3-9',
         # '1-10-100',
+    ],
+    'densitycutoff':[
+        '0.25-0.5',
     ],
     'seeds': [
         '748180',
@@ -131,6 +137,6 @@ for filename in filenames:
 
 # create a general batch
 lines = '\n'.join(batch_lines)
-with open(f'livekbatch.scn', 'w') as file:
+with open(f'batch.scn', 'w') as file:
     file.write(lines + '\n')  # Add a newline after each string
 
