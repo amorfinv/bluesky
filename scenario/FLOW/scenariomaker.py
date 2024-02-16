@@ -5,9 +5,9 @@ scen_dir = 'test_density'
 experiment_cases = {
     'concepts' : {
         # 'conflict'  : 'CONFLICTCLUSTERING',
-    #    'intrusion' : 'INTRUSIONCLUSTERING',
-    #    'live'      : 'LIVECLUSTERING',
-        'random'    : 'RANDOMCLUSTERING'
+        # 'intrusion' : 'INTRUSIONCLUSTERING',
+        'live'      : 'LIVECLUSTERING',
+        # 'random'    : 'RANDOMCLUSTERING'
     },
     'densities' : {
         '100',
@@ -86,10 +86,11 @@ for concept, density, cluster, replanlimit, replanratio, graph_weights, seed in 
     # add seeds
     lines_seed = [f'SEED {seed}']
 
+    flowseed = int(seed) + 1
+    lines_seed.append(f'FLOWSEED {flowseed}')
+
     if concept == 'random':
-        flowseed = int(seed) + 1
         clustseed = int(seed) + 2
-        lines_seed.append(f'FLOWSEED {flowseed}')
         lines_seed.append(f'CLUSTSEED {clustseed}')
     
     # make a file for this case
@@ -148,6 +149,6 @@ for filename in filenames:
 
 # create a general batch
 lines = '\n'.join(batch_lines)
-with open(f'randombatch.scn', 'w') as file:
+with open(f'livebatch.scn', 'w') as file:
     file.write(lines + '\n')  # Add a newline after each string
 
