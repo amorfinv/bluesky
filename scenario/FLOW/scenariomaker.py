@@ -6,8 +6,8 @@ experiment_cases = {
     'concepts' : {
         # 'conflict'  : 'CONFLICTCLUSTERING',
         # 'intrusion' : 'INTRUSIONCLUSTERING',
-        # 'live'      : 'LIVECLUSTERING',
-        'random'    : 'RANDOMCLUSTERING'
+        'live'      : 'LIVECLUSTERING',
+        # 'random'    : 'RANDOMCLUSTERING'
     },
     'densities' : {
         '100',
@@ -21,9 +21,9 @@ experiment_cases = {
         '500',
     },
     'clusters' : {
-        '1000',
+        # '1000',
         '2500',
-        '4000',
+        # '4000',
     },
     'replanlimit':[
         # '0',
@@ -150,6 +150,6 @@ for filename in filenames:
 
 # create a general batch
 lines = '\n'.join(batch_lines)
-with open(f'randombatchCRON.scn', 'w') as file:
+with open(f'livebatchCRON.scn', 'w') as file:
     file.write(lines + '\n')  # Add a newline after each string
 
