@@ -1,24 +1,24 @@
 from itertools import product
 
-scen_dir = 'sensitivity'
+scen_dir = 'test_density_CRON'
 
 experiment_cases = {
     'concepts' : {
         # 'conflict'  : 'CONFLICTCLUSTERING',
         # 'intrusion' : 'INTRUSIONCLUSTERING',
-        'live'      : 'LIVECLUSTERING',
-        # 'random'    : 'RANDOMCLUSTERING'
+        # 'live'      : 'LIVECLUSTERING',
+        'random'    : 'RANDOMCLUSTERING'
     },
     'densities' : {
-        # '100',
-        # '150',
-        # '200',
-        # '250',
+        '100',
+        '150',
+        '200',
+        '250',
         '300',
-        # '350',
-        # '400',
-        # '450',
-        # '500',
+        '350',
+        '400',
+        '450',
+        '500',
     },
     'clusters' : {
         '1000',
@@ -26,27 +26,27 @@ experiment_cases = {
         '4000',
     },
     'replanlimit':[
-        '0',
-        '15',
+        # '0',
+        # '15',
         '30',
-        '60',
-        '120',
-        '360',
+        # '60',
+        # '120',
+        # '360',
     ],
     'replanratio':[
-        '0.1',
-        '0.25',
+        # '0.1',
+        # '0.25',
         '0.5',
-        '0.75',
-        '1',
+        #'0.75',
+        #'1',
     ],
     'graphweights':[
-        '1-1.1-1.2',
-        '1-1.25-1.5',
+        # '1-1.1-1.2',
+        # '1-1.25-1.5',
         '1-1.5-2',
-        '1-2-4',
-        '1-3-9',
-        '1-10-100',
+        # '1-2-4',
+        # '1-3-9',
+        # '1-10-100',
     ],
     'densitycutoff':[
         '0.25-0.5',
@@ -101,6 +101,7 @@ for concept, density, cluster, replanlimit, replanratio, graph_weights, seed in 
         f'SETGRAPHWEIGHTS {low_weight},{medium_weight},{high_weight}',
         'ASAS ON',
         'CDMETHOD M2CD',
+        'RESO M2CR',
         f'REPLANLIMIT {replanlimit}',
         f'REPLANRATIO {replanratio}',
         'STARTLOGS',
@@ -149,6 +150,6 @@ for filename in filenames:
 
 # create a general batch
 lines = '\n'.join(batch_lines)
-with open(f'sensitivitybatch.scn', 'w') as file:
+with open(f'randombatchCRON.scn', 'w') as file:
     file.write(lines + '\n')  # Add a newline after each string
 
