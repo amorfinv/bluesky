@@ -1,51 +1,51 @@
 from itertools import product
 
-scen_dir = 'conflictsensitivity'
+scen_dir = 'test_density_new'
 
 experiment_cases = {
     'concepts' : {
-        'conflict'  : 'CONFLICTCLUSTERING',
+        # 'conflict'  : 'CONFLICTCLUSTERING',
         # 'intrusion' : 'INTRUSIONCLUSTERING',
-        # 'live'      : 'LIVECLUSTERING',
+        'live'      : 'LIVECLUSTERING',
         # 'random'    : 'RANDOMCLUSTERING'
     },
     'densities' : {
-        # '100',
-        # '150',
-        # '200',
-        # '250',
+        '100',
+        '150',
+        '200',
+        '250',
         '300',
-        # '350',
-        # '400',
-        # '450',
-        # '500',
+        '350',
+        '400',
+        '450',
+        '500',
     },
     'clusters' : {
-        '1000',
-        '2500',
+        # '1000',
+        # '2500',
         '4000',
     },
     'replanlimit':[
         '0',
-        '15',
-        '30',
-        '60',
-        '120',
+        # '15',
+        # '30',
+        # '60',
+        # '120',
         '360',
     ],
     'replanratio':[
-        '0.1',
-        '0.25',
-        '0.5',
-        '0.75',
+        # '0.1',
+        # '0.25',
+        # '0.5',
+        # '0.75',
         '1',
     ],
     'graphweights':[
         '1-1.1-1.2',
-        '1-1.25-1.5',
-        '1-1.5-2',
-        '1-2-4',
-        '1-3-9',
+        # '1-1.25-1.5',
+        # '1-1.5-2',
+        # '1-2-4',
+        # '1-3-9',
         # '1-10-100',
     ],
     'densitycutoff':[
@@ -150,6 +150,6 @@ for filename in filenames:
 
 # create a general batch
 lines = '\n'.join(batch_lines)
-with open(f'conflictsensitivity.scn', 'w') as file:
+with open(f'livebatch.scn', 'w') as file:
     file.write(lines + '\n')  # Add a newline after each string
 
