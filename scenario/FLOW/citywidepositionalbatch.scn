@@ -1,0 +1,75 @@
+00:00:00>SCEN live_traf200_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed748180_CRON
+00:00:00>PCALL city_wide/live_traf200_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed748180_CRON.scn
+
+00:00:00>SCEN live_traf200_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed825078_CRON
+00:00:00>PCALL city_wide/live_traf200_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed825078_CRON.scn
+
+00:00:00>SCEN live_traf200_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed102890_CRON
+00:00:00>PCALL city_wide/live_traf200_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed102890_CRON.scn
+
+00:00:00>SCEN live_traf200_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed824289_CRON
+00:00:00>PCALL city_wide/live_traf200_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed824289_CRON.scn
+
+00:00:00>SCEN live_traf200_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed466213_CRON
+00:00:00>PCALL city_wide/live_traf200_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed466213_CRON.scn
+
+00:00:00>SCEN live_traf400_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed748180_CRON
+00:00:00>PCALL city_wide/live_traf400_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed748180_CRON.scn
+
+00:00:00>SCEN live_traf400_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed825078_CRON
+00:00:00>PCALL city_wide/live_traf400_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed825078_CRON.scn
+
+00:00:00>SCEN live_traf400_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed102890_CRON
+00:00:00>PCALL city_wide/live_traf400_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed102890_CRON.scn
+
+00:00:00>SCEN live_traf400_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed824289_CRON
+00:00:00>PCALL city_wide/live_traf400_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed824289_CRON.scn
+
+00:00:00>SCEN live_traf400_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed466213_CRON
+00:00:00>PCALL city_wide/live_traf400_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed466213_CRON.scn
+
+00:00:00>SCEN live_traf100_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed748180_CRON
+00:00:00>PCALL city_wide/live_traf100_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed748180_CRON.scn
+
+00:00:00>SCEN live_traf100_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed825078_CRON
+00:00:00>PCALL city_wide/live_traf100_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed825078_CRON.scn
+
+00:00:00>SCEN live_traf100_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed102890_CRON
+00:00:00>PCALL city_wide/live_traf100_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed102890_CRON.scn
+
+00:00:00>SCEN live_traf100_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed824289_CRON
+00:00:00>PCALL city_wide/live_traf100_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed824289_CRON.scn
+
+00:00:00>SCEN live_traf100_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed466213_CRON
+00:00:00>PCALL city_wide/live_traf100_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed466213_CRON.scn
+
+00:00:00>SCEN live_traf300_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed748180_CRON
+00:00:00>PCALL city_wide/live_traf300_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed748180_CRON.scn
+
+00:00:00>SCEN live_traf300_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed825078_CRON
+00:00:00>PCALL city_wide/live_traf300_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed825078_CRON.scn
+
+00:00:00>SCEN live_traf300_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed102890_CRON
+00:00:00>PCALL city_wide/live_traf300_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed102890_CRON.scn
+
+00:00:00>SCEN live_traf300_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed824289_CRON
+00:00:00>PCALL city_wide/live_traf300_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed824289_CRON.scn
+
+00:00:00>SCEN live_traf300_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed466213_CRON
+00:00:00>PCALL city_wide/live_traf300_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed466213_CRON.scn
+
+00:00:00>SCEN live_traf500_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed748180_CRON
+00:00:00>PCALL city_wide/live_traf500_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed748180_CRON.scn
+
+00:00:00>SCEN live_traf500_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed825078_CRON
+00:00:00>PCALL city_wide/live_traf500_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed825078_CRON.scn
+
+00:00:00>SCEN live_traf500_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed102890_CRON
+00:00:00>PCALL city_wide/live_traf500_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed102890_CRON.scn
+
+00:00:00>SCEN live_traf500_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed824289_CRON
+00:00:00>PCALL city_wide/live_traf500_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed824289_CRON.scn
+
+00:00:00>SCEN live_traf500_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed466213_CRON
+00:00:00>PCALL city_wide/live_traf500_clust4000_replanlimit30_replanratio0.5_graphweights1-2-2_seed466213_CRON.scn
+

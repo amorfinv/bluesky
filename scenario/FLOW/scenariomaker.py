@@ -1,6 +1,6 @@
 from itertools import product
 
-scen_dir = 'test_density_new'
+scen_dir = 'city_wide'
 
 experiment_cases = {
     'concepts' : {
@@ -10,14 +10,15 @@ experiment_cases = {
         # 'random'    : 'RANDOMCLUSTERING'
     },
     'densities' : {
+        # '50',
         '100',
-        '150',
+        # '150',
         '200',
-        '250',
+        # '250',
         '300',
-        '350',
+        # '350',
         '400',
-        '450',
+        # '450',
         '500',
     },
     'clusters' : {
@@ -26,24 +27,24 @@ experiment_cases = {
         '4000',
     },
     'replanlimit':[
-        '0',
+        # '0',
         # '15',
-        # '30',
+        '30',
         # '60',
         # '120',
-        '360',
+        # '360',
     ],
     'replanratio':[
         # '0.1',
         # '0.25',
-        # '0.5',
+        '0.5',
         # '0.75',
-        '1',
+        # '1',
     ],
     'graphweights':[
-        '1-1.1-1.2',
+        # '1-1.1-1.2',
         # '1-1.25-1.5',
-        # '1-1.5-2',
+        '1-2-2',
         # '1-2-4',
         # '1-3-9',
         # '1-10-100',
@@ -101,7 +102,7 @@ for concept, density, cluster, replanlimit, replanratio, graph_weights, seed in 
         f'SETGRAPHWEIGHTS {low_weight},{medium_weight},{high_weight}',
         'ASAS ON',
         'CDMETHOD M2CD',
-        # 'RESO M2CR',
+        'RESO M2CR',
         f'REPLANLIMIT {replanlimit}',
         f'REPLANRATIO {replanratio}',
         'STARTLOGS',
@@ -129,7 +130,7 @@ for concept, density, cluster, replanlimit, replanratio, graph_weights, seed in 
     lines = '\n'.join(lines)
 
     # create a filename
-    filename = f'{concept}_traf{density}_clust{cluster}_replanlimit{replanlimit}_replanratio{replanratio}_graphweights{graph_weights}_seed{seed}.scn'
+    filename = f'{concept}_traf{density}_clust{cluster}_replanlimit{replanlimit}_replanratio{replanratio}_graphweights{graph_weights}_seed{seed}_CRON.scn'
 
     # write the file
     with open(f'{scen_dir}/{filename}', 'w') as file:
@@ -143,13 +144,13 @@ for concept, density, cluster, replanlimit, replanratio, graph_weights, seed in 
 batch_lines = []
 for filename in filenames:
 
-    lines = f'00:00:00>SCEN {filename[:-4]}_CROFF\n' + \
-            f'00:00:00>PCALL FLOW/{scen_dir}/{filename}\n'
+    lines = f'00:00:00>SCEN {filename[:-4]}\n' + \
+            f'00:00:00>PCALL {scen_dir}/{filename}\n'
     
     batch_lines.append(lines)
 
 # create a general batch
 lines = '\n'.join(batch_lines)
-with open(f'livebatch.scn', 'w') as file:
+with open(f'citywidepositionalbatch.scn', 'w') as file:
     file.write(lines + '\n')  # Add a newline after each string
 
