@@ -54,15 +54,9 @@ for concept, density, cluster, geotime, seed in exp_cases:
     # add seeds
     lines_seed = [f'SEED {seed}']
 
-    flowseed = int(seed) + 1
-    lines_seed.append(f'FLOWSEED {flowseed}')
-
-    if concept == 'random':
-        clustseed = int(seed) + 2
-        lines_seed.append(f'CLUSTSEED {clustseed}')
-    
     # make a file for this case
     lines = [
+        f'SEED {seed}',
         'ENABLEFLOWCONTROL',
         'streetsenable',
         'STOPSIMT 7200',
@@ -84,9 +78,6 @@ for concept, density, cluster, geotime, seed in exp_cases:
 
     # add the fast forward
     lines.append('FF')
-
-    # comvine seeds lines
-    lines = lines_seed + lines
 
     # add the prefix to all lines
     lines = ['00:00:00.00>' + line for line in lines]
