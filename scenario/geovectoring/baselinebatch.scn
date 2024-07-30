@@ -1,0 +1,75 @@
+00:00:00>SCEN baseline_traf500_clust4000_seed748180_CRON
+00:00:00>PCALL geovectoring/baseline/baseline_traf500_clust4000_seed748180_CRON.scn
+
+00:00:00>SCEN baseline_traf500_clust4000_seed825078_CRON
+00:00:00>PCALL geovectoring/baseline/baseline_traf500_clust4000_seed825078_CRON.scn
+
+00:00:00>SCEN baseline_traf500_clust4000_seed102890_CRON
+00:00:00>PCALL geovectoring/baseline/baseline_traf500_clust4000_seed102890_CRON.scn
+
+00:00:00>SCEN baseline_traf500_clust4000_seed824289_CRON
+00:00:00>PCALL geovectoring/baseline/baseline_traf500_clust4000_seed824289_CRON.scn
+
+00:00:00>SCEN baseline_traf500_clust4000_seed466213_CRON
+00:00:00>PCALL geovectoring/baseline/baseline_traf500_clust4000_seed466213_CRON.scn
+
+00:00:00>SCEN baseline_traf400_clust4000_seed748180_CRON
+00:00:00>PCALL geovectoring/baseline/baseline_traf400_clust4000_seed748180_CRON.scn
+
+00:00:00>SCEN baseline_traf400_clust4000_seed825078_CRON
+00:00:00>PCALL geovectoring/baseline/baseline_traf400_clust4000_seed825078_CRON.scn
+
+00:00:00>SCEN baseline_traf400_clust4000_seed102890_CRON
+00:00:00>PCALL geovectoring/baseline/baseline_traf400_clust4000_seed102890_CRON.scn
+
+00:00:00>SCEN baseline_traf400_clust4000_seed824289_CRON
+00:00:00>PCALL geovectoring/baseline/baseline_traf400_clust4000_seed824289_CRON.scn
+
+00:00:00>SCEN baseline_traf400_clust4000_seed466213_CRON
+00:00:00>PCALL geovectoring/baseline/baseline_traf400_clust4000_seed466213_CRON.scn
+
+00:00:00>SCEN baseline_traf200_clust4000_seed748180_CRON
+00:00:00>PCALL geovectoring/baseline/baseline_traf200_clust4000_seed748180_CRON.scn
+
+00:00:00>SCEN baseline_traf200_clust4000_seed825078_CRON
+00:00:00>PCALL geovectoring/baseline/baseline_traf200_clust4000_seed825078_CRON.scn
+
+00:00:00>SCEN baseline_traf200_clust4000_seed102890_CRON
+00:00:00>PCALL geovectoring/baseline/baseline_traf200_clust4000_seed102890_CRON.scn
+
+00:00:00>SCEN baseline_traf200_clust4000_seed824289_CRON
+00:00:00>PCALL geovectoring/baseline/baseline_traf200_clust4000_seed824289_CRON.scn
+
+00:00:00>SCEN baseline_traf200_clust4000_seed466213_CRON
+00:00:00>PCALL geovectoring/baseline/baseline_traf200_clust4000_seed466213_CRON.scn
+
+00:00:00>SCEN baseline_traf300_clust4000_seed748180_CRON
+00:00:00>PCALL geovectoring/baseline/baseline_traf300_clust4000_seed748180_CRON.scn
+
+00:00:00>SCEN baseline_traf300_clust4000_seed825078_CRON
+00:00:00>PCALL geovectoring/baseline/baseline_traf300_clust4000_seed825078_CRON.scn
+
+00:00:00>SCEN baseline_traf300_clust4000_seed102890_CRON
+00:00:00>PCALL geovectoring/baseline/baseline_traf300_clust4000_seed102890_CRON.scn
+
+00:00:00>SCEN baseline_traf300_clust4000_seed824289_CRON
+00:00:00>PCALL geovectoring/baseline/baseline_traf300_clust4000_seed824289_CRON.scn
+
+00:00:00>SCEN baseline_traf300_clust4000_seed466213_CRON
+00:00:00>PCALL geovectoring/baseline/baseline_traf300_clust4000_seed466213_CRON.scn
+
+00:00:00>SCEN baseline_traf100_clust4000_seed748180_CRON
+00:00:00>PCALL geovectoring/baseline/baseline_traf100_clust4000_seed748180_CRON.scn
+
+00:00:00>SCEN baseline_traf100_clust4000_seed825078_CRON
+00:00:00>PCALL geovectoring/baseline/baseline_traf100_clust4000_seed825078_CRON.scn
+
+00:00:00>SCEN baseline_traf100_clust4000_seed102890_CRON
+00:00:00>PCALL geovectoring/baseline/baseline_traf100_clust4000_seed102890_CRON.scn
+
+00:00:00>SCEN baseline_traf100_clust4000_seed824289_CRON
+00:00:00>PCALL geovectoring/baseline/baseline_traf100_clust4000_seed824289_CRON.scn
+
+00:00:00>SCEN baseline_traf100_clust4000_seed466213_CRON
+00:00:00>PCALL geovectoring/baseline/baseline_traf100_clust4000_seed466213_CRON.scn
+
