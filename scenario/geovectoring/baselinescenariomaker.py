@@ -44,6 +44,7 @@ for concept, density, cluster, seed in exp_cases:
     lines = [
         f'SEED {seed}',
         'streetsenable',
+        'ENABLEFLOWCONTROL',
         'STOPSIMT 7200',
         'ASAS ON',
         'CDMETHOD M2CD',
