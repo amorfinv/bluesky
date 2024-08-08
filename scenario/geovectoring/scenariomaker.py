@@ -68,7 +68,7 @@ for concept, density, cluster, geotime, seed in exp_cases:
         'STARTCLUSTERLOG',
         'STARTFLOWLOG',
         f'trafficnumber {density}',
-        f'GEOTIME {geotime}',
+        f'GEOTIME 30,{geotime}',
         f'SETCLUSTERDISTANCE {cluster}',
         'CASMACHTHR 0',
     ]
