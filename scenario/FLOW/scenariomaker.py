@@ -1,63 +1,57 @@
 from itertools import product
 
-scen_dir = 'city_wide'
+scen_dir = 'city_wide2'
 
 experiment_cases = {
     'concepts' : {
-        # 'conflict'  : 'CONFLICTCLUSTERING',
+        'conflict'  : 'CONFLICTCLUSTERING',
         # 'intrusion' : 'INTRUSIONCLUSTERING',
-        'live'      : 'LIVECLUSTERING',
-        # 'random'    : 'RANDOMCLUSTERING'
+        # 'live'      : 'LIVECLUSTERING',
     },
     'densities' : {
-        # '50',
         '100',
-        # '150',
         '200',
-        # '250',
         '300',
-        # '350',
         '400',
-        # '450',
         '500',
     },
     'clusters' : {
-        # '1000',
-        # '2500',
         '4000',
     },
     'replanlimit':[
-        # '0',
-        # '15',
         '30',
-        # '60',
-        # '120',
-        # '360',
     ],
     'replanratio':[
-        # '0.1',
-        # '0.25',
         '0.5',
-        # '0.75',
-        # '1',
+
     ],
     'graphweights':[
-        # '1-1.1-1.2',
-        # '1-1.25-1.5',
         '1-2-2',
-        # '1-2-4',
-        # '1-3-9',
-        # '1-10-100',
     ],
     'densitycutoff':[
         '0.25-0.5',
     ],
     'seeds': [
-        '748180',
-        '825078',
-        '102890',
-        '824289',
-        '466213'
+        # '748180',
+        # '825078',
+        # '102890',
+        # '824289',
+        # '466213',
+        '2730111717',
+        '2206979456',
+        '3283131972',
+        '2250510208',
+        '1752397453',
+        '1317504816',
+        '2000344349',
+        '2113055274',
+        '1205330928',
+        '1246124471',
+        '3241510684',
+        '2417284863',
+        '334020136',
+        '2744972216',
+        '2372088387',
     ],
 }
 
@@ -151,6 +145,6 @@ for filename in filenames:
 
 # create a general batch
 lines = '\n'.join(batch_lines)
-with open(f'citywidepositionalbatch.scn', 'w') as file:
+with open(f'citywideconflictbatch2.scn', 'w') as file:
     file.write(lines + '\n')  # Add a newline after each string
 
