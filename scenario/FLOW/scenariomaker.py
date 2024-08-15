@@ -1,6 +1,6 @@
 from itertools import product
 
-scen_dir = 'city_wide2'
+scen_dir = 'city_wide'
 
 experiment_cases = {
     'concepts' : {
@@ -32,11 +32,11 @@ experiment_cases = {
         '0.25-0.5',
     ],
     'seeds': [
-        # '748180',
-        # '825078',
-        # '102890',
-        # '824289',
-        # '466213',
+        '748180',
+        '825078',
+        '102890',
+        '824289',
+        '466213',
         '2730111717',
         '2206979456',
         '3283131972',
@@ -139,12 +139,12 @@ batch_lines = []
 for filename in filenames:
 
     lines = f'00:00:00>SCEN {filename[:-4]}\n' + \
-            f'00:00:00>PCALL {scen_dir}/{filename}\n'
+            f'00:00:00>PCALL FLOW/{scen_dir}/{filename}\n'
     
     batch_lines.append(lines)
 
 # create a general batch
 lines = '\n'.join(batch_lines)
-with open(f'citywideconflictbatch2.scn', 'w') as file:
+with open(f'citywideconflictbatch.scn', 'w') as file:
     file.write(lines + '\n')  # Add a newline after each string
 
