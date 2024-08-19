@@ -4,9 +4,9 @@ scen_dir = 'city_wide'
 
 experiment_cases = {
     'concepts' : {
-        'conflict'  : 'CONFLICTCLUSTERING',
+        # 'conflict'  : 'CONFLICTCLUSTERING',
         # 'intrusion' : 'INTRUSIONCLUSTERING',
-        # 'live'      : 'LIVECLUSTERING',
+        'live'      : 'LIVECLUSTERING',
     },
     'densities' : {
         '100',
@@ -19,11 +19,10 @@ experiment_cases = {
         '4000',
     },
     'replanlimit':[
-        '30',
+        '0',
     ],
     'replanratio':[
-        '0.5',
-
+        '1',
     ],
     'graphweights':[
         '1-2-2',
@@ -145,6 +144,6 @@ for filename in filenames:
 
 # create a general batch
 lines = '\n'.join(batch_lines)
-with open(f'citywideconflictbatch.scn', 'w') as file:
+with open(f'citywidepositionbatch.scn', 'w') as file:
     file.write(lines + '\n')  # Add a newline after each string
 
