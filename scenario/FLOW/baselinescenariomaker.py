@@ -20,12 +20,12 @@ experiment_cases = {
     },
     'replanlimit':[
 
-        '30',
+        '0',
 
     ],
     'replanratio':[
 
-        '0.5',
+        '1',
   
     ],
     'graphweights':[
