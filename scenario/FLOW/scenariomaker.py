@@ -1,12 +1,12 @@
 from itertools import product
 
-scen_dir = 'city_wide'
+scen_dir = 'flowtime'
 
 experiment_cases = {
     'concepts' : {
-        # 'conflict'  : 'CONFLICTCLUSTERING',
+        'conflict'  : 'CONFLICTCLUSTERING',
         # 'intrusion' : 'INTRUSIONCLUSTERING',
-        'live'      : 'LIVECLUSTERING',
+        # 'live'      : 'LIVECLUSTERING',
     },
     'densities' : {
         '100',
@@ -36,21 +36,21 @@ experiment_cases = {
         '102890',
         '824289',
         '466213',
-        '2730111717',
-        '2206979456',
-        '3283131972',
-        '2250510208',
-        '1752397453',
-        '1317504816',
-        '2000344349',
-        '2113055274',
-        '1205330928',
-        '1246124471',
-        '3241510684',
-        '2417284863',
-        '334020136',
-        '2744972216',
-        '2372088387',
+        # '2730111717',
+        # '2206979456',
+        # '3283131972',
+        # '2250510208',
+        # '1752397453',
+        # '1317504816',
+        # '2000344349',
+        # '2113055274',
+        # '1205330928',
+        # '1246124471',
+        # '3241510684',
+        # '2417284863',
+        # '334020136',
+        # '2744972216',
+        # '2372088387',
     ],
 }
 
@@ -144,6 +144,6 @@ for filename in filenames:
 
 # create a general batch
 lines = '\n'.join(batch_lines)
-with open(f'citywidepositionbatch.scn', 'w') as file:
+with open(f'conflictbatch.scn', 'w') as file:
     file.write(lines + '\n')  # Add a newline after each string
 
