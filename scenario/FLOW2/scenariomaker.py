@@ -143,7 +143,7 @@ batch_lines = []
 for filename in filenames:
 
     lines = f'00:00:00>SCEN {filename[:-4]}\n' + \
-            f'00:00:00>PCALL FLOW/{scen_dir}/{filename}\n'
+            f'00:00:00>PCALL FLOW2/{scen_dir}/{filename}\n'
     
     batch_lines.append(lines)
 
