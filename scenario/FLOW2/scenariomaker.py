@@ -28,10 +28,12 @@ experiment_cases = {
         '1-2-2',
     ],
     'flowupdaterates':[
-        '10',
-        '30',
-        '60',
-        '90',
+        # '10',
+        # '30',
+        # '60',
+        # '90',
+        '120',
+        '180'
     ],
     'seeds': [
         '748180',
@@ -149,6 +151,6 @@ for filename in filenames:
 
 # create a general batch
 lines = '\n'.join(batch_lines)
-with open(f'conflictbatch.scn', 'w') as file:
+with open(f'conflictbatch2.scn', 'w') as file:
     file.write(lines + '\n')  # Add a newline after each string
 
