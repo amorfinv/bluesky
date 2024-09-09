@@ -1,12 +1,10 @@
 from itertools import product
 
-scen_dir = 'flowtime'
+scen_dir = 'flowhist'
 
 experiment_cases = {
     'concepts' : {
         'conflict'  : 'CONFLICTCLUSTERING',
-        # 'intrusion' : 'INTRUSIONCLUSTERING',
-        # 'live'      : 'LIVECLUSTERING',
     },
     'densities' : {
         '100',
@@ -16,7 +14,11 @@ experiment_cases = {
         '500',
     },
     'clusters' : {
+        '1000',
+        '2000',
         '4000',
+        '8000',
+        '16000',
     },
     'replanlimit':[
         '0',
@@ -28,12 +30,10 @@ experiment_cases = {
         '1-2-2',
     ],
     'flowupdaterates':[
-        # '10',
+        '10',
         # '30',
         # '60',
         # '90',
-        '120',
-        '180'
     ],
     'seeds': [
         '748180',
@@ -145,12 +145,12 @@ batch_lines = []
 for filename in filenames:
 
     lines = f'00:00:00>SCEN {filename[:-4]}\n' + \
-            f'00:00:00>PCALL FLOW2/{scen_dir}/{filename}\n'
+            f'00:00:00>PCALL FLOWHIST/{scen_dir}/{filename}\n'
     
     batch_lines.append(lines)
 
 # create a general batch
 lines = '\n'.join(batch_lines)
-with open(f'conflictbatch2.scn', 'w') as file:
+with open(f'conflictbatch.scn', 'w') as file:
     file.write(lines + '\n')  # Add a newline after each string
 
