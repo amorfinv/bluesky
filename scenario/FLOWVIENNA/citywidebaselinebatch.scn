@@ -1,0 +1,15 @@
+00:00:00>SCEN baseline_traf300_clust4000_replanlimit0_replanratio1_graphweights1-2-2_seed748180_CRON
+00:00:00>PCALL FLOW/vienna/baseline_traf300_clust4000_replanlimit0_replanratio1_graphweights1-2-2_seed748180_CRON.scn
+
+00:00:00>SCEN baseline_traf300_clust4000_replanlimit0_replanratio1_graphweights1-2-2_seed825078_CRON
+00:00:00>PCALL FLOW/vienna/baseline_traf300_clust4000_replanlimit0_replanratio1_graphweights1-2-2_seed825078_CRON.scn
+
+00:00:00>SCEN baseline_traf300_clust4000_replanlimit0_replanratio1_graphweights1-2-2_seed102890_CRON
+00:00:00>PCALL FLOW/vienna/baseline_traf300_clust4000_replanlimit0_replanratio1_graphweights1-2-2_seed102890_CRON.scn
+
+00:00:00>SCEN baseline_traf300_clust4000_replanlimit0_replanratio1_graphweights1-2-2_seed824289_CRON
+00:00:00>PCALL FLOW/vienna/baseline_traf300_clust4000_replanlimit0_replanratio1_graphweights1-2-2_seed824289_CRON.scn
+
+00:00:00>SCEN baseline_traf300_clust4000_replanlimit0_replanratio1_graphweights1-2-2_seed466213_CRON
+00:00:00>PCALL FLOW/vienna/baseline_traf300_clust4000_replanlimit0_replanratio1_graphweights1-2-2_seed466213_CRON.scn
+
