@@ -124,12 +124,12 @@ batch_lines = []
 for filename in filenames:
 
     lines = f'00:00:00>SCEN {filename[:-4]}_CRON\n' + \
-            f'00:00:00>PCALL FLOW/{scen_dir}/{filename}\n'
+            f'00:00:00>PCALL FLOWVIENNA/{scen_dir}/{filename}\n'
     
     batch_lines.append(lines)
 
 # create a general batch
 lines = '\n'.join(batch_lines)
-with open(f'sensitivitybatch.scn', 'w') as file:
+with open(f'conflictbatch.scn', 'w') as file:
     file.write(lines + '\n')  # Add a newline after each string
 
