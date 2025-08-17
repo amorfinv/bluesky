@@ -172,4 +172,5 @@ class ActiveWaypoint(Entity, replaceable=True):
         
         # turndist is in meters
         turndist = np.abs(turnrad * np.tan(np.radians(0.5 * np.abs(degto180(wpqdr%360. - next_wpqdr%360.)))))
+        print('TURN DISTANCE HERE:', turndist)
         return turndist, turnrad, turnspd, turnbank, turnhdgr

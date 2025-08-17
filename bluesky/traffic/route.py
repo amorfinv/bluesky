@@ -1106,9 +1106,25 @@ class Route(Base):
         else:
             local_next_qdr = bs.traf.actwp.next_qdr[acidx]
 
+        # check if next waypoint has a speed constraint and give that as TAS
+        nextwptspd = bs.traf.actwp.nextspd[acidx]
+        nextwpalt = bs.traf.actwp.nextaltco[acidx]
+
+        if nextwptspd > 0 and nextwpalt > 0:
+            # Here there is a speed constraint and altitude constraint
+            nextwpttas = casormach2tas(bs.traf.actwp.nextspd[acidx], bs.traf.actwp.nextaltco[acidx])
+        elif nextwptspd > 0:
+            # Here there is only a speed constraint
+            nextwpttas = casormach2tas(bs.traf.actwp.nextspd[acidx], bs.traf.alt[acidx])
+        elif nextwpalt > 0:
+            # if there is only an altitude constraint
+            nextwpttas = casormach2tas(bs.traf.cas[acidx], bs.traf.actwp.nextaltco[acidx])
+        else:
+            nextwpttas = bs.traf.tas[acidx]
+
         # Calculate turn dist (and radius which we do not use now, but later) now for scalar variable [acidx]
         bs.traf.actwp.turndist[acidx], turnrad, turnspd, turnbank, turnhdgr = \
-            bs.traf.actwp.calcturn(acidx, bs.traf.tas[acidx], qdr_, 
+            bs.traf.actwp.calcturn(acidx, nextwpttas, qdr_, 
                                     local_next_qdr, bs.traf.actwp.turnbank[acidx], 
                                     bs.traf.actwp.turnrad[acidx],bs.traf.actwp.turnspd[acidx] ,
                                     bs.traf.actwp.turnhdgr[acidx], bs.traf.actwp.flyturn[acidx],

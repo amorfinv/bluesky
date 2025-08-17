@@ -393,6 +393,7 @@ class Traffic(Entity):
         if self.ntraf == 0:
             return
 
+        print('SIM_t',bs.sim.simt)
         #---------- Atmosphere --------------------------------
         self.p, self.rho, self.Temp = vatmos(self.alt)
 
@@ -413,10 +414,17 @@ class Traffic(Entity):
         self.aporasas.tas, self.aporasas.vs, self.aporasas.alt = \
             self.perf.limits(self.aporasas.tas, self.aporasas.vs,
                              self.aporasas.alt, self.ax)
-
+        
+    
         #---------- Kinematics --------------------------------
         self.update_airspeed()
+        print('TAS_actual', self.tas[0]/bs.tools.aero.kts)
+        print('CAS_actual', self.cas[0]/bs.tools.aero.kts)
+        print('MACH_actual', self.M[0])
+
         self.update_groundspeed()
+        print('GS_actual', self.gs[0]/bs.tools.aero.kts)
+
         self.update_pos()
 
         #---------- Simulate Turbulence -----------------------
@@ -427,6 +435,7 @@ class Traffic(Entity):
 
         #---------- Aftermath ---------------------------------
         self.trails.update()
+        print('------------------------')
 
     def update_airspeed(self):
         # Compute horizontal acceleration

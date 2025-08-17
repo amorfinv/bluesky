@@ -601,6 +601,9 @@ class BADA(PerfBase):
         # Autopilot selected vertical speed (V/S)
         allowed_vs = np.where(self.limvs_flag, self.limvs, intent_vs)
 
+        print('Performance Allowed TAS', allowed_tas)
+        print('Performance Allowed VS', allowed_vs)
+
         return allowed_tas, allowed_vs, allowed_alt
 
     def show_performance(self, acid):

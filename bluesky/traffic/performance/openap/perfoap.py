@@ -280,17 +280,26 @@ class OpenAP(PerfBase):
         Returns:
             floats or 1D-arrays: Allowed TAS, Allowed vetical rate, Allowed altitude
         """
+
+
         allow_h = np.where(intent_h > self.hmax, self.hmax, intent_h)
+        print('TAS_intent', intent_v_tas[0]/kts)
 
         intent_v_cas = aero.vtas2cas(intent_v_tas, allow_h)
+        print('CAS_intent', intent_v_cas[0]/kts)
+
         allow_v_cas = np.where((intent_v_cas < self.vmin), self.vmin, intent_v_cas)
+
         allow_v_cas = np.where(intent_v_cas > self.vmax, self.vmax, allow_v_cas)
+        print('CAS_allow ', allow_v_cas[0]/kts)
+
         allow_v_tas = aero.vcas2tas(allow_v_cas, allow_h)
         allow_v_tas = np.where(
             aero.vtas2mach(allow_v_tas, allow_h) > self.mmo,
             aero.vmach2tas(self.mmo, allow_h),
             allow_v_tas,
         )  # maximum cannot exceed MMO
+        print('TAS_allow', allow_v_tas[0]/kts)
 
         vs_max_with_acc = (1 - ax / self.axmax) * self.vsmax
         allow_vs = np.where(
@@ -317,7 +326,6 @@ class OpenAP(PerfBase):
         allow_vs[ir] = np.where(
             (intent_vs[ir] > self.vsmax[ir]), self.vsmax[ir], allow_vs[ir]
         )
-
         return allow_v_tas, allow_vs, allow_h
 
     def currentlimits(self, id=None):
