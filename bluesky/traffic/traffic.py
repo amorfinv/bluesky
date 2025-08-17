@@ -445,6 +445,13 @@ class Traffic(Entity):
                                                    self.ap.turnphi,self.ap.bankdef)) \
                                           / np.maximum(self.tas, self.eps))
         delhdg = (self.aporasas.hdg - self.hdg + 180) % 360 - 180  # [deg]
+        # For exactly 180-degree turns, use aircraft turn preference or default to clockwise
+        is_180_turn = np.abs(delhdg) == 180.0
+        # Use preference: 1=CW(+180), -1=CCW(-180), 0=default CW(+180)
+        turn_direction = np.where(self.ap.turn180pref != 0, 
+                                 np.sign(self.ap.turn180pref) * 180, 
+                                 180)  # default clockwise
+        delhdg = np.where(is_180_turn, turn_direction, delhdg)
         self.swhdgsel = np.abs(delhdg) > np.abs(bs.sim.simdt * turnrate)
 
         # Update heading
